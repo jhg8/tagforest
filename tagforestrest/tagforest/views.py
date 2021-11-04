@@ -152,6 +152,8 @@ def graph_view(request):
         tag_list_queries.append(entry.tag_set.filter(user=request.user))
     entry_tag_list = Tag.objects.none().union(query_tag_set, *tag_list_queries)
 
+    entry_tag_list = sorted([t for t in entry_tag_list], key=lambda t: len(t.recursiveEntrySet()), reverse=True)
+
     data['entry_set']      = EntrySerializer(entry_set,    many=True, context = { 'request': request }).data
     data['entry_tag_list'] = TagSerializer(entry_tag_list, many=True, context = { 'request': request }).data
     data['tag_list']       = TagSerializer(tag_list,       many=True, context = { 'request': request }).data
