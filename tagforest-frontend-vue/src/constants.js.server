@@ -1,0 +1,3 @@
+export default Object.freeze({
+  BACKEND_URL: 'https://api.tagforest.fr'
+})

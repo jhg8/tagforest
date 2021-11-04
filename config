@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e
+
+DIR=$(dirname $(realpath $0))
+
+BACKEND="$DIR/tagforestrest"
+ENVDIR="$BACKEND/env"
+echo "Configuring $ENVIDR";
+if [ ! -d $ENVDIR ]; then
+  python -m venv $ENVDIR;
+fi
+source $ENVDIR/bin/activate;
+pip install django djangorestframework 'dj-rest-auth[with_social]' django-cors-headers;
+deactivate;
+
+read -p "Configure for deployment ? [yY]" -n 1 -r
+echo
+if [[ $REPLY =~ ^[yY]$ ]]; then
+
+  source $ENVDIR/bin/activate;
+  pip install gunicorn psycopg2 psycopg2-binary;
+  deactivate;
+
+  CONF="/etc/tagforest/config"
+  echo "Configuring for deployment";
+  if [ ! -d $(dirname $CONF) ]; then sudo mkdir -p $(dirname $CONF); fi
+  if [ ! -f $CONF ]; then
+    echo "Creating default conf";
+    sudo bash -c "cat > $CONF" << "EOF"
+[Django]
+deploy-directory = /home/username/tagforest-backend
+secret-key = django-insecure-@gn#%d-+2rk_rrk$+h4x)u-&iou2a)nfyv8(pna-v5zbl$*=do
+
+[Vue]
+deploy-directory = /home/username/tagforest-frontend
+
+[Server]
+ipv4 = 0.0.0.0
+ipv6 = ::
+
+[Database]
+username = username
+password = password
+EOF
+  fi
+  cat << EOF
+To finish deployment:
+  - setup nginx, gunicorn, postgre database
+  - fill out $CONF
+  - update with udpate-server.sh
+EOF
+fi
