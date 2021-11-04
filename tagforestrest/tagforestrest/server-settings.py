@@ -15,11 +15,10 @@ SECRET_KEY = config['Django']['secret-key']
 
 DEBUG = False
 ALLOWED_HOSTS = [config['Server']['ipv6'], config['Server']['ipv4'], 'api.tagforest.fr', 'www.api.tagforest.fr', 'localhost']
-#CORS_ALLOWED_ORIGINS = [
-#	'https://tagforest.fr',
-#	'https://www.tagforest.fr',
-#]
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+	'https://tagforest.fr',
+	'https://www.tagforest.fr',
+]
 
 # Application definition
 
