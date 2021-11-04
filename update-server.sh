@@ -116,8 +116,6 @@ if $DEPLOY_BACKEND; then
 
 	cd $BACKEND;
 
-	git reset --hard;
-
 	echo "Restarting gunicorn";
 	sudo systemctl restart gunicorn
 fi
