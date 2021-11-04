@@ -8,19 +8,21 @@ FRONTEND="$DIR/tagforest-frontend-vue"
 DEPLOY_FRONTEND=true
 DEPLOY_BACKEND=true
 UPDATE_GIT=false
+REPLACE_VERSION=false
 
 usage() {
   cat << ENDUSAGE
-Usage: $0 [-hbfg] BRANCH
+Usage: $0 [-hbfgv] BRANCH
    -h              Show help
    -b              Deploy only backend
    -f              Deploy only frontend
    -g              Update and reset git repo
+   -v              Replace version and date
 ENDUSAGE
 1>&2;
 }
 
-while getopts "hbfg" opt; do
+while getopts "hbfgv" opt; do
   case "${opt}" in
     h )
         usage
@@ -34,6 +36,9 @@ while getopts "hbfg" opt; do
         ;;
     g )
 				UPDATE_GIT=true
+        ;;
+    v )
+				REPLACE_VERSION=true
         ;;
     * )
         usage
@@ -75,17 +80,19 @@ if $UPDATE_GIT; then
   git reset --hard origin/$BRANCH;
 fi
 
-cd $DIR;
-echo "Update website's version and date";
-# Update version info in templates
-VERSION=$(git describe --tags)
-DATE=$(date +%D)
-ESCAPED_DATE=$(printf '%s\n' "$DATE" | sed -e 's/[\/&]/\\&/g')
-# Cut the string to avoid the script replacing itself
-VERSION_PLACEHOLDER="<\!--""CURRENT_VERSION-->"
-DATE_PLACEHOLDER="<\!--""CURRENT_VERSION_DATE-->"
-egrep -lRZ $VERSION_PLACEHOLDER . | xargs -0 -l sed -i -e "s/$VERSION_PLACEHOLDER/$VERSION/g";
-egrep -lRZ $DATE_PLACEHOLDER . | xargs -0 -l sed -i -e "s/$DATE_PLACEHOLDER/$ESCAPED_DATE/g";
+if $REPLACE_VERSION; then
+  cd $DIR;
+  echo "Update website's version and date";
+  # Update version info in templates
+  VERSION=$(git describe --tags)
+  DATE=$(date +%D)
+  ESCAPED_DATE=$(printf '%s\n' "$DATE" | sed -e 's/[\/&]/\\&/g')
+  # Cut the string to avoid the script replacing itself
+  VERSION_PLACEHOLDER="<\!--""CURRENT_VERSION-->"
+  DATE_PLACEHOLDER="<\!--""CURRENT_VERSION_DATE-->"
+  egrep -lRZ $VERSION_PLACEHOLDER . | xargs -0 -l sed -i -e "s/$VERSION_PLACEHOLDER/$VERSION/g";
+  egrep -lRZ $DATE_PLACEHOLDER . | xargs -0 -l sed -i -e "s/$DATE_PLACEHOLDER/$ESCAPED_DATE/g";
+fi
 
 if $DEPLOY_BACKEND; then
 
