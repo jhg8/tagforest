@@ -10,8 +10,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import constants from '@/constants.js'
 import EntryUpsert from '@/components/EntryUpsert.vue'
 
 export default {
@@ -29,8 +27,8 @@ export default {
   },
   methods: {
     async getEntry () {
-      const response = await axios.get(`${constants.BACKEND_URL}/entries/${this.id}/`);
-      this.entry = response.data;
+      const data = await this.api({ method: 'get', url: `entries/${this.id}/` });
+      this.entry = data;
     }
   },
   mounted () {

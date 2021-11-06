@@ -12,18 +12,11 @@
 
 <script>
 import Graph from '@/components/Graph.vue'
-import axios from 'axios'
-import constants from '@/constants.js'
 
 export default {
   name: 'GraphView',
   components: {
     Graph
-  },
-  computed: {
-    loggedIn () {
-      return this.$store.state.loggedIn;
-    }
   },
   beforeRouteUpdate(to, from, next) {
     this.reload(to.query.q);
@@ -34,13 +27,10 @@ export default {
       this.$refs.graph.reload(q);
     },
     async demoLogin () {
-      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/login/`, {
-        username: 'demo',
-        password: 'p1dm4V7P'
-      });
-      const key = response.data.key;
-      axios.defaults.headers.common['Authorization'] = `Token ${key}`;
-      this.$store.commit('login');
+      const data = await this.api({ method: 'post', url: `dj-rest-auth/login/`,
+                                    data: { username: 'demo',
+                                            password: 'p1dm4V7P'}});
+      this.$store.commit('login', data.key);
     }
   }
 }

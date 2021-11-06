@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import constants from '@/constants.js'
 import utils from '@/utils.js'
 
 export default {
@@ -39,15 +37,15 @@ export default {
         name: this.tagName,
         parent_set: tagSet
       };
-      const response = await (this.update ?
-                         axios.put(`${constants.BACKEND_URL}/tags/${this.id}/`, data) :
-                         axios.post(`${constants.BACKEND_URL}/tags/`, data));
+      await this.api(this.update ?
+                     { method: 'put',  url: `tags/${this.id}/`, data: data} :
+                     { method: 'post', url: `tags/`,            data: data});
       this.$emit('tagUpsert');
     },
     async getTag () {
-      const response = await axios.get(`${constants.BACKEND_URL}/tags/${this.id}/`);
-      this.tagName = response.data.name;
-      this.tagParentSet = response.data.parent_set.map(x => x.name).join(', ');
+      const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
+      this.tagName = data.name;
+      this.tagParentSet = data.parent_set.map(x => x.name).join(', ');
     }
   },
   mounted () {

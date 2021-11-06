@@ -11,8 +11,6 @@
 
 <script>
 
-import axios from 'axios'
-import constants from '@/constants.js'
 import Logout from '@/components/Logout.vue'
 
 export default {
@@ -27,8 +25,8 @@ export default {
   },
   methods: {
     async getUser () {
-      const response = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
-      this.loggedUser = response.data.username;
+      const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
+      this.loggedUser = data.username;
     }
   },
   mounted () {

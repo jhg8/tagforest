@@ -11,9 +11,6 @@
 
 <script>
 
-import axios from 'axios'
-import constants from '@/constants.js'
-
 export default {
   name: 'Login',
   data () {
@@ -25,15 +22,10 @@ export default {
   },
   methods: {
     async register () {
-      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/registration/`, {
-        username: this.username,
-        password1: this.password1,
-        password2: this.password2
-      });
-      const key = response.data.key;
-      axios.defaults.headers.common['Authorization'] = `Token ${key}`;
-      const responseuser = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
-      this.$store.commit('login');
+      const data = await this.api({ method: 'post', url: `dj-rest-auth/registration/`,                                         data: { username: this.username,
+                                            password1: this.password1,
+                                            password2: this.password2 }});
+      this.$store.commit('login', data.key);
       this.$router.go(-1);
     }
   }

@@ -46,8 +46,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import constants from '@/constants.js'
 import EntryUpsert from '@/components/EntryUpsert.vue'
 import TagUpsert from '@/components/TagUpsert.vue'
 
@@ -80,7 +78,7 @@ export default {
   },
   methods: {
     getTagFilterUrl (tag) {
-      let url = `${constants.BACKEND_URL}/graph/`;
+      let url = ``;
 
       let filterTagList = [];
       for(const t in this.filterTagMap) {
@@ -104,11 +102,11 @@ export default {
     async getData (url) {
 
       // Get data from Backend
-      const response = await axios.get(url);
+      const data = await this.api({ method: 'get', url: url });
 
       // Refresh select Entry ID Map
       let newEntryIdList = {};
-      for(const entry of response.data.entry_set) {
+      for(const entry of data.entry_set) {
         this.selectEntryIdMap[entry.id] = this.selectEntryIdMap[entry.id] || false;
         newEntryIdList[entry.id] = true;
       }
@@ -116,7 +114,7 @@ export default {
         if(!(newEntryIdList[id] || false)) delete this.selectEntryIdMap[id];
       // Refresh select Tag ID Map
       let newTagIdList = {};
-      for(const tag of response.data.tag_list) {
+      for(const tag of data.tag_list) {
         this.selectTagIdMap[tag.id] = this.selectTagIdMap[tag.id] || false;
         newTagIdList[tag.id] = true;
       }
@@ -125,7 +123,7 @@ export default {
 
       // Rebuild filterTagMap
       this.filterTagMap = {};
-      for(const tag of response.data.entry_tag_list) {
+      for(const tag of data.entry_tag_list) {
         this.filterTagMap[tag.name] = false;
       }
       if(this.q) {
@@ -143,12 +141,12 @@ export default {
       }
 
       // Refresh entry and tag list
-      this.entrySet = response.data.entry_set;
-      this.entryTagList = response.data.entry_tag_list;
-      this.tagList = response.data.tag_list;
+      this.entrySet = data.entry_set;
+      this.entryTagList = data.entry_tag_list;
+      this.tagList = data.tag_list;
     },
     async reload (q) {
-      let url = `${constants.BACKEND_URL}/graph/`;
+      let url = `graph/`;
       this.q = q;
 
       if(this.q) {
@@ -162,7 +160,7 @@ export default {
     async deleteSelectedEntry () {
       for(const id in this.selectEntryIdMap)
         if(this.selectEntryIdMap[id]) {
-          await axios.delete(`${constants.BACKEND_URL}/entries/${id}/`);
+          await this.api({ method: 'delete', url: `entries/${id}/` });
           delete this.selectEntryIdMap[id];
         }
       this.reload(this.q);
@@ -170,7 +168,7 @@ export default {
     async deleteSelectedTag () {
       for(const id in this.selectTagIdMap)
         if(this.selectTagIdMap[id]) {
-          await axios.delete(`${constants.BACKEND_URL}/tags/${id}/`);
+          await this.api({ method: 'delete', url: `tags/${id}/` });
           delete this.selectTagIdMap[id];
         }
       this.reload(this.q);

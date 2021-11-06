@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import constants from '@/constants.js'
 import utils from '@/utils.js'
 
 export default {
@@ -42,16 +40,16 @@ export default {
         tag_set: tagSet,
         content: this.entryContent,
       };
-      const response = await (this.update ?
-                         axios.put(`${constants.BACKEND_URL}/entries/${this.id}/`, data) :
-                         axios.post(`${constants.BACKEND_URL}/entries/`, data));
+      await this.api(this.update ?
+                     { method: 'put',  url: `entries/${this.id}/`, data: data} :
+                     { method: 'post', url: `entries/`,            data: data});
       this.$emit('entryUpsert');
     },
     async getEntry () {
-      const response = await axios.get(`${constants.BACKEND_URL}/entries/${this.id}/`);
-      this.entryName = response.data.name;
-      this.entryTags = response.data.tag_set.map(x => x.name).join(', ');
-      this.entryContent = response.data.content;
+      const data = await this.api({ method: 'get', url: `entries/${this.id}/`});
+      this.entryName = data.name;
+      this.entryTags = data.tag_set.map(x => x.name).join(', ');
+      this.entryContent = data.content;
     }
   },
   mounted () {

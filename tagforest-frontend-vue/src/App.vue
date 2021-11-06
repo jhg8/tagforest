@@ -75,9 +75,6 @@ a {
 
 <script>
 
-import axios from 'axios'
-import constants from '@/constants.js'
-
 export default {
   name: 'App',
   data () {
@@ -91,13 +88,10 @@ export default {
     }
   },
   watch: {
-    loggedIn (newLoggedIn, oldLoggedIn) {
-      async function getUser (_this) {
-        const response = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
-        _this.loggedUser = response.data.username;
-      }
+    async loggedIn (newLoggedIn, oldLoggedIn) {
       if(newLoggedIn) {
-        getUser(this);
+        const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
+        this.loggedUser = data.username;
       }
     }
   }

@@ -10,9 +10,6 @@
 
 <script>
 
-import axios from 'axios'
-import constants from '@/constants.js'
-
 export default {
   name: 'Login',
   data () {
@@ -23,13 +20,10 @@ export default {
   },
   methods: {
     async login () {
-      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/login/`, {
-        username: this.username,
-        password: this.password,
-      });
-      const key = response.data.key;
-      axios.defaults.headers.common['Authorization'] = `Token ${key}`;
-      this.$store.commit('login');
+      const data = await this.api({ method: 'post', url: `dj-rest-auth/login/`,
+                                    data: {username: this.username,
+                                           password: this.password}});
+      this.$store.commit('login', data.key);
       this.$router.go(-1);
     }
   }

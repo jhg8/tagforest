@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-import constants from '@/constants.js'
 import TagUpsert from '@/components/TagUpsert.vue'
 
 export default {
@@ -28,8 +26,8 @@ export default {
   },
   methods: {
     async getTag () {
-      const response = await axios.get(`${constants.BACKEND_URL}/tags/${this.id}/`);
-      this.tag = response.data;
+      const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
+      this.tag = data;
     }
   },
   mounted () {

@@ -6,15 +6,11 @@
 
 <script>
 
-import axios from 'axios'
-import constants from '@/constants.js'
-
 export default {
   name: 'Logout',
   methods: {
     async logout () {
-      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/logout/`);
-      delete axios.defaults.headers.common['Authorization'];
+      await this.api({ method: 'post', url: `dj-rest-auth/logout/` });
       this.$store.commit('logout');
       this.$router.go(-1);
     }
