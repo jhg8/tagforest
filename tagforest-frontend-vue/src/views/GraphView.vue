@@ -19,7 +19,7 @@ export default {
     Graph
   },
   beforeRouteUpdate(to, from, next) {
-    this.reload(to.query.q);
+    this.reload(to.hash);
     next();
   },
   methods: {

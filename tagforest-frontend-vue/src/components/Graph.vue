@@ -39,8 +39,8 @@
         </span>
       </span>
 
-    <entry-upsert @entry-upsert="reload(q)" />
-    <tag-upsert @tag-upsert="reload(q)" />
+    <entry-upsert @entry-upsert="reload(filterQuery)" />
+    <tag-upsert @tag-upsert="reload(filterQuery)" />
 
   </div>
 </template>
@@ -64,7 +64,7 @@ export default {
       selectTagIdMap: {},
       // Tag filtering
       filterTagMap: {},
-      q: ''
+      filterQuery: ''
     }
   },
   components: {
@@ -92,14 +92,13 @@ export default {
       }
 
       if(filterTagList.length > 0) {
-        let queryString = new URLSearchParams();
-        let q = filterTagList.join('^');
-        queryString.set('q', q);
-        url += `?${queryString.toString()}`;
+        url += `#${filterTagList.join('^')}`;
       }
       return url;
     },
-    async getData (url) {
+    async reload (filterQuery) {
+      this.filterQuery  = filterQuery ? filterQuery.slice(1)      : '';
+      let url = filterQuery ? `graph/?q=${this.filterQuery}` : 'graph/';
 
       // Get data from Backend
       const data = await this.api({ method: 'get', url: url });
@@ -126,10 +125,10 @@ export default {
       for(const tag of data.entry_tag_list) {
         this.filterTagMap[tag.name] = false;
       }
-      if(this.q) {
+      if(this.filterQuery) {
         let regEx = /[()|]/;
         let querySupported = true;
-        let queryTagList = this.q.split('^');
+        let queryTagList = this.filterQuery.split('^');
         for(const w of queryTagList)
           if(w.match(regEx)) {
             querySupported = false;
@@ -145,25 +144,13 @@ export default {
       this.entryTagList = data.entry_tag_list;
       this.tagList = data.tag_list;
     },
-    async reload (q) {
-      let url = `graph/`;
-      this.q = q;
-
-      if(this.q) {
-        let queryString = new URLSearchParams();
-        queryString.set('q', this.q);
-        url += `?${queryString.toString()}`;
-      }
-
-      this.getData(url);
-    },
     async deleteSelectedEntry () {
       for(const id in this.selectEntryIdMap)
         if(this.selectEntryIdMap[id]) {
           await this.api({ method: 'delete', url: `entries/${id}/` });
           delete this.selectEntryIdMap[id];
         }
-      this.reload(this.q);
+      this.reload(this.filterQuery);
     },
     async deleteSelectedTag () {
       for(const id in this.selectTagIdMap)
@@ -171,11 +158,11 @@ export default {
           await this.api({ method: 'delete', url: `tags/${id}/` });
           delete this.selectTagIdMap[id];
         }
-      this.reload(this.q);
+      this.reload(this.filterQuery);
     }
   },
   mounted () {
-    this.reload(this.$route.query.q);
+    this.reload(this.$route.hash);
   }
 }
 </script>
