@@ -1,5 +1,7 @@
 # Tagforest (WIP)
 
+Repository of [tagforest.fr](https://tagforest.fr) and [api.tagforest.fr](https://api.tagforest.fr).
+
 Organize ressources (notes, lessons, music, movies, books, etc...) with a graph of tags.
 
 Example:
@@ -44,7 +46,6 @@ NPM modules used: vue, vue-router, vuex, axios
 
 ## TODO
 
-- Deploy backend and frontend
 - Handle and display errors (such as backend HTTP error codes) in frontend
 - Improve editor for entries
 - Sort tags based on a score
