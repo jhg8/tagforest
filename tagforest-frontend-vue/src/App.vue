@@ -87,13 +87,24 @@ export default {
       return this.$store.state.loggedIn;
     }
   },
-  watch: {
-    async loggedIn (newLoggedIn, oldLoggedIn) {
-      if(newLoggedIn) {
+  methods: {
+    async updateUser () {
+      if(this.loggedIn) {
         const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
         this.loggedUser = data.username;
       }
     }
+  },
+  beforeCreate() {
+    this.$store.commit('initStore');
+  },
+  watch: {
+    loggedIn (newLoggedIn, oldLoggedIn) {
+      this.updateUser();
+    }
+  },
+  mounted () {
+    this.updateUser();
   }
 }
 </script>
