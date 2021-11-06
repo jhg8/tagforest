@@ -22,7 +22,7 @@ export default createStore({
     },
     initStore(state) {
       if(localStorage.getItem('loggedIn')) {
-        state.loggedIn = true;
+        state.loggedIn = localStorage.getItem('loggedIn');
         state.token = localStorage.getItem('token');
       }
     }
