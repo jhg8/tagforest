@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     getTagFilterUrl (tag) {
-      let url = constants.BACKEND_URL + '/graph/';
+      let url = `${constants.BACKEND_URL}/graph/`;
 
       let filterTagList = [];
       for(const t in this.filterTagMap) {
@@ -97,89 +97,83 @@ export default {
         let queryString = new URLSearchParams();
         let q = filterTagList.join('^');
         queryString.set('q', q);
-        url += '?' + queryString.toString();
+        url += `?${queryString.toString()}`;
       }
       return url;
     },
-    reload (q) {
-      async function getData (_this, url) {
+    async getData (url) {
 
-        // Get data from Backend
-        const response = await axios.get(url);
+      // Get data from Backend
+      const response = await axios.get(url);
 
-        // Refresh select Entry ID Map
-        let newEntryIdList = {};
-        for(const entry of response.data.entry_set) {
-          _this.selectEntryIdMap[entry.id] = _this.selectEntryIdMap[entry.id] || false;
-          newEntryIdList[entry.id] = true;
-        }
-        for(const id in _this.selectEntryIdMap)
-          if(!(newEntryIdList[id] || false)) delete _this.selectEntryIdMap[id];
-        // Refresh select Tag ID Map
-        let newTagIdList = {};
-        for(const tag of response.data.tag_list) {
-          _this.selectTagIdMap[tag.id] = _this.selectTagIdMap[tag.id] || false;
-          newTagIdList[tag.id] = true;
-        }
-        for(const id in _this.selectTagIdMap)
-          if(!(newTagIdList[id] || false)) delete _this.selectTagIdMap[id];
-
-        // Rebuild filterTagMap
-        _this.filterTagMap = {};
-        for(const tag of response.data.entry_tag_list) {
-          _this.filterTagMap[tag.name] = false;
-        }
-        if(_this.q) {
-          let regEx = /[()|]/;
-          let querySupported = true;
-          let queryTagList = _this.q.split('^');
-          for(const w of queryTagList)
-            if(w.match(regEx)) {
-              querySupported = false;
-              break;
-            }
-          if(querySupported)
-            for(const tag of queryTagList)
-              _this.filterTagMap[tag] = true;
-        }
-
-        // Refresh entry and tag list
-        _this.entrySet = response.data.entry_set;
-        _this.entryTagList = response.data.entry_tag_list;
-        _this.tagList = response.data.tag_list;
+      // Refresh select Entry ID Map
+      let newEntryIdList = {};
+      for(const entry of response.data.entry_set) {
+        this.selectEntryIdMap[entry.id] = this.selectEntryIdMap[entry.id] || false;
+        newEntryIdList[entry.id] = true;
       }
-      let url = constants.BACKEND_URL + '/graph/';
+      for(const id in this.selectEntryIdMap)
+        if(!(newEntryIdList[id] || false)) delete this.selectEntryIdMap[id];
+      // Refresh select Tag ID Map
+      let newTagIdList = {};
+      for(const tag of response.data.tag_list) {
+        this.selectTagIdMap[tag.id] = this.selectTagIdMap[tag.id] || false;
+        newTagIdList[tag.id] = true;
+      }
+      for(const id in this.selectTagIdMap)
+        if(!(newTagIdList[id] || false)) delete this.selectTagIdMap[id];
+
+      // Rebuild filterTagMap
+      this.filterTagMap = {};
+      for(const tag of response.data.entry_tag_list) {
+        this.filterTagMap[tag.name] = false;
+      }
+      if(this.q) {
+        let regEx = /[()|]/;
+        let querySupported = true;
+        let queryTagList = this.q.split('^');
+        for(const w of queryTagList)
+          if(w.match(regEx)) {
+            querySupported = false;
+            break;
+          }
+        if(querySupported)
+          for(const tag of queryTagList)
+            this.filterTagMap[tag] = true;
+      }
+
+      // Refresh entry and tag list
+      this.entrySet = response.data.entry_set;
+      this.entryTagList = response.data.entry_tag_list;
+      this.tagList = response.data.tag_list;
+    },
+    async reload (q) {
+      let url = `${constants.BACKEND_URL}/graph/`;
       this.q = q;
 
       if(this.q) {
         let queryString = new URLSearchParams();
         queryString.set('q', this.q);
-        url += '?' + queryString.toString();
+        url += `?${queryString.toString()}`;
       }
 
-      getData(this, url);
+      this.getData(url);
     },
-    deleteSelectedEntry () {
-      async function deleteEntrySet (_this) {
-        for(const id in _this.selectEntryIdMap)
-          if(_this.selectEntryIdMap[id]) {
-            await axios.delete(constants.BACKEND_URL + '/entries/' + id + '/');
-            delete _this.selectEntryIdMap[id];
-          }
-        _this.reload(_this.q);
-      }
-      deleteEntrySet(this)
+    async deleteSelectedEntry () {
+      for(const id in this.selectEntryIdMap)
+        if(this.selectEntryIdMap[id]) {
+          await axios.delete(`${constants.BACKEND_URL}/entries/${id}/`);
+          delete this.selectEntryIdMap[id];
+        }
+      this.reload(this.q);
     },
-    deleteSelectedTag () {
-      async function deleteTagSet (_this) {
-        for(const id in _this.selectTagIdMap)
-          if(_this.selectTagIdMap[id]) {
-            await axios.delete(constants.BACKEND_URL + '/tags/' + id + '/');
-            delete _this.selectTagIdMap[id];
-          }
-        _this.reload(_this.q);
-      }
-      deleteTagSet(this)
+    async deleteSelectedTag () {
+      for(const id in this.selectTagIdMap)
+        if(this.selectTagIdMap[id]) {
+          await axios.delete(`${constants.BACKEND_URL}/tags/${id}/`);
+          delete this.selectTagIdMap[id];
+        }
+      this.reload(this.q);
     }
   },
   mounted () {

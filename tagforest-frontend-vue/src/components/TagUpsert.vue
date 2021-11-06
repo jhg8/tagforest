@@ -15,6 +15,7 @@
 <script>
 import axios from 'axios'
 import constants from '@/constants.js'
+import utils from '@/utils.js'
 
 export default {
   name: 'TagUpsert',
@@ -30,34 +31,30 @@ export default {
     }
   },
   methods: {
-    upsertTag () {
-      async function upsertTag (_this) {
-        const tagSet = _this.tagParentSet.split(',').map(x => x.trim().replace(/\s+/g, ' ')).filter(x => x).map(x => { return { name: x } });
-        _this.tagParentSet = tagSet.map(x => x.name).join(', ');
-        const data = {
-          name: _this.tagName,
-          parent_set: tagSet
-        };
-        if ( _this.update ) {
-          const response = await axios.put(constants.BACKEND_URL + '/tags/' + _this.id + '/', data);
-        }
-        else {
-          const response = await axios.post(constants.BACKEND_URL + '/tags/', data);
-        }
-        _this.$emit('tagUpsert');
-      }
-      upsertTag(this);
+    async upsertTag () {
+      const tagSet = utils.parseStrList(this.tagParentSet).map(
+                       x => { return { name: x } });
+      this.tagParentSet = tagSet.map(x => x.name).join(', ');
+      const data = {
+        name: this.tagName,
+        parent_set: tagSet
+      };
+      const response = await (this.update ?
+                         axios.put(`${constants.BACKEND_URL}/tags/${this.id}/`, data) :
+                         axios.post(`${constants.BACKEND_URL}/tags/`, data));
+      this.$emit('tagUpsert');
+    },
+    async getTag () {
+      const response = await axios.get(`${constants.BACKEND_URL}/tags/${this.id}/`);
+      this.tagName = response.data.name;
+      this.tagParentSet = response.data.parent_set.map(x => x.name).join(', ');
     }
   },
   mounted () {
-    async function getTag (_this) {
-      const response = await axios.get(constants.BACKEND_URL + '/tags/' + _this.id + '/');
-      _this.tagName = response.data.name;
-      _this.tagParentSet = response.data.parent_set.map(x => x.name).join(', ');
-    }
     this.update = typeof this.id !== 'undefined';
-    if( this.update )
-      getTag(this);
+    if(this.update) {
+      this.getTag();
+    }
   }
 }
 </script>

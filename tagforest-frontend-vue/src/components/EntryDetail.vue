@@ -28,12 +28,9 @@ export default {
     }
   },
   methods: {
-    getEntry () {
-      async function getEntry (_this) {
-        const response = await axios.get(constants.BACKEND_URL + '/entries/' + _this.id + '/');
-        _this.entry = response.data;
-      }
-      getEntry(this);
+    async getEntry () {
+      const response = await axios.get(`${constants.BACKEND_URL}/entries/${this.id}/`);
+      this.entry = response.data;
     }
   },
   mounted () {

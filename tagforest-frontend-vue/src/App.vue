@@ -93,7 +93,7 @@ export default {
   watch: {
     loggedIn (newLoggedIn, oldLoggedIn) {
       async function getUser (_this) {
-        const response = await axios.get(constants.BACKEND_URL + '/dj-rest-auth/user/');
+        const response = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
         _this.loggedUser = response.data.username;
       }
       if(newLoggedIn) {

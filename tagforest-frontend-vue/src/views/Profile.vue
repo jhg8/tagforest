@@ -25,12 +25,14 @@ export default {
       loggedUser: 'Anonymous'
     }
   },
-  mounted () {
-    async function getUser (o) {
-      const response = await axios.get(constants.BACKEND_URL + '/dj-rest-auth/user/');
-      o.loggedUser = response.data.username;
+  methods: {
+    async getUser () {
+      const response = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
+      this.loggedUser = response.data.username;
     }
-    getUser(this);
+  },
+  mounted () {
+    this.getUser();
   },
 }
 </script>

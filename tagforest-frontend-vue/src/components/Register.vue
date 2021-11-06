@@ -24,20 +24,17 @@ export default {
     }
   },
   methods: {
-    register () {
-      async function register (_this) {
-        const response = await axios.post(constants.BACKEND_URL + '/dj-rest-auth/registration/', {
-          username: _this.username,
-          password1: _this.password1,
-          password2: _this.password2
-        });
-        const key = response.data.key;
-        axios.defaults.headers.common['Authorization'] = 'Token ' + key;
-        const responseuser = await axios.get(constants.BACKEND_URL + '/dj-rest-auth/user/');
-        _this.$store.commit('login');
-        _this.$router.go(-1);
-      }
-      register(this);
+    async register () {
+      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/registration/`, {
+        username: this.username,
+        password1: this.password1,
+        password2: this.password2
+      });
+      const key = response.data.key;
+      axios.defaults.headers.common['Authorization'] = `Token ${key}`;
+      const responseuser = await axios.get(`${constants.BACKEND_URL}/dj-rest-auth/user/`);
+      this.$store.commit('login');
+      this.$router.go(-1);
     }
   }
 }

@@ -22,18 +22,15 @@ export default {
     }
   },
   methods: {
-    login () {
-      async function login (_this) {
-        const response = await axios.post(constants.BACKEND_URL + '/dj-rest-auth/login/', {
-          username: _this.username,
-          password: _this.password,
-        });
-        const key = response.data.key;
-        axios.defaults.headers.common['Authorization'] = 'Token ' + key;
-        _this.$store.commit('login');
-        _this.$router.go(-1);
-      }
-      login(this);
+    async login () {
+      const response = await axios.post(`${constants.BACKEND_URL}/dj-rest-auth/login/`, {
+        username: this.username,
+        password: this.password,
+      });
+      const key = response.data.key;
+      axios.defaults.headers.common['Authorization'] = `Token ${key}`;
+      this.$store.commit('login');
+      this.$router.go(-1);
     }
   }
 }

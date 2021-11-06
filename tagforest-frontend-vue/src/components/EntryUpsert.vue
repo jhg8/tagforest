@@ -16,6 +16,7 @@
 <script>
 import axios from 'axios'
 import constants from '@/constants.js'
+import utils from '@/utils.js'
 
 export default {
   name: 'EntryUpsert',
@@ -32,35 +33,31 @@ export default {
     }
   },
   methods: {
-    upsertEntry () {
-      async function upsertEntry (_this) {
-        const tagSet = _this.entryTags.split(',').map(x => x.trim().replace(/\s+/g, ' ')).filter(x => x).map(x => { return { name: x } });
-        _this.entryTags = tagSet.map(x => x.name).join(', ');
-        const data = {
-          name: _this.entryName,
-          tag_set: tagSet,
-          content: _this.entryContent,
-        };
-        if ( _this.update ) {
-          const response = await axios.put(constants.BACKEND_URL + '/entries/' + _this.id + '/', data);
-        } else {
-          const response = await axios.post(constants.BACKEND_URL + '/entries/', data);
-        }
-        _this.$emit('entryUpsert');
-      }
-      upsertEntry(this);
+    async upsertEntry () {
+      const tagSet = utils.parseStrList(this.entryTags).map(
+                       x => { return { name: x } });
+      this.entryTags = tagSet.map(x => x.name).join(', ');
+      const data = {
+        name: this.entryName,
+        tag_set: tagSet,
+        content: this.entryContent,
+      };
+      const response = await (this.update ?
+                         axios.put(`${constants.BACKEND_URL}/entries/${this.id}/`, data) :
+                         axios.post(`${constants.BACKEND_URL}/entries/`, data));
+      this.$emit('entryUpsert');
+    },
+    async getEntry () {
+      const response = await axios.get(`${constants.BACKEND_URL}/entries/${this.id}/`);
+      this.entryName = response.data.name;
+      this.entryTags = response.data.tag_set.map(x => x.name).join(', ');
+      this.entryContent = response.data.content;
     }
   },
   mounted () {
-    async function getEntry (_this) {
-      const response = await axios.get(constants.BACKEND_URL + '/entries/' + _this.id + '/');
-      _this.entryName = response.data.name;
-      _this.entryTags = response.data.tag_set.map(x => x.name).join(', ');
-      _this.entryContent = response.data.content;
-    }
     this.update = typeof this.id !== 'undefined';
     if( this.update ) {
-      getEntry(this);
+      this.getEntry();
     }
   }
 }

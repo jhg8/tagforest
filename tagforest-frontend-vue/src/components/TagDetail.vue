@@ -27,12 +27,9 @@ export default {
     }
   },
   methods: {
-    getTag () {
-      async function getTag (_this) {
-        const response = await axios.get(constants.BACKEND_URL + '/tags/' + _this.id + '/');
-        _this.tag = response.data;
-      }
-      getTag(this);
+    async getTag () {
+      const response = await axios.get(`${constants.BACKEND_URL}/tags/${this.id}/`);
+      this.tag = response.data;
     }
   },
   mounted () {
