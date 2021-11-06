@@ -21,7 +21,7 @@ export default createStore({
       localStorage.setItem('token', null);
     },
     initStore(state) {
-      if(localStorage.getItem('loggedIn')) {
+      if(localStorage.getItem('loggedIn') == 'true') {
         state.loggedIn = localStorage.getItem('loggedIn');
         state.token = localStorage.getItem('token');
       }
