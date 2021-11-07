@@ -11,26 +11,26 @@
 
 <script>
 
-import Logout from '@/components/Logout.vue'
+import Logout from '@/components/Logout.vue';
 
 export default {
   name: 'Profile',
   components: {
-    Logout
+    Logout,
   },
-  data () {
+  data() {
     return {
-      loggedUser: 'Anonymous'
-    }
+      loggedUser: 'Anonymous',
+    };
   },
   methods: {
-    async getUser () {
-      const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
+    async getUser() {
+      const data = await this.api({ method: 'get', url: 'dj-rest-auth/user/' });
       this.loggedUser = data.username;
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.getUser();
   },
-}
+};
 </script>

@@ -1,11 +1,11 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
 
 export default createStore({
-  state () {
+  state() {
     return {
       loggedIn: false,
-      token: null
-    }
+      token: null,
+    };
   },
   mutations: {
     login(state, token) {
@@ -21,14 +21,14 @@ export default createStore({
       localStorage.setItem('token', null);
     },
     initStore(state) {
-      if(localStorage.getItem('loggedIn') == 'true') {
+      if (localStorage.getItem('loggedIn') === 'true') {
         state.loggedIn = localStorage.getItem('loggedIn');
         state.token = localStorage.getItem('token');
       }
-    }
+    },
   },
   actions: {
   },
   modules: {
-  }
-})
+  },
+});
