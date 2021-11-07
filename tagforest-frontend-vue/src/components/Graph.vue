@@ -17,19 +17,16 @@
       </p>
 
       <span v-for="entry in entrySet" v-bind:key="entry.id" >
-        <span v-if="selectEntryMode" > |
-          <a @click.prevent="selectEntryIdMap.set(entry.id, !selectEntryIdMap.get(entry.id))"
-             :class="{ active: selectEntryIdMap.get(entry.id) }"
-             href="#" >
-            {{ entry.name }}
-          </a> |
-        </span>
-        <span v-else >
-          <router-link :to="'/entry/' + entry.id" >{{ entry.name }}</router-link> |
-        </span>
+        <selectable
+          @toggle="selectEntryIdMap.set(entry.id, !selectEntryIdMap.get(entry.id))"
+          :select="selectEntryMode"
+          :isSelected="selectEntryIdMap.get(entry.id)"
+          :to="'/entry/' + entry.id"
+        >{{ entry.name }}</selectable>
       </span>
 
     <h2>Tags</h2>
+
 
       <p>
         <a @click.prevent="selectTagMode = !selectTagMode" href="#" >Select</a>
@@ -39,16 +36,12 @@
       </p>
 
       <span v-for="tag in tagList" v-bind:key="tag.id" >
-        <span v-if="selectTagMode" >
-          <a @click.prevent="selectTagIdMap[tag.id] = !selectTagIdMap[tag.id]"
-             :class="{ active: selectTagIdMap[tag.id] }"
-             href="#" >
-            {{ tag.name }}
-          </a> |
-        </span>
-        <span v-else >
-          <router-link :to="'/tag/' + tag.id" >{{ tag.name }}</router-link> |
-        </span>
+        <selectable
+          @toggle="selectTagIdMap[tag.id] = !selectTagIdMap[tag.id]"
+          :select="selectTagMode"
+          :isSelected="selectTagIdMap[tag.id]"
+          :to="'/tag/' + tag.id"
+        >{{ tag.name }}</selectable>
       </span>
 
     <entry-upsert @entry-upsert="reload(filterQuery)" />
@@ -60,6 +53,7 @@
 <script>
 import EntryUpsert from '@/components/EntryUpsert.vue';
 import TagUpsert from '@/components/TagUpsert.vue';
+import Selectable from '@/components/Selectable.vue';
 
 export default {
   name: 'Graph',
@@ -82,6 +76,7 @@ export default {
   components: {
     EntryUpsert,
     TagUpsert,
+    Selectable,
   },
   computed: {
     loggedIn() {
