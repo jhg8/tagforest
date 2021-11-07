@@ -2,36 +2,38 @@
   <div class="tag-detail">
     <h2>{{ tag.name }}</h2>
     <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/?q=' + tag.name" >{{ tag.name }}</router-link> | </span>
+      <span v-for="tag in tag.parent_set" :key="tag.id">
+        <router-link :to="'/?q=' + tag.name" >{{ tag.name }}</router-link> |
+      </span>
     </p>
     <tag-upsert :id="this.id" @tag-upsert="getTag" />
   </div>
 </template>
 
 <script>
-import TagUpsert from '@/components/TagUpsert.vue'
+import TagUpsert from '@/components/TagUpsert.vue';
 
 export default {
   name: 'TagDetail',
   props: {
-    id: String
+    id: String,
   },
   components: {
-    TagUpsert
+    TagUpsert,
   },
-  data () {
+  data() {
     return {
-      tag: { name: '' }
-    }
+      tag: { name: '' },
+    };
   },
   methods: {
-    async getTag () {
+    async getTag() {
       const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
       this.tag = data;
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.getTag();
-  }
-}
+  },
+};
 </script>

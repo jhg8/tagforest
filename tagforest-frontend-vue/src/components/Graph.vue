@@ -11,12 +11,18 @@
 
       <p>
         <a @click.prevent="selectEntryMode = !selectEntryMode" href="#" >Select</a>
-        <span v-if="selectEntryMode" > | <a @click.prevent="deleteSelectedEntry" href="#" >Delete</a></span>
+        <span v-if="selectEntryMode" > |
+          <a @click.prevent="deleteSelectedEntry" href="#" >Delete</a>
+        </span>
       </p>
 
       <span v-for="entry in entrySet" v-bind:key="entry.id" >
-        <span v-if="selectEntryMode" >
-          <a href="#" @click.prevent="selectEntryIdMap[entry.id] = !selectEntryIdMap[entry.id]" :class="{ active: selectEntryIdMap[entry.id] }" >{{ entry.name }}</a> |
+        <span v-if="selectEntryMode" > |
+          <a @click.prevent="selectEntryIdMap.set(entry.id, !selectEntryIdMap.get(entry.id))"
+             :class="{ active: selectEntryIdMap.get(entry.id) }"
+             href="#" >
+            {{ entry.name }}
+          </a> |
         </span>
         <span v-else >
           <router-link :to="'/entry/' + entry.id" >{{ entry.name }}</router-link> |
@@ -27,12 +33,18 @@
 
       <p>
         <a @click.prevent="selectTagMode = !selectTagMode" href="#" >Select</a>
-        <span v-if="selectTagMode" > | <a @click.prevent="deleteSelectedTag" href="#" >Delete</a></span>
+        <span v-if="selectTagMode" > |
+          <a @click.prevent="deleteSelectedTag" href="#" >Delete</a>
+        </span>
       </p>
 
       <span v-for="tag in tagList" v-bind:key="tag.id" >
         <span v-if="selectTagMode" >
-          <a href="#" @click.prevent="selectTagIdMap[tag.id] = !selectTagIdMap[tag.id]" :class="{ active: selectTagIdMap[tag.id] }" >{{ tag.name }}</a> |
+          <a @click.prevent="selectTagIdMap[tag.id] = !selectTagIdMap[tag.id]"
+             :class="{ active: selectTagIdMap[tag.id] }"
+             href="#" >
+            {{ tag.name }}
+          </a> |
         </span>
         <span v-else >
           <router-link :to="'/tag/' + tag.id" >{{ tag.name }}</router-link> |
@@ -46,12 +58,12 @@
 </template>
 
 <script>
-import EntryUpsert from '@/components/EntryUpsert.vue'
-import TagUpsert from '@/components/TagUpsert.vue'
+import EntryUpsert from '@/components/EntryUpsert.vue';
+import TagUpsert from '@/components/TagUpsert.vue';
 
 export default {
   name: 'Graph',
-  data () {
+  data() {
     return {
       // Data from backend
       entrySet: null,
@@ -59,84 +71,82 @@ export default {
       tagList: null,
       // Select menus
       selectEntryMode: false,
-      selectEntryIdMap: {},
+      selectEntryIdMap: new Map(),
       selectTagMode: false,
-      selectTagIdMap: {},
+      selectTagIdMap: new Map(),
       // Tag filtering
       filterTagMap: {},
-      filterQuery: ''
-    }
+      filterQuery: '',
+    };
   },
   components: {
     EntryUpsert,
-    TagUpsert
+    TagUpsert,
   },
   computed: {
-    loggedIn () {
+    loggedIn() {
       return this.$store.state.loggedIn;
-    }
+    },
   },
   methods: {
-    getTagFilterUrl (tag) {
-      let url = ``;
+    getTagFilterUrl(tag) {
+      let url = '';
 
-      let filterTagList = [];
-      for(const t in this.filterTagMap) {
-        if(t == tag) {
-          if(!this.filterTagMap[t])
-            filterTagList.push(t);
-        }
-        else if(this.filterTagMap[t]) {
+      const filterTagList = [];
+      Object.keys(this.filterTagMap).forEach((t) => {
+        if (t === tag) {
+          if (!this.filterTagMap[t]) filterTagList.push(t);
+        } else if (this.filterTagMap[t]) {
           filterTagList.push(t);
         }
-      }
+      });
 
-      if(filterTagList.length > 0) {
+      if (filterTagList.length > 0) {
         url += `#${filterTagList.join('^')}`;
       }
       return url;
     },
-    async reload (filterQuery) {
-      this.filterQuery  = filterQuery ? filterQuery.slice(1)      : '';
-      let url = filterQuery ? `graph/?q=${this.filterQuery}` : 'graph/';
+    async reload(filterQuery) {
+      this.filterQuery = filterQuery ? filterQuery.slice(1) : '';
+      const url = filterQuery ? `graph/?q=${this.filterQuery}` : 'graph/';
 
       // Get data from Backend
-      const data = await this.api({ method: 'get', url: url });
+      const data = await this.api({ method: 'get', url });
 
       // Refresh select Entry ID Map
-      let newEntryIdList = {};
-      for(const entry of data.entry_set) {
-        this.selectEntryIdMap[entry.id] = this.selectEntryIdMap[entry.id] || false;
-        newEntryIdList[entry.id] = true;
+      function refreshMap(map, newIdList) {
+        const oldIdList = Array.from(map.keys());
+        const newIdMap = new Map();
+        newIdList.forEach((id) => {
+          map.set(id, map.get(id) || false);
+          newIdMap.set(id, true);
+        });
+        oldIdList.forEach((id) => {
+          if (!(newIdMap.get(id) || false)) map.delete(id);
+        });
       }
-      for(const id in this.selectEntryIdMap)
-        if(!(newEntryIdList[id] || false)) delete this.selectEntryIdMap[id];
-      // Refresh select Tag ID Map
-      let newTagIdList = {};
-      for(const tag of data.tag_list) {
-        this.selectTagIdMap[tag.id] = this.selectTagIdMap[tag.id] || false;
-        newTagIdList[tag.id] = true;
-      }
-      for(const id in this.selectTagIdMap)
-        if(!(newTagIdList[id] || false)) delete this.selectTagIdMap[id];
+
+      refreshMap(this.selectEntryIdMap, Array.from(data.entry_set, (entry) => entry.id));
+      refreshMap(this.selectTagIdMap, Array.from(data.tag_list, (tag) => tag.id));
 
       // Rebuild filterTagMap
       this.filterTagMap = {};
-      for(const tag of data.entry_tag_list) {
+      data.entry_tag_list.forEach((tag) => {
         this.filterTagMap[tag.name] = false;
-      }
-      if(this.filterQuery) {
-        let regEx = /[()|]/;
+      });
+      if (this.filterQuery) {
+        const regEx = /[()|]/;
         let querySupported = true;
-        let queryTagList = this.filterQuery.split('^');
-        for(const w of queryTagList)
-          if(w.match(regEx)) {
+        const queryTagList = this.filterQuery.split('^');
+        for (let i = 0; i < queryTagList.length; i += 1) {
+          if (queryTagList[i].match(regEx)) {
             querySupported = false;
             break;
           }
-        if(querySupported)
-          for(const tag of queryTagList)
-            this.filterTagMap[tag] = true;
+        }
+        if (querySupported) {
+          queryTagList.forEach((tag) => { this.filterTagMap[tag] = true; });
+        }
       }
 
       // Refresh entry and tag list
@@ -144,25 +154,31 @@ export default {
       this.entryTagList = data.entry_tag_list;
       this.tagList = data.tag_list;
     },
-    async deleteSelectedEntry () {
-      for(const id in this.selectEntryIdMap)
-        if(this.selectEntryIdMap[id]) {
+    async deleteSelectedEntry() {
+      const deleteIdList = [];
+      for (const [id, value] of this.selectEntryIdMap) {
+        if (value) {
           await this.api({ method: 'delete', url: `entries/${id}/` });
-          delete this.selectEntryIdMap[id];
+          deleteIdList.push(id);
         }
+      }
+      for (let i = 0; i < deleteIdList.length; i += 1) {
+        this.selectEntryIdMap.delete(deleteIdList[i]);
+      }
       this.reload(this.filterQuery);
     },
-    async deleteSelectedTag () {
-      for(const id in this.selectTagIdMap)
-        if(this.selectTagIdMap[id]) {
-          await this.api({ method: 'delete', url: `tags/${id}/` });
-          delete this.selectTagIdMap[id];
-        }
-      this.reload(this.filterQuery);
-    }
+    deleteSelectedTag() {
+      //Object.keys(this.selectTagIdMap).forEach((id) => {
+      //  if (this.selectTagIdMap[id]) {
+      //    this.api({ method: 'delete', url: `tags/${id}/` });
+      //    delete this.selectTagIdMap[id];
+      //  }
+      //});
+      //this.reload(this.filterQuery);
+    },
   },
-  mounted () {
+  mounted() {
     this.reload(this.$route.hash);
-  }
-}
+  },
+};
 </script>

@@ -13,21 +13,27 @@
 
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       username: '',
       password1: '',
-      password2: ''
-    }
+      password2: '',
+    };
   },
   methods: {
-    async register () {
-      const data = await this.api({ method: 'post', url: `dj-rest-auth/registration/`,                                         data: { username: this.username,
-                                            password1: this.password1,
-                                            password2: this.password2 }});
+    async register() {
+      const data = await this.api({
+        method: 'post',
+        url: 'dj-rest-auth/registration/',
+        data: {
+          username: this.username,
+          password1: this.password1,
+          password2: this.password2,
+        },
+      });
       this.$store.commit('login', data.key);
       this.$router.go(-1);
-    }
-  }
-}
+    },
+  },
+};
 </script>

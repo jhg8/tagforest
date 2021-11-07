@@ -4,8 +4,10 @@
     <h2 v-else >Add tag</h2>
 
     <form @submit.prevent="upsertTag" action="#" >
-      <input type="text" v-model="tagName" placeholder="Tag name" />
-      <input type="text" v-model="tagParentSet" placeholder="Parent tags (e.g., 'Biology, Chemistry')" />
+      <input v-model="tagName" type="text" placeholder="Tag name" />
+      <input v-model="tagParentSet"
+        type="text"
+        placeholder="Parent tags (e.g., 'Biology, Chemistry')" />
       <input type="submit" />
     </form>
 
@@ -13,46 +15,47 @@
 </template>
 
 <script>
-import utils from '@/utils.js'
+import utils from '@/utils';
 
 export default {
   name: 'TagUpsert',
   emits: ['tagUpsert'],
   props: {
-    id: String
+    id: String,
   },
-  data () {
+  data() {
     return {
       tagName: '',
       tagParentSet: '',
-      update: false
-    }
+      update: false,
+    };
   },
   methods: {
-    async upsertTag () {
+    async upsertTag() {
       const tagSet = utils.parseStrList(this.tagParentSet).map(
-                       x => { return { name: x } });
-      this.tagParentSet = tagSet.map(x => x.name).join(', ');
+        (x) => ({ name: x }),
+      );
+      this.tagParentSet = tagSet.map((x) => x.name).join(', ');
       const data = {
         name: this.tagName,
-        parent_set: tagSet
+        parent_set: tagSet,
       };
-      await this.api(this.update ?
-                     { method: 'put',  url: `tags/${this.id}/`, data: data} :
-                     { method: 'post', url: `tags/`,            data: data});
+      await this.api(this.update
+        ? { method: 'put', url: `tags/${this.id}/`, data }
+        : { method: 'post', url: 'tags/', data });
       this.$emit('tagUpsert');
     },
-    async getTag () {
+    async getTag() {
       const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
       this.tagName = data.name;
-      this.tagParentSet = data.parent_set.map(x => x.name).join(', ');
-    }
+      this.tagParentSet = data.parent_set.map((x) => x.name).join(', ');
+    },
   },
-  mounted () {
+  mounted() {
     this.update = typeof this.id !== 'undefined';
-    if(this.update) {
+    if (this.update) {
       this.getTag();
     }
-  }
-}
+  },
+};
 </script>

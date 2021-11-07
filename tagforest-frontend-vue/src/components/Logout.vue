@@ -9,11 +9,11 @@
 export default {
   name: 'Logout',
   methods: {
-    async logout () {
-      await this.api({ method: 'post', url: `dj-rest-auth/logout/` });
+    async logout() {
+      await this.api({ method: 'post', url: 'dj-rest-auth/logout/' });
       this.$store.commit('logout');
       this.$router.go(-1);
-    }
-  }
-}
+    },
+  },
+};
 </script>

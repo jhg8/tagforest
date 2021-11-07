@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import EntryDetail from '@/components/EntryDetail.vue'
+import EntryDetail from '@/components/EntryDetail.vue';
 
 export default {
   name: 'EntryDetailView',
   components: {
-    EntryDetail
-  }
-}
+    EntryDetail,
+  },
+};
 </script>
