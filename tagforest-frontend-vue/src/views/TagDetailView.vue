@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import TagDetail from '@/components/TagDetail.vue';
+import TagDetail from '@/components/TagDetail.vue'
 
 export default {
   name: 'TagDetailView',
   components: {
-    TagDetail,
-  },
-};
+    TagDetail
+  }
+}
 </script>

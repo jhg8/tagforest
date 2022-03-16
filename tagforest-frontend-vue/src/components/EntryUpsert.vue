@@ -4,14 +4,9 @@
     <h2 v-else >Add entry</h2>
 
     <form @submit.prevent="upsertEntry" action="#" >
-      <input v-model="entryName" type="text" placeholder="Entry name" />
-      <input v-model="entryTags"
-        type="text"
-        placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" />
-      <textarea v-if="update" v-model="entryContent"
-        type="multiarea"
-        placeholder="Entry content, plain text" >
-      </textarea>
+      <input type="text" v-model="entryName" placeholder="Entry name" />
+      <input type="text" v-model="entryTags" placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" />
+      <textarea v-if="update" type="multiarea" v-model="entryContent" placeholder="Entry content, plain text" ></textarea>
       <input type="submit" />
     </form>
 
@@ -19,50 +14,49 @@
 </template>
 
 <script>
-import utils from '@/utils';
+import utils from '@/utils.js'
 
 export default {
   name: 'EntryUpsert',
   emits: ['entryUpsert'],
   props: {
-    id: String,
+    id: String
   },
-  data() {
+  data () {
     return {
       entryName: '',
       entryTags: '',
       entryContent: '',
-      update: false,
-    };
+      update: false
+    }
   },
   methods: {
-    async upsertEntry() {
+    async upsertEntry () {
       const tagSet = utils.parseStrList(this.entryTags).map(
-        (x) => ({ name: x }),
-      );
-      this.entryTags = tagSet.map((x) => x.name).join(', ');
+                       x => { return { name: x } });
+      this.entryTags = tagSet.map(x => x.name).join(', ');
       const data = {
         name: this.entryName,
         tag_set: tagSet,
         content: this.entryContent,
       };
-      await this.api(this.update
-        ? { method: 'put', url: `entries/${this.id}/`, data }
-        : { method: 'post', url: 'entries/', data });
+      await this.api(this.update ?
+                     { method: 'put',  url: `entries/${this.id}/`, data: data} :
+                     { method: 'post', url: `entries/`,            data: data});
       this.$emit('entryUpsert');
     },
-    async getEntry() {
-      const data = await this.api({ method: 'get', url: `entries/${this.id}/` });
+    async getEntry () {
+      const data = await this.api({ method: 'get', url: `entries/${this.id}/`});
       this.entryName = data.name;
-      this.entryTags = data.tag_set.map((x) => x.name).join(', ');
+      this.entryTags = data.tag_set.map(x => x.name).join(', ');
       this.entryContent = data.content;
-    },
-  },
-  mounted() {
-    this.update = typeof this.id !== 'undefined';
-    if (this.update) {
-      this.getEntry();
     }
   },
-};
+  mounted () {
+    this.update = typeof this.id !== 'undefined';
+    if( this.update ) {
+      this.getEntry();
+    }
+  }
+}
 </script>

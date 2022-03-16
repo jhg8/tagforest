@@ -13,14 +13,14 @@
 
 <script>
 
-import Login from '@/components/Login.vue';
-import Register from '@/components/Register.vue';
+import Login from '@/components/Login.vue'
+import Register from '@/components/Register.vue'
 
 export default {
   name: 'AuthView',
   components: {
     Login,
-    Register,
-  },
-};
+    Register
+  }
+}
 </script>
