@@ -77,32 +77,34 @@ a {
 
 export default {
   name: 'App',
-  data() {
+  data () {
     return {
       loggedUser: 'Anonymous',
-    };
+    }
   },
   computed: {
-    loggedIn() {
+    loggedIn () {
       return this.$store.state.loggedIn;
-    },
+    }
   },
   methods: {
-    async updateUser() {
-      if (this.loggedIn) {
-        const data = await this.api({ method: 'get', url: 'dj-rest-auth/user/' });
+    async updateUser () {
+      if(this.loggedIn) {
+        const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
         this.loggedUser = data.username;
       }
-    },
+    }
   },
   beforeCreate() {
     this.$store.commit('initStore');
   },
   watch: {
-    loggedIn: 'updateUser',
+    loggedIn (newLoggedIn, oldLoggedIn) {
+      this.updateUser();
+    }
   },
-  mounted() {
+  mounted () {
     this.updateUser();
-  },
-};
+  }
+}
 </script>

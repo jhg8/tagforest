@@ -1,42 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import GraphView from '../views/GraphView.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import GraphView from '../views/GraphView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Graph View',
-    component: GraphView,
+    component: GraphView
   },
   {
     path: '/entry/:id',
     name: 'Entry',
-    component: () => import(/* webpackChunkName: "entry" */ '../views/EntryDetailView.vue'),
+    component: () => import(/* webpackChunkName: "entry" */ '../views/EntryDetailView.vue')
   },
   {
     path: '/tag/:id',
     name: 'Tag',
-    component: () => import(/* webpackChunkName: "tag" */ '../views/TagDetailView.vue'),
+    component: () => import(/* webpackChunkName: "tag" */ '../views/TagDetailView.vue')
   },
   {
     path: '/auth',
     name: 'AuthView',
-    component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
+    component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue')
   },
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
     path: '/profile',
     name: 'Profile',
-    component: () => import(/* webpackChunkName: "profile" */ '../views/Profile.vue'),
-  },
-];
+    component: () => import(/* webpackChunkName: "profile" */ '../views/Profile.vue')
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes,
-});
+  routes
+})
 
-export default router;
+export default router
