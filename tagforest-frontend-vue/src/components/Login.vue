@@ -1,8 +1,13 @@
 <template>
 
-  <form @submit.prevent="login" action="#" >
-    <input type="text" v-model="username" placeholder="Username" />
-    <input type="password" v-model="password" placeholder="Password" />
+  <form class="textForm" @submit.prevent="login" action="#" >
+
+    <label>Username</label>
+    <span class="text" ><input type="text" v-model="username" placeholder="Username" /></span>
+
+    <label>Password</label>
+    <span class="text" ><input type="password" v-model="password" placeholder="Password" /></span>
+
     <input type="submit" />
   </form>
 

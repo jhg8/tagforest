@@ -1,16 +1,19 @@
 <template>
-  <span class="entry-upsert">
-    <h2 v-if="update" >Update entry</h2>
-    <h2 v-else >Add entry</h2>
+  <form class="textForm" @submit.prevent="upsertEntry; $emit('submit')" action="#" >
+    <label>Title</label>
+    <span class="text" ><input type="text" v-model="entryName" ref="title" placeholder="Title" /></span>
 
-    <form @submit.prevent="upsertEntry" action="#" >
-      <input type="text" v-model="entryName" placeholder="Entry name" />
-      <input type="text" v-model="entryTags" placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" />
-      <textarea v-if="update" type="multiarea" v-model="entryContent" placeholder="Entry content, plain text" ></textarea>
-      <input type="submit" />
-    </form>
+    <label>Tags</label>
+    <span class="text" ><input type="text" v-model="entryTags" placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" /></span>
 
-  </span>
+    <span v-show="update" >
+      <label>Content</label>
+      <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="entryContent" ref="textarea" @focus="resize()" placeholder="Entry content, plain text" ></textarea></span>
+    </span>
+
+    <input type="submit" />
+    <button v-if="update" @click="$emit('cancel')" >Cancel</button>
+  </form>
 </template>
 
 <script>
@@ -18,7 +21,7 @@ import utils from '@/utils.js'
 
 export default {
   name: 'EntryUpsert',
-  emits: ['entryUpsert'],
+  emits: ['entryUpsert', 'cancel', 'submit'],
   props: {
     id: String
   },
@@ -50,6 +53,12 @@ export default {
       this.entryName = data.name;
       this.entryTags = data.tag_set.map(x => x.name).join(', ');
       this.entryContent = data.content;
+    },
+    resize() {
+      this.$refs.textarea.style.height = 'auto';
+      const height = this.$refs.textarea.scrollHeight - 4 + 'px';
+      this.$refs.textarea.style.height = height;
+      this.$refs.spantextarea.style.height = height;
     }
   },
   mounted () {
@@ -57,6 +66,11 @@ export default {
     if( this.update ) {
       this.getEntry();
     }
+    this.$refs.title.focus();
+    this.resize();
+  },
+  updated () {
+    this.resize();
   }
 }
 </script>

@@ -1,12 +1,10 @@
 <template>
-  <span class="profile">
+  <section ><div class="container" >
     <h1>{{ loggedUser }}</h1>
-  </span>
-
-  <p>
-    <logout/>
-  </p>
-
+    <p>
+      <logout/>
+    </p>
+  </div></section>
 </template>
 
 <script>

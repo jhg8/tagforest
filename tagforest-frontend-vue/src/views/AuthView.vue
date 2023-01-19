@@ -1,5 +1,5 @@
 <template>
-  <span class="login">
+  <section ><div class="container" >
     <h1>Login</h1>
 
     <login/>
@@ -8,7 +8,7 @@
 
     <register/>
 
-  </span>
+  </div></section>
 </template>
 
 <script>

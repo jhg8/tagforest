@@ -1,11 +1,20 @@
 <template>
-  <div class="tag-detail">
+  <section class="control-buttons" ><div class="container" >
+    <label class="edit-checkbox" >
+      <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
+      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /></span>
+    </label>
+  </div></section>
+
+  <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ tag.name }}</h2>
     <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/?q=' + tag.name" >{{ tag.name }}</router-link> | </span>
+      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/?q=' + tag.name" >{{ tag.name }}</router-link></span>
     </p>
-    <tag-upsert :id="this.id" @tag-upsert="getTag" />
-  </div>
+  </div></section>
+  <section v-if="editMode" class="tag"><div class="container" >
+    <tag-upsert :id="this.id" @tag-upsert="getTag" @submit="editMode = false" />
+  </div></section>
 </template>
 
 <script>
@@ -21,7 +30,8 @@ export default {
   },
   data () {
     return {
-      tag: { name: '' }
+      tag: { name: '' },
+      editMode: false
     }
   },
   methods: {

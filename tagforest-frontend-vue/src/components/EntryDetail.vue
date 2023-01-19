@@ -1,12 +1,21 @@
 <template>
-  <div class="entry-detail">
+  <section class="control-buttons" ><div class="container" >
+    <label class="edit-checkbox" >
+      <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
+      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /></span>
+    </label>
+  </div></section>
+
+  <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ entry.name }}</h2>
     <p>
-      <span v-for="tag in entry.tag_set" :key="tag.id"><router-link :to="'/?q=' + tag.name" >{{ tag.name }}</router-link> | </span>
+      <span v-for="tag in entry.tag_set" :key="tag.id"><router-link :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
     </p>
     <p><pre>{{ entry.content }}</pre></p>
-    <entry-upsert :id="this.id" @entry-upsert="getEntry" />
-  </div>
+  </div></section>
+  <section v-if="editMode" ><div class="container" >
+    <entry-upsert :id="this.id" @entry-upsert="getEntry" @submit="editMode = false" />
+  </div></section>
 </template>
 
 <script>
@@ -22,7 +31,8 @@ export default {
   },
   data () {
     return {
-      entry: { name: '' }
+      entry: { name: '' },
+      editMode: false
     }
   },
   methods: {

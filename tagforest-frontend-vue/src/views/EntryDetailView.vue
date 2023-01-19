@@ -1,16 +1,14 @@
 <template>
-  <span class="home">
-    <suspense>
-      <template #default>
-          <entry-detail :id="$route.params.id" />
-      </template>
-      <template #fallback>
-        <p>
-          Loading...
-        </p>
-      </template>
-    </suspense>
-  </span>
+  <suspense>
+    <template #default>
+        <entry-detail :id="$route.params.id" />
+    </template>
+    <template #fallback>
+      <p>
+        Loading...
+      </p>
+    </template>
+  </suspense>
 </template>
 
 <script>

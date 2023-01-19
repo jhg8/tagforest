@@ -1,15 +1,13 @@
 <template>
-  <span class="tag-upsert">
-    <h2 v-if="update" >Update tag</h2>
-    <h2 v-else >Add tag</h2>
+  <form class="textForm" @submit.prevent="upsertTag; $emit('submit')" action="#" >
+    <label>Tag name</label>
+    <span><input type="text" v-model="tagName" ref="tagname" placeholder="Tag name" /></span>
+    <label>Parent tags</label>
+    <span><input type="text" v-model="tagParentSet" placeholder="Parent tags (e.g., 'Biology, Chemistry')" /></span>
+    <input type="submit" />
+    <button v-if="update" @click="$emit('cancel')" >Cancel</button>
+  </form>
 
-    <form @submit.prevent="upsertTag" action="#" >
-      <input type="text" v-model="tagName" placeholder="Tag name" />
-      <input type="text" v-model="tagParentSet" placeholder="Parent tags (e.g., 'Biology, Chemistry')" />
-      <input type="submit" />
-    </form>
-
-  </span>
 </template>
 
 <script>
@@ -17,7 +15,7 @@ import utils from '@/utils.js'
 
 export default {
   name: 'TagUpsert',
-  emits: ['tagUpsert'],
+  emits: ['tagUpsert', 'cancel', 'submit'],
   props: {
     id: String
   },
@@ -53,6 +51,7 @@ export default {
     if(this.update) {
       this.getTag();
     }
+    this.$refs.tagname.focus();
   }
 }
 </script>
