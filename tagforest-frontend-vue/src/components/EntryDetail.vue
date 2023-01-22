@@ -14,7 +14,7 @@
     <p><pre>{{ entry.content }}</pre></p>
   </div></section>
   <section v-if="editMode" ><div class="container" >
-    <entry-upsert :id="this.id" @entry-upsert="getEntry" @submit="editMode = false" />
+    <entry-upsert :id="this.id" @entry-upsert="getEntry(); editMode = false" />
   </div></section>
 </template>
 

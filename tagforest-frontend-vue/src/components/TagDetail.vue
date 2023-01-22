@@ -13,7 +13,7 @@
     </p>
   </div></section>
   <section v-if="editMode" class="tag"><div class="container" >
-    <tag-upsert :id="this.id" @tag-upsert="getTag" @submit="editMode = false" />
+    <tag-upsert :id="this.id" @tag-upsert="getTag(); editMode = false" />
   </div></section>
 </template>
 

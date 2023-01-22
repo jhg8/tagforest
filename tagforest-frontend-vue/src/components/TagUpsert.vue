@@ -1,11 +1,11 @@
 <template>
-  <form class="textForm" @submit.prevent="upsertTag; $emit('submit')" action="#" >
+  <form class="textForm" @submit.prevent="upsertTag(); $emit('submit')" action="#" >
     <label>Tag name</label>
     <span><input type="text" v-model="tagName" ref="tagname" placeholder="Tag name" /></span>
     <label>Parent tags</label>
     <span><input type="text" v-model="tagParentSet" placeholder="Parent tags (e.g., 'Biology, Chemistry')" /></span>
     <input type="submit" />
-    <button v-if="update" @click="$emit('cancel')" >Cancel</button>
+    <button v-if="!update" @click="$emit('cancel')" >Cancel</button>
   </form>
 
 </template>

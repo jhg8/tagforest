@@ -1,5 +1,5 @@
 <template>
-  <form class="textForm" @submit.prevent="upsertEntry; $emit('submit')" action="#" >
+  <form class="textForm" @submit.prevent="upsertEntry(); $emit('submit')" action="#" >
     <label>Title</label>
     <span class="text" ><input type="text" v-model="entryName" ref="title" placeholder="Title" /></span>
 
@@ -12,7 +12,7 @@
     </span>
 
     <input type="submit" />
-    <button v-if="update" @click="$emit('cancel')" >Cancel</button>
+    <button v-if="!update" @click="$emit('cancel')" >Cancel</button>
   </form>
 </template>
 
