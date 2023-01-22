@@ -31,6 +31,22 @@ html, body {
   height: 100%;
   min-width: 100vw;
 }
+@media all and (max-width: 800px) {
+  html {
+    font-size: 14px;
+  }
+}
+@media all and (max-width: 600px) {
+  html {
+    font-size: 12px;
+  }
+}
+@media all and (max-width: 400px) {
+  html {
+    font-size: 10px;
+  }
+}
+
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
