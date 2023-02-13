@@ -1,25 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from .models import Tag
+from .models import Tag, TagCategory
 
-class SimpleTagSerializer(serializers.HyperlinkedModelSerializer):
+class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = Tag
+        model = TagCategory
         fields = ['id', 'url', 'name']
-        extra_kwargs = {
-            'name': {
-                'validators': [],
-            },
-        }
-
-class TagSerializer(serializers.HyperlinkedModelSerializer):
-    parent_set = SimpleTagSerializer(many=True)
-
-    class Meta:
-        model = Tag
-        fields = ['id', 'url', 'name', 'parent_set', 'content']
         extra_kwargs = {
             'name': {
                 'validators': [],
@@ -28,19 +16,62 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        tag = Tag.objects.create(name=validated_data.pop('name'), content=validated_data.pop('content'), user=user_data)
+        tag_category = TagCategory.objects.create(name=validated_data.pop('name'), user=user_data)
+        tag_category.save()
+        tag_category.clean()
+        return tag_category
+
+    def update(self, tag_category, validated_data):
+        tag_category.name = validated_data.pop('name')
+        tag_category.save()
+        tag_category.clean()
+        return tag_category
+
+class SimpleTagSerializer(serializers.HyperlinkedModelSerializer):
+
+    category = TagCategorySerializer()
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'url', 'name', 'category']
+        extra_kwargs = {
+            'name': {
+                'validators': [],
+            },
+        }
+
+class TagSerializer(serializers.HyperlinkedModelSerializer):
+    parent_set = SimpleTagSerializer(many=True)
+    category = TagCategorySerializer()
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'url', 'name', 'category', 'parent_set', 'content']
+        extra_kwargs = {
+            'name': {
+                'validators': [],
+            },
+        }
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        category = TagCategory.objects.get_or_create(name=validated_data.pop('category')['name'], user=user_data)[0]
+        tag = Tag.objects.create(name=validated_data.pop('name'), category=category, content=validated_data.pop('content'), user=user_data)
         for tag_data in validated_data.pop('parent_set'):
-            tag.parent_set.add(Tag.objects.get_or_create(name=tag_data['name'], user=user_data)[0])
+            parent_category = TagCategory.objects.get_or_create(name=tag_data['category']['name'], user=user_data)[0]
+            tag.parent_set.add(Tag.objects.get_or_create(name=tag_data['name'], category=parent_category, user=user_data)[0])
         tag.save()
         tag.clean()
         return tag
 
     def update(self, tag, validated_data):
         tag.name = validated_data.pop('name')
+        tag.category = TagCategory.objects.get_or_create(name=validated_data.pop('category')['name'], user=tag.user)[0]
         tag.content = validated_data.pop('content')
         tag.parent_set.clear()
         for tag_data in validated_data.pop('parent_set'):
-            tag.parent_set.add(Tag.objects.get_or_create(name=tag_data['name'], user=tag.user)[0])
+            parent_category = TagCategory.objects.get_or_create(name=tag_data['category']['name'], user=tag.user)[0]
+            tag.parent_set.add(Tag.objects.get_or_create(name=tag_data['name'], category=parent_category, user=tag.user)[0])
         tag.save()
         tag.clean()
         return tag

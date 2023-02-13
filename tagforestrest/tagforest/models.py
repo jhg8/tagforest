@@ -8,6 +8,17 @@ class Profile(models.Model):
 class GroupProfile(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
 
+class TagCategory(models.Model):
+    name = models.CharField(max_length=255, blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+
+    class Meta:
+        unique_together = ('name', 'user')
+        verbose_name_plural = 'categories'
+
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     name = models.CharField(max_length=255, blank=False)
     parent_set = models.ManyToManyField('self',
@@ -16,6 +27,7 @@ class Tag(models.Model):
                                         related_query_name='child',
                                         blank=True
     )
+    category = models.ForeignKey(TagCategory, on_delete=models.CASCADE, blank=False)
     score = models.FloatField(blank=False, default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     content = models.TextField(blank=True)
@@ -31,7 +43,11 @@ class Tag(models.Model):
         raise ValidationError("Tag cannot contain itself in parent set")
 
     # TODO : Use graph algorithms instead of query unions
-    def recursiveChildSet(self):
+    def recursiveChildSet(self, category=''):
+        if category:
+            return self.child_set.filter(user=self.user).filter(category__name=category).union(*[tag.recursiveChildSet(category=category) for tag in self.child_set.all()])
         return self.child_set.filter(user=self.user).union(*[tag.recursiveChildSet() for tag in self.child_set.all()])
-    def recursiveParentSet(self):
+    def recursiveParentSet(self, category=''):
+        if category:
+            return self.parent_set.filter(user=self.user).filter(category__name=category).union(*[tag.recursiveParentSet(category=category) for tag in self.parent_set.all()])
         return self.parent_set.filter(user=self.user).union(*[tag.recursiveParentSet() for tag in self.parent_set.all()])
