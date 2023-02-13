@@ -1,15 +1,39 @@
 <template>
   <form class="textForm" @submit.prevent="upsertTag(); $emit('submit')" action="#" >
-    <label>Name</label>
-    <span class="text" ><input type="text" v-model="tagName" ref="title" placeholder="Title" /></span>
+    <div class="formGrid" >
+		<label>Name</label>
+		<span class="text" ><input type="text" v-model="tagName" ref="title" placeholder="Title" /></span>
 
-    <label>Tags</label>
-    <span class="text" ><input type="text" v-model="tagParentSet" placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" /></span>
+		<label>Category</label>
+		<span class="select" >
+		<VueMultiselect
+		  v-model="tagCategory"
+		  :options="categoryList"
+		  :max-height="450"
+		  :multiple="false"
+		>
+		</VueMultiselect>
+		</span>
 
-    <span v-show="update" >
-      <label>Content</label>
-      <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="tagContent" ref="textarea" @focus="resize()" placeholder="Tag content, plain text" ></textarea></span>
-    </span>
+		<label>Tags</label>
+		<span class="select" >
+		<VueMultiselect
+		  v-model="tagParentSet"
+          track-by="name"
+          label="name"
+		  :options="tagList"
+		  :max-height="450"
+		  :multiple="true"
+		>
+          <template slot="singleLabel" slot-scope="{ tag }">{{ tag.name }}</template>
+		</VueMultiselect>
+		</span>
+
+		<span v-show="update" ><label>Content</label></span>
+		<span v-show="update" >
+		  <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="tagContent" ref="textarea" @focus="resize()" placeholder="Tag content, plain text" ></textarea></span>
+		</span>
+    </div>
 
     <input type="submit" />
     <button v-if="!update" @click="$emit('cancel')" >Cancel</button>
@@ -18,6 +42,7 @@
 
 <script>
 import utils from '@/utils.js'
+import VueMultiselect from 'vue-multiselect'
 
 export default {
   name: 'TagUpsert',
@@ -25,21 +50,26 @@ export default {
   props: {
     id: String
   },
+  components: {
+      VueMultiselect
+  },
   data () {
     return {
       tagName: '',
-      tagParentSet: '',
+      tagParentSet: [],
       tagContent: '',
+      tagCategory: null,
+      categoryList: [],
+      tagList: [],
       update: false
     }
   },
   methods: {
     async upsertTag () {
-      const tagSet = utils.parseStrList(this.tagParentSet).map(
-                       x => { return { name: x } });
-      this.tagParentSet = tagSet.map(x => x.name).join(', ');
+      const tagSet = this.tagParentSet;
       const data = {
         name: this.tagName,
+        category: { name: this.tagCategory },
         parent_set: tagSet,
         content: this.tagContent,
       };
@@ -51,8 +81,17 @@ export default {
     async getTag () {
       const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
       this.tagName = data.name;
-      this.tagParentSet = data.parent_set.map(x => x.name).join(', ');
+      this.tagCategory = data.category.name;
+      this.tagParentSet = data.parent_set;
       this.tagContent = data.content;
+    },
+    async getCategoryList () {
+      const data = await this.api({ method: 'get', url: `tagcategories/` });
+	  this.categoryList = data.map(x => x.name);
+    },
+    async getTagList () {
+      const data = await this.api({ method: 'get', url: `tags/` });
+	  this.tagList = data;
     },
     resize() {
       this.$refs.textarea.style.height = 'auto';
@@ -66,6 +105,8 @@ export default {
     if( this.update ) {
       this.getTag();
     }
+    this.getCategoryList();
+    this.getTagList();
     this.$refs.title.focus();
     this.resize();
   },
@@ -74,3 +115,5 @@ export default {
   }
 }
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

@@ -7,6 +7,7 @@
   </div></section>
 
   <section v-if="!editMode" class="tag"><div class="container" >
+    <p>{{ tag.category.name }}</p>
     <h2>{{ tag.name }}</h2>
     <p>
       <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
@@ -31,7 +32,7 @@ export default {
   },
   data () {
     return {
-      tag: { name: '' },
+      tag: { name: '', category: {} },
       editMode: false
     }
   },

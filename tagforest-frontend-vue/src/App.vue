@@ -76,7 +76,6 @@ button, input[type="submit"] {
 }
 
 form.textForm {
-  overflow: hidden;
   margin-bottom: 3em;
   input[type="text"], input[type="password"] {
     width: 100%;
@@ -96,6 +95,7 @@ form.textForm {
     overflow: hidden;
     padding-right: 10px;
     height: 3em;
+    width: 32em;
   }
   span.textarea {
     display: block;
@@ -104,12 +104,17 @@ form.textForm {
     height: 20em;
     margin-bottom: 2em;
   }
+  span.select {
+    display: block;
+    overflow: visible;
+    padding-right: 10px;
+  }
   label {
-    float: left;
     display: block;
     padding-top: 0.2em;
     padding-right: 1em;
     float: bottom;
+    text-align: right;
   }
   textarea {
     height: 20em;
@@ -125,6 +130,27 @@ form.textForm {
     border-bottom: 1px solid $lightgrey;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
   }
+  .formGrid {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-gap: 1em;
+  }
+  input[type="text"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid $lightgrey;
+    padding: 0.3em;
+  }
+  input[type="text"]:focus {
+    border: none;
+    outline: 0;
+    border-bottom: 1px solid $lightgrey;
+    font-size: 0.9em;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+  }
+  input[type="submit"], button {
+    margin-top: 2em;
+  }
 }
 
 .popup {
@@ -139,38 +165,9 @@ form.textForm {
     background-color: $white;
     border-radius: 1em;
     padding: 1em;
-    margin: 35% auto;
+    margin: 30vh auto;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
-    max-width: 30em;
-    form {
-      overflow: hidden;
-      input[type="text"] {
-        width: 100%;
-        border: none;
-        border-bottom: 1px solid $lightgrey;
-        padding: 0.3em;
-      }
-      input[type="text"]:focus {
-        border: none;
-        outline: 0;
-        border-bottom: 1px solid $lightgrey;
-        font-size: 0.9em;
-        box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
-      }
-      span {
-        display: block;
-        overflow: hidden;
-        padding-right: 10px;
-        height: 3em;
-      }
-      label {
-        float: left;
-        display: block;
-        padding-top: 0.2em;
-        padding-right: 1em;
-        float: bottom;
-      }
-    }
+    max-width: 40em;
   }
 }
 
@@ -258,7 +255,7 @@ section {
       }
     }
   }
-  &.control-tag {
+  &.control-tag, &.control-category {
     a {
       border: 1px solid $grey;
       background-color: $white;
@@ -280,6 +277,11 @@ section {
       &.active {
         background-color: $lightergrey;
       }
+    }
+  }
+  &.control-category {
+    a {
+      border-radius: 0.2em;
     }
   }
 }
