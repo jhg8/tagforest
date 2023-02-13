@@ -1,6 +1,6 @@
 from django.http import HttpResponse
-from .models import Entry, Tag
-from .serializers import EntrySerializer, TagSerializer
+from .models import Tag
+from .serializers import TagSerializer
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -8,19 +8,6 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from urllib.parse import parse_qs
-
-class EntryViewSet(viewsets.ModelViewSet):
-    serializer_class = EntrySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        kwargs = {
-            'user': self.request.user
-        }
-        serializer.save(**kwargs)
-
-    def get_queryset(self):
-        return Entry.objects.filter(user=self.request.user)
 
 class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
@@ -38,7 +25,6 @@ class TagViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def root_view(request):
     data = {
-                'entries': reverse('entry-list', request=request),
                 'tags': reverse('tag-list', request=request),
                 'graph': reverse('graph', request=request),
     }
@@ -52,9 +38,8 @@ def root_view(request):
 #          = (Tag 1 and Tag 2) or Tag 3
 #
 # Returns:
-#   - entry_set:        Entries having at least one tag matching the query
 #   - tag_list:         Tags matching the query
-#   - entry_tag_list:   Sorted list of tags belonging to entries in entry_set
+#   - control_tag_list: Tags whose child set intersects tag_list
 #   - query:            JSON representation of the query
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -102,7 +87,6 @@ def graph_view(request):
     # TODO : Use graph algorithms instead of query unions and intersections
     def process(output_queue):
         query = []
-        entry_set = []
         query_tag_set = []
         tag_set = []
         n = len(output_queue)
@@ -113,26 +97,23 @@ def graph_view(request):
                 l = 0
                 while (i + l) < n and output_queue[i + l] == token:
                     l += 1
-                if len(query) < l + 1 or len(entry_set) < l + 1 or len(tag_set) < l + 1:
+                if len(query) < l + 1 or len(tag_set) < l + 1:
                     return False
                 if token == '^':
                     query.append({ 'intersection': [query.pop() for j in range(l + 1)] })
-                    entry_set.append(entry_set.pop().intersection(*[entry_set.pop() for j in range(l)]))
                     tag_set.append(tag_set.pop().intersection(*[tag_set.pop() for j in range(l)]))
                 else:
                     query.append({ 'union': [query.pop() for j in range(l + 1)] })
-                    entry_set.append(entry_set.pop().union(*[entry_set.pop() for j in range(l)]))
                     tag_set.append(tag_set.pop().union(*[tag_set.pop() for j in range(l)]))
                 i += l
             else:
                 query.append({ 'tag': token })
                 tag_query = Tag.objects.filter(user=request.user).filter(name=token)
                 tag = Tag.objects.filter(user=request.user).filter(name=token).first()
-                entry_set.append(tag.recursiveEntrySet() if tag else Entry.objects.none())
                 tag_set.append(tag.recursiveChildSet().union(tag_query) if tag else Tag.objects.none())
                 query_tag_set.append(token)
                 i += 1
-        return query[0], entry_set[0], tag_set[0], Tag.objects.filter(user=request.user).filter(name__in=query_tag_set)
+        return query[0], tag_set[0], Tag.objects.filter(user=request.user).filter(name__in=query_tag_set)
 
     data = {}
 
@@ -140,22 +121,20 @@ def graph_view(request):
         q = request.query_params['q'].strip()
 
         output_queue = shunting_yard(q)
-        query_json, entry_set, tag_list, query_tag_set = process(output_queue)
+        query_json, tag_list, query_tag_set = process(output_queue)
     else:
         query_json = {}
-        entry_set = Entry.objects.filter(user=request.user)
         tag_list = Tag.objects.filter(user=request.user)
         query_tag_set = Tag.objects.none()
     tag_list_queries = []
-    for entry in entry_set:
-        tag_list_queries += [tag.recursiveParentSet() for tag in entry.tag_set.filter(user=request.user)]
-        tag_list_queries.append(entry.tag_set.filter(user=request.user))
-    entry_tag_list = Tag.objects.none().union(query_tag_set, *tag_list_queries)
+    for tag in tag_list:
+        tag_list_queries += [tag.recursiveParentSet() for tag in tag.parent_set.filter(user=request.user)]
+        tag_list_queries.append(tag.parent_set.filter(user=request.user))
+    control_tag_list = Tag.objects.none().union(query_tag_set, *tag_list_queries)
 
-    entry_tag_list = sorted([t for t in entry_tag_list], key=lambda t: len(t.recursiveEntrySet()), reverse=True)
+    control_tag_list = sorted([t for t in control_tag_list], key=lambda t: len(t.recursiveChildSet()), reverse=True)
 
-    data['entry_set']      = EntrySerializer(entry_set,    many=True, context = { 'request': request }).data
-    data['entry_tag_list'] = TagSerializer(entry_tag_list, many=True, context = { 'request': request }).data
+    data['control_tag_list'] = TagSerializer(control_tag_list, many=True, context = { 'request': request }).data
     data['tag_list']       = TagSerializer(tag_list,       many=True, context = { 'request': request }).data
     data['query']          = query_json
 

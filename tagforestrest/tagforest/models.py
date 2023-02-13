@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ValidationError
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -17,6 +18,7 @@ class Tag(models.Model):
     )
     score = models.FloatField(blank=False, default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    content = models.TextField(blank=True)
 
     class Meta:
         unique_together = ('name', 'user')
@@ -24,21 +26,12 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+      if self.parent_set.filter(name=self.name):
+        raise ValidationError("Tag cannot contain itself in parent set")
+
     # TODO : Use graph algorithms instead of query unions
     def recursiveChildSet(self):
         return self.child_set.filter(user=self.user).union(*[tag.recursiveChildSet() for tag in self.child_set.all()])
     def recursiveParentSet(self):
         return self.parent_set.filter(user=self.user).union(*[tag.recursiveParentSet() for tag in self.parent_set.all()])
-    def recursiveEntrySet(self):
-        return Entry.objects.none().union(self.entry_set.filter(user=self.user), *[tag.entry_set.filter(user=self.user) for tag in self.recursiveChildSet()])
-    
-class Entry(models.Model):
-    name = models.CharField(max_length=255, blank=False)
-    tag_set = models.ManyToManyField(Tag)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
-    content = models.TextField(blank=True)
-
-    def __str__(self):
-        return self.name
-    class Meta: 
-        verbose_name_plural = 'entries'
