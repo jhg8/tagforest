@@ -8,11 +8,6 @@ const routes = [
     component: GraphView
   },
   {
-    path: '/entry/:id',
-    name: 'Entry',
-    component: () => import(/* webpackChunkName: "entry" */ '../views/EntryDetailView.vue')
-  },
-  {
     path: '/tag/:id',
     name: 'Tag',
     component: () => import(/* webpackChunkName: "tag" */ '../views/TagDetailView.vue')

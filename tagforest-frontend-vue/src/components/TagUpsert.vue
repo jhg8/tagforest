@@ -1,13 +1,19 @@
 <template>
   <form class="textForm" @submit.prevent="upsertTag(); $emit('submit')" action="#" >
-    <label>Tag name</label>
-    <span><input type="text" v-model="tagName" ref="tagname" placeholder="Tag name" /></span>
-    <label>Parent tags</label>
-    <span><input type="text" v-model="tagParentSet" placeholder="Parent tags (e.g., 'Biology, Chemistry')" /></span>
+    <label>Name</label>
+    <span class="text" ><input type="text" v-model="tagName" ref="title" placeholder="Title" /></span>
+
+    <label>Tags</label>
+    <span class="text" ><input type="text" v-model="tagParentSet" placeholder="Tags (e.g., 'Personal, Software Design, Open-source')" /></span>
+
+    <span v-show="update" >
+      <label>Content</label>
+      <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="tagContent" ref="textarea" @focus="resize()" placeholder="Tag content, plain text" ></textarea></span>
+    </span>
+
     <input type="submit" />
     <button v-if="!update" @click="$emit('cancel')" >Cancel</button>
   </form>
-
 </template>
 
 <script>
@@ -23,6 +29,7 @@ export default {
     return {
       tagName: '',
       tagParentSet: '',
+      tagContent: '',
       update: false
     }
   },
@@ -33,7 +40,8 @@ export default {
       this.tagParentSet = tagSet.map(x => x.name).join(', ');
       const data = {
         name: this.tagName,
-        parent_set: tagSet
+        parent_set: tagSet,
+        content: this.tagContent,
       };
       await this.api(this.update ?
                      { method: 'put',  url: `tags/${this.id}/`, data: data} :
@@ -44,14 +52,25 @@ export default {
       const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
       this.tagName = data.name;
       this.tagParentSet = data.parent_set.map(x => x.name).join(', ');
+      this.tagContent = data.content;
+    },
+    resize() {
+      this.$refs.textarea.style.height = 'auto';
+      const height = this.$refs.textarea.scrollHeight - 4 + 'px';
+      this.$refs.textarea.style.height = height;
+      this.$refs.spantextarea.style.height = height;
     }
   },
   mounted () {
     this.update = typeof this.id !== 'undefined';
-    if(this.update) {
+    if( this.update ) {
       this.getTag();
     }
-    this.$refs.tagname.focus();
+    this.$refs.title.focus();
+    this.resize();
+  },
+  updated () {
+    this.resize();
   }
 }
 </script>
