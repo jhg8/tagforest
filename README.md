@@ -46,14 +46,16 @@ NPM modules used: vue, vue-router, vuex, axios
 
 ## TODO
 
-- Handle and display errors (such as backend HTTP error codes) in frontend
-- Improve editor for entries
-- Sort tags based on a score
-- Use graph algorithms instead of query unions and intersections (networkx library ?)
+### Important
+
+- Generate better example tree
+- Improve editor
+
+### Less important
+
 - Add backend and frontend tests
-- Make interface user friendly
-  * Clean up
-  * Use vue-select or vue-multiselect for tag input
-- Add search options
+- Add search option to find tags in graph view
+- Handle and display errors (such as backend HTTP error codes) in frontend
+- Use graph algorithms instead of query unions and intersections (networkx library ?)
 - Add visibility options on tags and their descendents (public, invite-only, private)
 - Turn backend and frontend into reusable apps
