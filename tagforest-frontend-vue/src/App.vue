@@ -280,6 +280,12 @@ section {
         color: $grey;
         background-color: $lightergrey;
       }
+      &.extended-tag {
+        background-color: $lighterergrey;
+      }
+      &.extended-tag:hover {
+        background-color: $lightergrey;
+      }
     }
   }
   &.control-tag, &.control-category {

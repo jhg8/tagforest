@@ -11,6 +11,7 @@
     <h2>{{ tag.name }}</h2>
     <p>
       <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
+      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
     </p>
     <p><pre>{{ tag.content }}</pre></p>
   </div></section>
@@ -38,7 +39,7 @@ export default {
   },
   methods: {
     async getTag () {
-      const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
+      const data = await this.api({ method: 'get', url: `extendedtags/${this.id}/` });
       this.tag = data;
     }
   },
