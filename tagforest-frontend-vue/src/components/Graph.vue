@@ -12,6 +12,19 @@
     <span v-if="selectModeCategory" ><button @click="deleteSelectedCategory" >
     <font-awesome-icon icon="fa-solid fa-trash" /> Category
     </button></span>
+
+    <label class="edit-checkbox" >
+      <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
+      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Tag</span>
+    </label>
+
+    <span v-if="selectMode" ><button @click="deleteSelected" >
+    <font-awesome-icon icon="fa-solid fa-trash" /> Tag
+    </button></span>
+
+    <button @click="showAddTagPopup = true" >
+    <font-awesome-icon icon="fa-solid fa-plus" /> Tag
+    </button>
   </div></section>
 
   <section class="control-category" ><div class="container" >
@@ -36,21 +49,6 @@
         {{ tag.name }}
       </router-link>
     </span>
-  </div></section>
-
-  <section class="control-buttons" ><div class="container" >
-    <label class="edit-checkbox" >
-      <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
-      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Tag</span>
-    </label>
-
-    <span v-if="selectMode" ><button @click="deleteSelected" >
-    <font-awesome-icon icon="fa-solid fa-trash" /> Tag
-    </button></span>
-
-    <button @click="showAddTagPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-plus" /> Tag
-    </button>
   </div></section>
 
   <section class="entry" ><div class="container" >

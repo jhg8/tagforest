@@ -1,24 +1,23 @@
 <template>
   <nav><div class="container">
-      <router-link to="/">Tagforest</router-link>
-      <router-link v-if="!loggedIn" to="/auth">Login / register</router-link>
-      <router-link v-else to="/profile">{{ loggedUser }}</router-link>
-      <router-link to="/export">Import / Export</router-link>
-      <router-link to="/about">About</router-link>
+    <router-link to="/"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
+    <router-link v-if="!loggedIn" to="/auth">Login or register</router-link>
+    <router-link v-else to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
   </div></nav>
   <div id="content" >
   <router-view/>
   </div>
   <footer><div class="container">
-    Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)
+    <span>Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)</span> -
+    <router-link to="/about">About</router-link>
   </div></footer>
 </template>
 
 <style lang="scss">
 
 $yellow: #ffe167;
-$lightpurple: #7545fe;
-$purple: #642efe;
+$lightpurple: #747ce4;
+$purple: #9698f5;
 $white: #ffffff;
 $lighterergrey: #efe8ff;
 $lightergrey: #dcd6eb;
@@ -63,7 +62,134 @@ html, body {
 }
 
 #content {
-  padding-bottom: 13rem; /* bottom padding for footer */
+  padding-bottom: 5rem; /* bottom padding for footer */
+}
+
+nav, footer {
+  background-color: $purple;
+  color: $white;
+  text-align: center;
+  .container {
+	padding-top: 1em;
+	padding-bottom: 1em;
+    a {
+      color: $white;
+      padding: 1em;
+      display: inline-block;
+      font-weight: bold;
+      text-decoration: none;
+      &.router-link-exact-active {
+        color: $yellow;
+      }
+    }
+  }
+}
+
+footer {
+  margin: 0;
+  text-align: center;
+
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  min-height: 5rem;
+  .container {
+    a, span {
+      color: $white;
+      padding: 0.5em;
+    }
+  }
+}
+
+.container {
+  max-width: 70rem;
+  margin: auto;
+}
+
+section {
+  .container {
+    padding-top: 1em;
+  }
+  &.entry, &.tag, &.category, &.profile {
+    h2 {
+        margin-top: 0;
+    }
+    a {
+      color: $white;
+      font-weight: bold;
+      background-color: $purple;
+      border-radius: 0.2em;
+      padding: 2em;
+      padding-top: 0.5em;
+      padding-left: 0.6em;
+      text-decoration: none;
+      vertical-align: middle;
+      display: inline-block;
+      margin-right: 0.5em;
+      margin-bottom: 0.5em;
+      &:hover {
+        color: $yellow;
+        background-color: $lightpurple;
+      }
+    }
+  }
+  &.tag, &.category, &.profile {
+    a {
+      color: $grey;
+      font-weight: normal;
+      background-color: $white;
+      border: 1px solid $grey;
+      border-radius: 0.8em;
+      padding-right: 1em;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 0.6em;
+      &:hover {
+        color: $grey;
+        background-color: $lightergrey;
+      }
+      &.extended-tag {
+        background-color: $lighterergrey;
+      }
+      &.extended-tag:hover {
+        background-color: $lightergrey;
+      }
+    }
+  }
+  &.category, &.profile {
+    a {
+      border-radius: 0.2em;
+    }
+  }
+  &.control-tag, &.control-category {
+    a {
+      border: 1px solid $grey;
+      background-color: $white;
+      font-weight: normal;
+      color: $grey;
+      border-radius: 0.8em;
+      padding: 0.5em;
+      padding-bottom: 0.3em;
+      padding-right: 0.5em;
+      padding-left: 0.6em;
+      text-decoration: none;
+      vertical-align: middle;
+      display: inline-block;
+      margin-right: 0.5em;
+      margin-bottom: 0.5em;
+      &:hover {
+        background-color: $lightergrey;
+      }
+      &.active {
+        background-color: $lightergrey;
+      }
+    }
+  }
+  &.control-category {
+    a {
+      border-radius: 0.2em;
+    }
+  }
 }
 
 button, input[type="submit"] {
@@ -194,127 +320,6 @@ form.textForm {
     textarea {
       height: 50vh;
       margin-bottom: 0;
-    }
-  }
-}
-
-nav {
-  background-color: $purple;
-  .container {
-    text-align: center;
-		padding-top: 2em;
-		padding-bottom: 2em;
-    a {
-      padding: 1em;
-      display: inline-block;
-      font-weight: bold;
-      color: $white;
-      text-decoration: none;
-
-      &.router-link-exact-active {
-        color: $yellow;
-      }
-    }
-  }
-}
-
-footer {
-  background-color: $purple;
-  color: $white;
-  margin: 0;
-  text-align: center;
-
-  bottom: 0;
-  position: absolute;
-  width: 100%;
-  min-height: 9rem;
-  padding-top: 1em;
-}
-
-.container {
-  max-width: 50rem;
-  margin: auto;
-}
-
-section {
-  .container {
-    padding-top: 1em;
-  }
-}
-
-section {
-  .container {
-    padding-top: 1em;
-  }
-  &.entry, &.tag {
-    a {
-      color: $white;
-      font-weight: bold;
-      background-color: $purple;
-      border-radius: 0.2em;
-      padding: 2em;
-      padding-top: 0.5em;
-      padding-left: 0.6em;
-      text-decoration: none;
-      vertical-align: middle;
-      display: inline-block;
-      margin-right: 0.5em;
-      margin-bottom: 0.5em;
-      &:hover {
-        color: $yellow;
-        background-color: $lightpurple;
-      }
-    }
-  }
-  &.tag {
-    a {
-      color: $grey;
-      font-weight: normal;
-      background-color: $white;
-      border: 1px solid $grey;
-      padding-right: 1em;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-      padding-left: 0.6em;
-      &:hover {
-        color: $grey;
-        background-color: $lightergrey;
-      }
-      &.extended-tag {
-        background-color: $lighterergrey;
-      }
-      &.extended-tag:hover {
-        background-color: $lightergrey;
-      }
-    }
-  }
-  &.control-tag, &.control-category {
-    a {
-      border: 1px solid $grey;
-      background-color: $white;
-      font-weight: normal;
-      color: $grey;
-      border-radius: 1em;
-      padding: 0.5em;
-      padding-bottom: 0.3em;
-      padding-right: 0.5em;
-      padding-left: 0.6em;
-      text-decoration: none;
-      vertical-align: middle;
-      display: inline-block;
-      margin-right: 0.5em;
-      margin-bottom: 0.5em;
-      &:hover {
-        background-color: $lightergrey;
-      }
-      &.active {
-        background-color: $lightergrey;
-      }
-    }
-  }
-  &.control-category {
-    a {
-      border-radius: 0.2em;
     }
   }
 }
