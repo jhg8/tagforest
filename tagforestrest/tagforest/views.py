@@ -4,8 +4,10 @@ from .serializers import TagSerializer, TagCategorySerializer
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+import json
 
 from urllib.parse import parse_qs
 
@@ -168,3 +170,45 @@ def graph_view(request):
     data['query']            = query_json
 
     return Response(data)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def export_data(request):
+
+    data = {}
+    category_list = TagCategory.objects.all().filter(user=request.user)
+    tag_list = Tag.objects.all().filter(user=request.user)
+    data['export_value'] = {
+            'category_list': TagCategorySerializer(category_list, many=True, context = { 'request': request }).data,
+            'tag_list': TagSerializer(tag_list, many=True, context = { 'request': request }).data
+    }
+    return Response(data)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def import_data(request):
+
+    try:
+        data = json.loads(request.data['import_value'])
+
+        Tag.objects.all().delete()
+        TagCategory.objects.all().delete()
+
+        for category in data['category_list']:
+            TagCategory.objects.create(name=category['name'], user=request.user)
+
+        for tag in data['tag_list']:
+            Tag.objects.create(name=tag['name'], category=TagCategory.objects.get(name=tag['category']['name']), user=request.user)
+
+        for tag in data['tag_list']:
+            tag_object = Tag.objects.get(name=tag['name'], user=request.user)
+            for parent in tag['parent_set']:
+                tag_object.parent_set.add(Tag.objects.get(name=parent['name']))
+            tag_object.save()
+
+    except json.decoder.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'})
+    except KeyError:
+        return Response({'error': 'Key Error'})
+
+    return Response({})

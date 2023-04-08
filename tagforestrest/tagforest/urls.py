@@ -11,5 +11,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('', views.root_view),
     path('graph/', views.graph_view, name='graph'),
+    path('import/', views.import_data, name='import'),
+    path('export/', views.export_data, name='export'),
     path('api-auth/', include('rest_framework.urls')),
 ]
