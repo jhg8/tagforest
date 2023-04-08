@@ -42,6 +42,11 @@ class Tag(models.Model):
       if self.parent_set.filter(name=self.name):
         raise ValidationError("Tag cannot contain itself in parent set")
 
+    def extendedParentSet(self):
+        child_set = Tag.objects.filter(pk=self.pk).union(self.recursiveChildSet())
+        extended_parent_set = Tag.objects.none().union(*[tag.recursiveParentSet() for tag in child_set])
+        return extended_parent_set.difference(self.parent_set.all())
+
     # TODO : Use graph algorithms instead of query unions
     def recursiveChildSet(self, category=''):
         if category:

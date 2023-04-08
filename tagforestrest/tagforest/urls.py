@@ -5,6 +5,7 @@ from . import views
 #router = DefaultRouter()
 router = SimpleRouter()
 router.register(r'tags', views.TagViewSet, basename='tag')
+router.register(r'extendedtags', views.ExtendedTagViewSet, basename='extendedtag')
 router.register(r'tagcategories', views.TagCategoryViewSet, basename='tagcategory')
 
 urlpatterns = [

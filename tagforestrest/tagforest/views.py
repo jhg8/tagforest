@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from .models import Tag, TagCategory
-from .serializers import TagSerializer, TagCategorySerializer
+from .serializers import TagSerializer, TagCategorySerializer, ExtendedTagSerializer
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -13,6 +13,19 @@ from urllib.parse import parse_qs
 
 class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        kwargs = {
+            'user': self.request.user
+        }
+        serializer.save(**kwargs)
+
+    def get_queryset(self):
+        return Tag.objects.filter(user=self.request.user)
+
+class ExtendedTagViewSet(viewsets.ModelViewSet):
+    serializer_class = ExtendedTagSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):

@@ -75,3 +75,20 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
         tag.save()
         tag.clean()
         return tag
+
+class ExtendedTagSerializer(TagSerializer):
+    extended_parent_set = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'url', 'name', 'category', 'parent_set', 'content', 'extended_parent_set']
+        read_only_fields = ['extended_parent_set']
+        extra_kwargs = {
+            'name': {
+                'validators': [],
+            },
+        }
+
+    def get_extended_parent_set(self, obj):
+        return SimpleTagSerializer(obj.extendedParentSet(), many=True, context=self.context).data
+
