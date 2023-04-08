@@ -3,6 +3,7 @@
       <router-link to="/">Tagforest</router-link>
       <router-link v-if="!loggedIn" to="/auth">Login / register</router-link>
       <router-link v-else to="/profile">{{ loggedUser }}</router-link>
+      <router-link to="/export">Import / Export</router-link>
       <router-link to="/about">About</router-link>
   </div></nav>
   <div id="content" >
@@ -153,7 +154,7 @@ form.textForm {
   }
 }
 
-.popup {
+.popup, .popupExport {
   position: fixed;
   z-index: 1;
   left: 0;
@@ -168,6 +169,32 @@ form.textForm {
     margin: 30vh auto;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
     max-width: 40em;
+    span.textarea {
+      display: block;
+      padding-right: 10px;
+      margin-bottom: 2em;
+    }
+    textarea {
+      overflow: scroll;
+    }
+  }
+}
+
+.popupExport {
+  .container {
+    padding: 1em;
+    margin: 10vh auto;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
+    max-width: 60em;
+    span.textarea {
+      padding-right: 10px;
+      height: 50vh;
+      margin-bottom: 0;
+    }
+    textarea {
+      height: 50vh;
+      margin-bottom: 0;
+    }
   }
 }
 
