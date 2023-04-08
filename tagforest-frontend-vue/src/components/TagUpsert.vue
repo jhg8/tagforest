@@ -44,11 +44,18 @@
 import utils from '@/utils.js'
 import VueMultiselect from 'vue-multiselect'
 
+//interface Tag {
+//    name: string
+//    category: { name: string }
+//}
+
 export default {
   name: 'TagUpsert',
   emits: ['tagUpsert', 'cancel', 'submit'],
   props: {
-    id: String
+    id: String,
+    category: String,
+    parentSet: Object
   },
   components: {
       VueMultiselect
@@ -101,6 +108,14 @@ export default {
     }
   },
   mounted () {
+    if(this.category) {
+      this.tagCategory = this.category;
+    }
+    if(this.parentSet) {
+      for(const tag of this.parentSet) {
+        this.tagParentSet.push(tag);
+      }
+    }
     this.update = typeof this.id !== 'undefined';
     if( this.update ) {
       this.getTag();

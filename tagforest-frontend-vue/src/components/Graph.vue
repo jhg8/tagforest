@@ -68,7 +68,7 @@
   </div></section>
 
   <section v-if="showAddTagPopup" class="popup"><div class="container" >
-  <tag-upsert @tag-upsert="showAddTagPopup = false; reload(filterQuery)" @cancel="showAddTagPopup = false" />
+  <tag-upsert :category="activeCategory" :parent-set="getSelectTagList()" @tag-upsert="showAddTagPopup = false; reload(filterQuery)" @cancel="showAddTagPopup = false" />
   </div></section>
 
   <section v-if="showAddCategoryPopup" class="popup"><div class="container" >
@@ -145,9 +145,20 @@ export default {
       }
       return url;
     },
+    getSelectTagList () {
+      let tag_list = [];
+      for(const tag of this.controlTagList) {
+        if(this.filterTagMap[tag.name]) {
+          tag_list.push(tag);
+        }
+      }
+      return tag_list;
+    },
     async reload (filterQuery) {
-      this.filterQuery  = filterQuery ? filterQuery.slice(1)      : '';
-      let url = filterQuery ? `graph/?q=${this.filterQuery}` : 'graph/';
+      console.log(filterQuery);
+      this.filterQuery = filterQuery;
+      let filterQueryValue  = filterQuery ? filterQuery.slice(1)      : '';
+      let url = filterQuery ? `graph/?q=${filterQueryValue}` : 'graph/';
 
       // Get data from Backend
       const data = await this.api({ method: 'get', url: url });
@@ -175,10 +186,10 @@ export default {
         this.filterTagMap[tag.name] = false;
       }
       this.activeCategory = ``;
-      if(this.filterQuery) {
+      if(filterQueryValue) {
         let regEx = /[()|]/;
         let querySupported = true;
-        let filterQuerySplit = this.filterQuery.split(';', 2);
+        let filterQuerySplit = filterQueryValue.split(';', 2);
         let tagQuery = filterQuerySplit.at(0);
         if(filterQuerySplit.length > 1) {
           this.activeCategory = filterQuerySplit.at(0);
