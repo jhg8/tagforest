@@ -16,17 +16,9 @@
 
   <section class="control-category" ><div class="container" >
     <span v-for="category in categoryList" v-bind:key="category.name" >
-      <span v-if="selectModeCategory" >
-        <div class="tag-checkbox" ><label>
-          <input type="checkbox" v-model="selectCategoryIdMap[category.id]" :class="{ active: selectCategoryIdMap[category.id] }" />
-          <span class="label" >{{ category.name }}</span>
-        </label></div>
-      </span>
-      <span v-else >
-        <router-link :to="getTagFilterUrl('', category.name)" :class="{ active: category.name == activeCategory }" >
-          {{ category.name }}
-        </router-link>
-      </span>
+      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getTagFilterUrl('', category.name)" :class="{ active: category.name == activeCategory }" >
+        {{ category.name }}
+      </router-link>
     </span>
   </div></section>
 
@@ -47,7 +39,7 @@
         </label></div>
       </span>
       <span v-else >
-        <router-link :to="'/tag/' + tag.id" >{{ tag.name }}</router-link>
+        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="'/tag/' + tag.id" >{{ tag.name }}</router-link>
       </span>
     </span>
   </div></section>
@@ -77,7 +69,6 @@ export default {
       // Select menus
       selectMode: false,
       selectTagIdMap: {},
-      selectModeCategory: false,
       selectCategoryIdMap: {},
       showAddTagPopup: false,
       showAddCategoryPopup: false,

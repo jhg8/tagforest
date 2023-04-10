@@ -111,7 +111,7 @@ section {
   .container {
     padding-top: 1em;
   }
-  &.entry, &.tag, &.category, &.profile {
+  &.entry, &.tag, &.category, &.profile, &.control-category {
     h2 {
         margin-top: 0;
     }
@@ -129,6 +129,26 @@ section {
       margin-right: 0.5em;
       margin-bottom: 0.5em;
       &:hover {
+        color: $yellow;
+        background-color: $lightpurple;
+      }
+    }
+  }
+  &.control-category {
+    a {
+      padding: 1em;
+      padding-top: 0.5em;
+      padding-left: 0.6em;
+      text-decoration: none;
+      vertical-align: middle;
+      display: inline-block;
+      margin-right: 0.5em;
+      margin-bottom: 0.5em;
+      &:hover {
+        color: $yellow;
+        background-color: $lightpurple;
+      }
+      &.active {
         color: $yellow;
         background-color: $lightpurple;
       }
@@ -191,7 +211,7 @@ section {
       border-radius: 0.2em;
     }
   }
-  &.control-tag, &.control-category {
+  &.control-tag {
     a {
       border: 1px solid $grey;
       background-color: $white;

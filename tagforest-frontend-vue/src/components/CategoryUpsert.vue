@@ -3,6 +3,9 @@
     <div class="formGrid" >
       <label>Name</label>
       <span class="text" ><input type="text" v-model="categoryName" ref="title" placeholder="Title" /></span>
+
+      <label>Color</label>
+      <span class="text" ><input type="text" v-model="categoryColor" ref="color" placeholder="Color" /></span>
     </div>
 
     <input type="submit" />
@@ -24,6 +27,7 @@ export default {
   data () {
     return {
       categoryName: '',
+      categoryColor: 'ffffff',
     }
   },
   methods: {
@@ -31,6 +35,7 @@ export default {
       console.log("upsert");
       const data = {
         name: this.categoryName,
+        color: this.categoryColor,
       };
       await this.api(this.update ?
                      { method: 'put',  url: `tagcategories/${this.id}/`, data: data} :
@@ -44,6 +49,7 @@ export default {
     async getCategory () {
       const data = await this.api({ method: 'get', url: `tagcategories/${this.id}/` });
       this.categoryName = data.name;
+      this.categoryColor = data.color;
     },
   },
   computed: {

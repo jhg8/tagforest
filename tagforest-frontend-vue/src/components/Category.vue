@@ -9,9 +9,11 @@
 
   <section class="category-list" ><div class="container" >
     <ul>
-        <li v-for="category in categoryList" v-bind:key="category.name" >
-            <button @click="activeCategoryId = category.id.toString(); showCategoryPopup = true" >{{ category.name}}</button>
-        </li>
+      <li v-for="category in categoryList" v-bind:key="category.name" >
+          <button :style="{ backgroundColor: '#' + category.color }" @click="activeCategoryId = category.id.toString(); showCategoryPopup = true" >
+          {{ category.name}}
+        </button>
+      </li>
     </ul>
   </div></section>
 
