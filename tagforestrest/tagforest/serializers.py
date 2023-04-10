@@ -7,7 +7,7 @@ class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = TagCategory
-        fields = ['id', 'url', 'name']
+        fields = ['id', 'url', 'name', 'color']
         extra_kwargs = {
             'name': {
                 'validators': [],
@@ -16,13 +16,14 @@ class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        tag_category = TagCategory.objects.create(name=validated_data.pop('name'), user=user_data)
+        tag_category = TagCategory.objects.create(name=validated_data.pop('name'), color=validated_data.pop('color'), user=user_data)
         tag_category.save()
         tag_category.clean()
         return tag_category
 
     def update(self, tag_category, validated_data):
         tag_category.name = validated_data.pop('name')
+        tag_category.color = validated_data.pop('color')
         tag_category.save()
         tag_category.clean()
         return tag_category

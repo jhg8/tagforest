@@ -10,6 +10,7 @@ class GroupProfile(models.Model):
 
 class TagCategory(models.Model):
     name = models.CharField(max_length=255, blank=False)
+    color = models.CharField(max_length=255, blank=False, default="ffffff")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
 
     class Meta:
