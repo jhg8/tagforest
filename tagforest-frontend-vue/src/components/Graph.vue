@@ -153,7 +153,6 @@ export default {
       return tag_list;
     },
     async reload (filterQuery) {
-      console.log(filterQuery);
       this.filterQuery = filterQuery;
       let filterQueryValue  = filterQuery ? filterQuery.slice(1)      : '';
       let url = filterQuery ? `graph/?q=${filterQueryValue}` : 'graph/';
