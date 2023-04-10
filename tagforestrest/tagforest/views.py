@@ -208,7 +208,7 @@ def import_data(request):
         TagCategory.objects.all().delete()
 
         for category in data['category_list']:
-            TagCategory.objects.create(name=category['name'], user=request.user)
+            TagCategory.objects.create(name=category['name'], color=category['color'], user=request.user)
 
         for tag in data['tag_list']:
             Tag.objects.create(name=tag['name'], category=TagCategory.objects.get(name=tag['category']['name']), user=request.user)
