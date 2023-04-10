@@ -1,6 +1,7 @@
 <template>
   <nav><div class="container">
     <router-link to="/"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
+    <router-link v-if="loggedIn" to="/category"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
     <router-link v-if="!loggedIn" to="/auth">Login or register</router-link>
     <router-link v-else to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
   </div></nav>
@@ -133,6 +134,35 @@ section {
       }
     }
   }
+  &.category-list {
+    ul {
+      list-style: none;
+      padding-left: 0;
+      button {
+        width: 25em;
+        margin-bottom: 0.3em;
+        border: 0;
+        color: $white;
+        font-weight: bold;
+        background-color: $purple;
+        border-radius: 0.2em;
+        padding: 2em;
+        padding-top: 0.5em;
+        padding-left: 0.8em;
+        text-decoration: none;
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 0.5em;
+        margin-bottom: 0.5em;
+        font-size: 1em;
+        text-align: left;
+        &:hover {
+          color: $yellow;
+          background-color: $lightpurple;
+        }
+      }
+    }
+  }
   &.tag, &.category, &.profile {
     a {
       color: $grey;
@@ -203,7 +233,8 @@ button, input[type="submit"] {
 }
 
 form.textForm {
-  margin-bottom: 3em;
+  margin-bottom: 1em;
+  margin-top: 1em;
   input[type="text"], input[type="password"] {
     width: 100%;
     border: none;
@@ -276,7 +307,7 @@ form.textForm {
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
   }
   input[type="submit"], button {
-    margin-top: 2em;
+    margin-top: 1em;
   }
 }
 

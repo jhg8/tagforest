@@ -6,7 +6,8 @@
     </div>
 
     <input type="submit" />
-    <button v-if="!update" @click="$emit('cancel')" >Cancel</button>
+    <button v-if="cancel" @click.prevent="$emit('cancel')" >Cancel</button>
+    <button @click.prevent="deleteCategory()" >Delete</button>
   </form>
 </template>
 
@@ -17,16 +18,17 @@ export default {
   name: 'CategoryUpsert',
   emits: ['categoryUpsert', 'cancel', 'submit'],
   props: {
-    id: String
+    id: String,
+    cancel: Boolean
   },
   data () {
     return {
       categoryName: '',
-      update: false
     }
   },
   methods: {
     async upsertCategory () {
+      console.log("upsert");
       const data = {
         name: this.categoryName,
       };
@@ -35,13 +37,21 @@ export default {
                      { method: 'post', url: `tagcategories/`,            data: data});
       this.$emit('categoryUpsert');
     },
+    async deleteCategory () {
+      await this.api({ method: 'delete',  url: `tagcategories/${this.id}/`});
+      this.$emit('categoryUpsert');
+    },
     async getCategory () {
       const data = await this.api({ method: 'get', url: `tagcategories/${this.id}/` });
       this.categoryName = data.name;
     },
   },
+  computed: {
+    update() {
+      return (typeof this.id !== 'undefined');
+    }
+  },
   mounted () {
-    this.update = typeof this.id !== 'undefined';
     if( this.update ) {
       this.getCategory();
     }
