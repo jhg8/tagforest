@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
-from .models import Tag, TagCategory
+from .models import Tag, TagCategory, Graph
 
 class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
 
@@ -91,5 +91,6 @@ class ExtendedTagSerializer(TagSerializer):
         }
 
     def get_extended_parent_set(self, obj):
-        return SimpleTagSerializer(obj.extendedParentSet(), many=True, context=self.context).data
+        graph = Graph(obj.user)
+        return SimpleTagSerializer(Tag.objects.filter(user=obj.user, name__in=graph.relatedTagSet(set([obj.name]))), many=True, context=self.context).data
 

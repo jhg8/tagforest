@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
+from django.utils.functional import classproperty
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -40,20 +41,72 @@ class Tag(models.Model):
         return self.name
 
     def clean(self):
-      if self.parent_set.filter(name=self.name):
-        raise ValidationError("Tag cannot contain itself in parent set")
+        if self.parent_set.filter(name=self.name):
+            raise ValidationError("Tag cannot contain itself in parent set")
 
-    def extendedParentSet(self):
-        child_set = Tag.objects.filter(pk=self.pk).union(self.recursiveChildSet())
-        extended_parent_set = Tag.objects.none().union(*[tag.recursiveParentSet() for tag in child_set])
-        return extended_parent_set.difference(self.parent_set.all())
+class Graph():
 
-    # TODO : Use graph algorithms instead of query unions
-    def recursiveChildSet(self, category=''):
-        if category:
-            return self.child_set.filter(user=self.user).filter(category__name=category).union(*[tag.recursiveChildSet(category=category) for tag in self.child_set.all()])
-        return self.child_set.filter(user=self.user).union(*[tag.recursiveChildSet() for tag in self.child_set.all()])
-    def recursiveParentSet(self, category=''):
-        if category:
-            return self.parent_set.filter(user=self.user).filter(category__name=category).union(*[tag.recursiveParentSet(category=category) for tag in self.parent_set.all()])
-        return self.parent_set.filter(user=self.user).union(*[tag.recursiveParentSet() for tag in self.parent_set.all()])
+    def __init__(self, user):
+        self.user = user
+        self.update()
+
+    def update(self):
+
+        self.graph = {}
+        self.graph_rev = {}
+        self.all = set()
+
+        for tag in Tag.objects.filter(user=self.user):
+            self.graph[tag.name] = [parent.name for parent in tag.parent_set.all()]
+            self.all.add(tag.name)
+        for tag in self.graph:
+            self.graph_rev.setdefault(tag, [])
+            for parent in self.graph[tag]:
+                self.graph_rev.setdefault(parent, []).append(tag)
+
+    @classmethod
+    def _BFS(cls, node_set, graph):
+        visited = set()
+
+        for node in node_set:
+            if node in visited:
+                continue
+            if node not in graph:
+                continue
+            queue=[]
+            visited.add(node)
+            queue.append(node)
+
+            while queue:
+                s=queue.pop(0)
+                
+                for x in graph[s]:
+                    if x not in visited:
+                        visited.add(x)
+                        queue.append(x)
+        return visited
+
+    def ascendantSet(self, tag_set):
+        return self._BFS(tag_set, self.graph)
+
+    def descendantSet(self, tag_set):
+        return self._BFS(tag_set, self.graph_rev)
+
+    def relatedTagSet(self, tag_set):
+        related_tag_set = self.ascendantSet(tag_set)
+        descendant_set = self.descendantSet(tag_set)
+        for tag in descendant_set:
+            related_tag_set.add(tag)
+            for parent in self.graph.get(tag, []):
+                related_tag_set.add(parent)
+        return related_tag_set
+
+    def filterTagSet(self, tag_set):
+        filter_tag_set = self.ascendantSet(tag_set).union(self.descendantSet(tag_set))
+        child_set = set()
+        for tag in tag_set:
+            for child in self.graph_rev.get(tag, []):
+                child_set.add(child)
+        for tag in self.ascendantSet(child_set):
+            filter_tag_set.add(tag)
+        return filter_tag_set
