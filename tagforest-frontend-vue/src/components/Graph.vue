@@ -24,7 +24,7 @@
 
   <section class="control-tag" ><div class="container" >
     <span v-for="tag in controlTagList" v-bind:key="tag.name" >
-      <router-link :to="getTagFilterUrl(tag.name, '')" :class="{ active: filterTagMap[tag.name] }" >
+      <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getTagFilterUrl(tag.name, '')" :class="{ active: filterTagMap[tag.name] }" >
         {{ tag.name }}
       </router-link>
     </span>

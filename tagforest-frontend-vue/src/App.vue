@@ -130,12 +130,12 @@ section {
       margin-bottom: 0.5em;
       &:hover {
         color: $yellow;
-        background-color: $lightpurple;
       }
     }
   }
   &.control-category {
     a {
+      opacity: 0.8;
       padding: 1em;
       padding-top: 0.5em;
       padding-left: 0.6em;
@@ -147,10 +147,12 @@ section {
       &:hover {
         color: $yellow;
         background-color: $lightpurple;
+	-webkit-filter: brightness(85%);
       }
       &.active {
         color: $yellow;
         background-color: $lightpurple;
+	-webkit-filter: brightness(80%);
       }
     }
   }
@@ -213,25 +215,26 @@ section {
   }
   &.control-tag {
     a {
-      border: 1px solid $grey;
+      opacity: 0.8;
+      border: none;
       background-color: $white;
-      font-weight: normal;
-      color: $grey;
+      font-weight: bold;
+      color: $white;
       border-radius: 0.8em;
-      padding: 0.5em;
-      padding-bottom: 0.3em;
-      padding-right: 0.5em;
-      padding-left: 0.6em;
+      padding-top: 0.6em;
+      padding-bottom: 0.4em;
+      padding-right: 0.6em;
+      padding-left: 0.7em;
       text-decoration: none;
       vertical-align: middle;
       display: inline-block;
       margin-right: 0.5em;
       margin-bottom: 0.5em;
       &:hover {
-        background-color: $lightergrey;
+	-webkit-filter: brightness(85%);
       }
       &.active {
-        background-color: $lightergrey;
+	-webkit-filter: brightness(80%);
       }
     }
   }
