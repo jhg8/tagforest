@@ -71,8 +71,8 @@ nav, footer {
   color: $white;
   text-align: center;
   .container {
-	padding-top: 1em;
-	padding-bottom: 1em;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
     a {
       color: $white;
       padding: 1em;
@@ -120,8 +120,9 @@ section {
       font-weight: bold;
       background-color: $purple;
       border-radius: 0.2em;
-      padding: 2em;
+      padding-bottom: 1em;
       padding-top: 0.5em;
+      padding-right: 2em;
       padding-left: 0.6em;
       text-decoration: none;
       vertical-align: middle;
@@ -137,7 +138,8 @@ section {
     a {
       opacity: 0.8;
       padding: 1em;
-      padding-top: 0.5em;
+      padding-bottom: 0.4em;
+      padding-top: 0.4em;
       padding-left: 0.6em;
       text-decoration: none;
       vertical-align: middle;
@@ -261,6 +263,9 @@ button, input[type="submit"] {
 form.textForm {
   margin-bottom: 1em;
   margin-top: 1em;
+  .multiselect__tags {
+    width: 32em;
+  }
   input[type="text"], input[type="password"] {
     width: 100%;
     border: none;
@@ -431,73 +436,71 @@ label.edit-checkbox {
 // @link https://moderncss.dev/pure-css-custom-checkbox-style/
 .entry-checkbox, .tag-checkbox {
   display:inline-block;
-	label {
-		line-height: 1.1;
-		display: grid;
-		grid-template-columns: 1em auto;
-		gap: 0.5em;
-		cursor: pointer;
-		color: $white;
-		font-weight: bold;
-		background-color: $purple;
-		border-radius: 0.2em;
-		padding: 2em;
-		padding-top: 0.5em;
-		padding-left: 0.5em;
-		padding-left: 0.6em;
-		text-decoration: none;
-		vertical-align: middle;
-		margin-right: 0.5em;
-		margin-bottom: 0.5em;
+  label {
+    line-height: 1.1;
+    display: grid;
+    grid-template-columns: auto 1em;
+    gap: 0.5em;
+    cursor: pointer;
+    color: $white;
+    font-weight: bold;
+    background-color: $purple;
+    border-radius: 0.2em;
+    padding-right: 0.5em;
+    padding-bottom: 1em;
+    padding-top: 0.5em;
+    padding-left: 0.6em;
+    height: 1em;
+    text-decoration: none;
+    vertical-align: middle;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
     &:hover {
       color: $yellow;
     }
-	}
+  }
+  input[type="checkbox"] {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    /* Remove most all native input styles */
+    appearance: none;
+    /* For iOS < 15 */
+    background-color: var(--form-background);
+    /* Not removed via appearance */
+    margin: 0;
 
-	input[type="checkbox"] {
-		/* Add if not using autoprefixer */
-		-webkit-appearance: none;
-		/* Remove most all native input styles */
-		appearance: none;
-		/* For iOS < 15 */
-		background-color: var(--form-background);
-		/* Not removed via appearance */
-		margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 0.8em;
+    height: 0.8em;
+    border: 0.1em solid currentColor;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
 
-		font: inherit;
-		color: currentColor;
-		width: 1em;
-		height: 1em;
-		border: 0.1em solid currentColor;
-		border-radius: 0.15em;
-		transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+  }
+  input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
 
-		display: grid;
-		place-content: center;
-		cursor: pointer;
-	}
-
-	input[type="checkbox"]::before {
-		content: "";
-		width: 0.65em;
-		height: 0.65em;
-		clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-		transform: scale(0);
-
-		box-shadow: inset 1em 1em var(--form-control-color);
-		background-color: $yellow;
-	}
-
-	input[type="checkbox"]:checked::before {
-		transform: scale(1);
-	}
-	input[type="checkbox"]:checked + .label {
-		color: $yellow;
-	}
+    box-shadow: inset 1em 1em var(--form-control-color);
+    background-color: $yellow;
+  }
+  input[type="checkbox"]:checked::before {
+    transform: scale(1);
+  }
+  input[type="checkbox"]:checked + .label {
+    color: $yellow;
+  }
 }
 
 .tag-checkbox {
-	label {
+  label {
     color: $grey;
     font-weight: normal;
     background-color: $white;
@@ -510,13 +513,13 @@ label.edit-checkbox {
       color: $grey;
       background-color: $lightergrey;
     }
-	}
-	input[type="checkbox"]::before {
-		background-color: $grey;
-	}
-	input[type="checkbox"]:checked + .label {
-		color: $darkgrey;
-	}
+  }
+  input[type="checkbox"]::before {
+    background-color: $grey;
+  }
+  input[type="checkbox"]:checked + .label {
+    color: $darkgrey;
+  }
 }
 
 a {

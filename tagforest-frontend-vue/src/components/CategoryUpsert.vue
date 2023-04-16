@@ -10,7 +10,7 @@
 
     <input type="submit" />
     <button v-if="cancel" @click.prevent="$emit('cancel')" >Cancel</button>
-    <button @click.prevent="deleteCategory()" >Delete</button>
+    <button v-if="update" @click.prevent="deleteCategory()" >Delete</button>
   </form>
 </template>
 
