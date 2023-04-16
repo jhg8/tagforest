@@ -9,13 +9,24 @@ class Profile(models.Model):
 class GroupProfile(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
 
-class TagCategory(models.Model):
+class Tree(models.Model):
     name = models.CharField(max_length=255, blank=False)
-    color = models.CharField(max_length=255, blank=False, default="ffffff")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
 
     class Meta:
         unique_together = ('name', 'user')
+
+    def __str__(self):
+        return self.name
+
+class TagCategory(models.Model):
+    name = models.CharField(max_length=255, blank=False)
+    color = models.CharField(max_length=255, blank=False, default="ffffff")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    tree = models.ForeignKey(Tree, on_delete=models.CASCADE, blank=False)
+
+    class Meta:
+        unique_together = ('name', 'user', 'tree')
         verbose_name_plural = 'categories'
 
     def __str__(self):
@@ -32,10 +43,11 @@ class Tag(models.Model):
     category = models.ForeignKey(TagCategory, on_delete=models.CASCADE, blank=False)
     score = models.FloatField(blank=False, default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    tree = models.ForeignKey(Tree, on_delete=models.CASCADE, blank=False)
     content = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ('name', 'user')
+        unique_together = ('name', 'user', 'tree')
 
     def __str__(self):
         return self.name
@@ -46,8 +58,9 @@ class Tag(models.Model):
 
 class Graph():
 
-    def __init__(self, user):
+    def __init__(self, user, tree):
         self.user = user
+        self.tree = tree
         self.update()
 
     def update(self):
@@ -56,7 +69,7 @@ class Graph():
         self.graph_rev = {}
         self.all = set()
 
-        for tag in Tag.objects.filter(user=self.user):
+        for tag in Tag.objects.filter(user=self.user, tree=self.tree):
             self.graph[tag.name] = [parent.name for parent in tag.parent_set.all()]
             self.all.add(tag.name)
         for tag in self.graph:
