@@ -214,6 +214,9 @@ section {
     }
   }
   &.control-tag {
+    .multiselect__tag {
+      background: $purple;
+    }
     a {
       opacity: 0.8;
       border: none;

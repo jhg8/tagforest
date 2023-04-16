@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     reload (q) {
-      this.$refs.graph.reload(q);
+      this.$refs.graph.reload(q, true);
     },
     async demoLogin () {
       const data = await this.api({ method: 'post', url: `dj-rest-auth/login/`,
