@@ -553,8 +553,12 @@ export default {
   methods: {
     async updateUser () {
       if(this.loggedIn) {
-        const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
-        this.loggedUser = data.username;
+        try {
+          const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
+          this.loggedUser = data.username;
+        } catch(e) {
+          this.$store.commit('logout');
+        }
       }
     }
   },
