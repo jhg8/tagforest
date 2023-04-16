@@ -56,8 +56,14 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        category = TagCategory.objects.get_or_create(name=validated_data.pop('category')['name'], user=user_data)[0]
-        tag = Tag.objects.create(name=validated_data.pop('name'), category=category, content=validated_data.pop('content'), user=user_data)
+        create_args = {
+            'name': validated_data.pop('name'),
+            'category': TagCategory.objects.get_or_create(name=validated_data.pop('category')['name'], user=user_data)[0],
+            'user': user_data,
+        }
+        if 'content' in validated_data:
+          create_args['content'] = validated_data.pop('content')
+        tag = Tag.objects.create(**create_args)
         for tag_data in validated_data.pop('parent_set'):
             parent_category = TagCategory.objects.get_or_create(name=tag_data['category']['name'], user=user_data)[0]
             tag.parent_set.add(Tag.objects.get_or_create(name=tag_data['name'], category=parent_category, user=user_data)[0])
@@ -68,7 +74,8 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, tag, validated_data):
         tag.name = validated_data.pop('name')
         tag.category = TagCategory.objects.get_or_create(name=validated_data.pop('category')['name'], user=tag.user)[0]
-        tag.content = validated_data.pop('content')
+        if 'content' in validated_data:
+          tag.content = validated_data.pop('content')
         tag.parent_set.clear()
         for tag_data in validated_data.pop('parent_set'):
             parent_category = TagCategory.objects.get_or_create(name=tag_data['category']['name'], user=tag.user)[0]
