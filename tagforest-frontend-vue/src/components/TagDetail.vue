@@ -2,8 +2,11 @@
   <section class="control-buttons" ><div class="container" >
     <label class="edit-checkbox" >
       <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
-      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /></span>
+      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Edit</span>
     </label>
+    <button @click.prevent="deleteTag()" >
+    <font-awesome-icon icon="fa-solid fa-trash" /> Remove
+    </button>
   </div></section>
 
   <section v-if="!editMode" class="category"><div class="container" >
@@ -43,6 +46,10 @@ export default {
     async getTag () {
       const data = await this.api({ method: 'get', url: `extendedtags/${this.id}/` });
       this.tag = data;
+    },
+    async deleteTag () {
+      await this.api({ method: 'delete',  url: `tags/${this.id}/`});
+      this.$router.push({path: '/'});
     }
   },
   mounted () {
