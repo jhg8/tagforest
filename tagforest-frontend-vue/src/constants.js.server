@@ -1,3 +1,4 @@
 export default Object.freeze({
-  BACKEND_URL: 'https://api.tagforest.fr'
+  BACKEND_URL: 'https://api.tagforest.fr',
+  DEFAULT_CATEGORY_COLOR_SET: ['f596bb', '96baf5', 'd996f5', '9698f5', 'ba96f5', '96e5f5']
 })
