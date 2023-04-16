@@ -4,6 +4,14 @@
     <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
     </button>
 
+    <button @click="showExportPopup = true; getExportValue(activeTreeId)" >
+    <font-awesome-icon icon="fa-solid fa-download" /> Export
+    </button>
+
+    <button @click="showImportPopup = true" >
+    <font-awesome-icon icon="fa-solid fa-upload" /> Import
+    </button>
+
     <label class="edit-checkbox" >
       <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
       <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Select</span>
@@ -63,13 +71,13 @@
         </label></div>
       </span>
       <span v-else >
-        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="'/tag/' + tag.id" >{{ tag.name }}</router-link>
+        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="'tag/' + tag.id" >{{ tag.name }}</router-link>
       </span>
     </span>
   </div></section>
 
   <section v-if="showNewTagPopup" class="popup"><div class="container" >
-    <tag-upsert :category="activeCategory" :parent-set="activeControlTagSet" @tag-upsert="showNewTagPopup = false; reload(controlQuery)" @cancel="showNewTagPopup = false" />
+    <tag-upsert :category="activeCategory" :parent-set="activeControlTagSet" @tag-upsert="showNewTagPopup = false; reload(hash, activeTreeId)" @cancel="showNewTagPopup = false" />
   </div></section>
 
   <section v-if="showAddMultiTagPopup" class="popup"><div class="container" >
@@ -94,6 +102,25 @@
       <button @click.prevent="showAddMultiTagPopup = false" >Cancel</button>
     </form>
   </div></section>
+
+  <section v-if="showExportPopup" class="popupExport"><div class="container" >
+    <form class="textForm">
+      <span class="textarea" ><textarea type="multiarea" v-model="exportValue" placeholder="Export" >
+      </textarea></span>
+      <button @click="showExportPopup = false" >Exit</button>
+    </form>
+  </div></section>
+
+  <section v-if="showImportPopup" class="popupExport"><div class="container" >
+    <form class="textForm" @submit.prevent="importData(); $emit('submit')" action="#" >
+      <span class="textarea" ><textarea type="multiarea" v-model="importValue" placeholder="Import" >
+      </textarea></span>
+      <input type="submit" />
+      <button @click="showImportPopup = false" >Cancel</button>
+    </form>
+  </div></section>
+
+
 
 </template>
 
@@ -120,9 +147,17 @@ export default {
       // Tag filtering
       activeCategory: '',
       activeControlTagSet: [],
-      controlQuery: ''
+      hash: '',
+      // URL
+      baseURL: '',
+      // Export / Import
+      importValue: '',
+      exportValue: '',
+      showExportPopup: false,
+      showImportPopup: false,
     }
   },
+  emits: ['import', 'cancel', 'submit'],
   components: {
     TagUpsert,
     CategoryUpsert,
@@ -131,6 +166,23 @@ export default {
   computed: {
     loggedIn () {
       return this.$store.state.loggedIn;
+    },
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    },
+    activeTreeName () {
+      return this.$store.state.activeTreeName;
+    }
+  },
+  watch: {
+    activeTreeId(newTreeId, oldTreeId) {
+      this.reload(this.$route.hash, newTreeId);
+    },
+    activeTreeName(newTreeName, oldTreeName) {
+      this.treeNameInput = newTreeName;
+    },
+    '$route.hash' (newHash, oldHash) {
+      this.reload(newHash, this.activeTreeId);
     }
   },
   methods: {
@@ -174,14 +226,14 @@ export default {
 
       return this.buildURL(newActiveControlTagSet, newActiveCategory);
     },
-    parseControlQuery(controlQuery) {
+    parseControlQuery(hash) {
       this.activeCategory = ``;
       this.activeControlTagSet = [];
 
-      if(!controlQuery)
+      if(!hash)
         return
 
-      const controlQuerySplit = controlQuery.split(';', 2);
+      const controlQuerySplit = hash.split(';', 2);
       let tagQuery = controlQuerySplit.at(0);
       if(controlQuerySplit.length > 1) {
         this.activeCategory = controlQuerySplit.at(0);
@@ -189,7 +241,7 @@ export default {
       }
 
       if(tagQuery)
-        this.activeControlTagSet = tagQuery.split('^').map(x => { return {name: x}});
+        this.activeControlTagSet = tagQuery.split('^').map(x => { return {name: x, category: { name: 'Default', tree: { name: this.activeTreeName} }, tree: { name: this.activeTreeName }}});
 
       for(const w of this.activeControlTagSet) {
         if(w.name.match(/[()|]/)) {
@@ -198,10 +250,11 @@ export default {
         }
       }
     },
-    async reload (controlQuery) {
-      this.controlQuery = controlQuery;
-      const controlQueryValue  = controlQuery ? controlQuery.slice(1)      : '';
-      let url = controlQuery ? `graph/?q=${controlQueryValue}` : 'graph/';
+    async reload (hash, treeId) {
+      this.baseURL = `trees/${treeId}/graph`;
+      this.hash = hash;
+      const controlQueryValue  = hash ? hash.slice(1)      : '';
+      let url = hash ? `${this.baseURL}/?q=${controlQueryValue}` : this.baseURL;
 
       // Get data from Backend
       const data = await this.api({ method: 'get', url: url });
@@ -236,7 +289,7 @@ export default {
           await this.api({ method: 'delete', url: `tags/${id}/` });
           delete this.selectTagIdMap[id];
         }
-      this.reload(this.controlQuery);
+      this.reload(this.hash, this.activeTreeId);
     },
     async deleteSelectedCategory () {
       for(const id in this.selectCategoryIdMap)
@@ -244,7 +297,7 @@ export default {
           await this.api({ method: 'delete', url: `tagcategories/${id}/` });
           delete this.selectCategoryIdMap[id];
         }
-      this.reload(this.controlQuery);
+      this.reload(this.hash, this.activeTreeId);
     },
     multiSelectInput() {
       let url = this.buildURL(this.activeControlTagSet.map(x => x.name), this.activeCategory);
@@ -276,18 +329,34 @@ export default {
             tagSet.push(multiTagAddTag);
           const data = {
             name: tag.name,
-            category: { name: tag.category.name },
+            category: { name: tag.category.name, tree: { name: this.activeTreeName } },
             parent_set: tagSet,
+            tree: { name: this.activeTreeName },
           };
           await this.api({ method: 'put',  url: `tags/${id}/`, data: data});
         }
       }
       this.showAddMultiTagPopup = false;
-      this.reload(this.controlQuery);
-    }
+      this.reload(this.hash, this.activeTreeId);
+    },
+    async importData () {
+      const data = {
+        import_value: this.importValue
+      };
+      await this.api({ method: 'post', url: `trees/${this.activeTreeId}/import/`, data: data});
+      this.$emit('import');
+      this.showImportPopup = false;
+      this.reload(this.$route.hash, this.activeTreeId);
+    },
+    async getExportValue (treeId) {
+      const data = await this.api({ method: 'get', url: `trees/${treeId}/export/` });
+      this.exportValue = JSON.stringify(data.export_value);
+    },
   },
   mounted () {
-    this.reload(this.$route.hash);
+    if(this.activeTreeId != 0) {
+      this.reload(this.$route.hash, this.activeTreeId);
+    }
   }
 }
 </script>

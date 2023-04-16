@@ -36,6 +36,7 @@ export default {
       const data = {
         name: this.categoryName,
         color: this.categoryColor,
+        tree: { name: this.activeTreeName },
       };
       await this.api(this.update ?
                      { method: 'put',  url: `tagcategories/${this.id}/`, data: data} :
@@ -52,7 +53,7 @@ export default {
       this.categoryColor = data.color;
     },
     async setDefaultColor () {
-      const categoryList = await this.api({ method: 'get', url: 'tagcategories/' });
+      const categoryList = await this.api({ method: 'get', url: `trees/${this.activeTreeId}/tag_category_list/` });
       const usedColorList = categoryList.map(x => { return x.color });
       const colorCountMap = {}
       let colorCountList = []
@@ -73,6 +74,12 @@ export default {
   computed: {
     update() {
       return (typeof this.id !== 'undefined');
+    },
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    },
+    activeTreeName () {
+      return this.$store.state.activeTreeName;
     }
   },
   mounted () {

@@ -1,7 +1,7 @@
 <template>
   <suspense>
     <template #default>
-        <tag-detail :id="$route.params.id" />
+        <tag-detail :tagid="$route.params.tagid" />
     </template>
     <template #fallback>
       <p>

@@ -2,7 +2,7 @@
   <section class="control-buttons" ><div class="container" >
 
     <button @click="showAddCategoryPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-plus" /> Category
+    <font-awesome-icon icon="fa-solid fa-plus" /> New Category
     </button>
 
   </div></section>
@@ -18,11 +18,11 @@
   </div></section>
 
   <section v-if="showCategoryPopup" class="popup"><div class="container" >
-  <category-upsert :cancel="true" :id="activeCategoryId" @category-upsert="showCategoryPopup = false; reload()" @cancel="showCategoryPopup = false" />
+  <category-upsert :cancel="true" :id="activeCategoryId" @category-upsert="showCategoryPopup = false; reload(activeTreeId)" @cancel="showCategoryPopup = false" />
   </div></section>
 
   <section v-if="showAddCategoryPopup" class="popup"><div class="container" >
-  <category-upsert :cancel="true" @category-upsert="showAddCategoryPopup = false; reload()" @cancel="showAddCategoryPopup = false" />
+  <category-upsert :cancel="true" @category-upsert="showAddCategoryPopup = false; reload(activeTreeId)" @cancel="showAddCategoryPopup = false" />
   </div></section>
 
 </template>
@@ -48,18 +48,28 @@ export default {
   computed: {
     loggedIn () {
       return this.$store.state.loggedIn;
+    },
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    }
+  },
+  watch: {
+    activeTreeId(newTreeId, oldTreeId) {
+      this.reload(newTreeId);
     }
   },
   methods: {
-    async reload () {
+    async reload (treeId) {
       // Get data from Backend
-      const data = await this.api({ method: 'get', url: 'tagcategories/' });
+      const data = await this.api({ method: 'get', url: `trees/${treeId}/tag_category_list` });
 
       this.categoryList = data;
     }
   },
   mounted () {
-    this.reload();
+    if(this.activeTreeId != 0) {
+      this.reload(this.activeTreeId);
+    }
   }
 }
 </script>

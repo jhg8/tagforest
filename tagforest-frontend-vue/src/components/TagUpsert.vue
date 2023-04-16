@@ -44,21 +44,24 @@
 import utils from '@/utils.js'
 import VueMultiselect from 'vue-multiselect'
 
-//interface Tag {
-//    name: string
-//    category: { name: string }
-//}
-
 export default {
   name: 'TagUpsert',
   emits: ['tagUpsert', 'cancel', 'submit'],
   props: {
-    id: String,
+    tagid: String,
     category: String,
     parentSet: Object
   },
   components: {
       VueMultiselect
+  },
+  computed: {
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    },
+    activeTreeName () {
+      return this.$store.state.activeTreeName;
+    }
   },
   data () {
     return {
@@ -76,28 +79,29 @@ export default {
       const tagSet = this.tagParentSet;
       const data = {
         name: this.tagName,
-        category: { name: this.tagCategory },
+        category: { name: this.tagCategory, tree: { name: this.activeTreeName } },
         parent_set: tagSet,
         content: this.tagContent,
+        tree: { name: this.activeTreeName },
       };
       await this.api(this.update ?
-                     { method: 'put',  url: `tags/${this.id}/`, data: data} :
+                     { method: 'put',  url: `tags/${this.tagid}/`, data: data} :
                      { method: 'post', url: `tags/`,            data: data});
       this.$emit('tagUpsert');
     },
     async getTag () {
-      const data = await this.api({ method: 'get', url: `tags/${this.id}/` });
+      const data = await this.api({ method: 'get', url: `tags/${this.tagid}/` });
       this.tagName = data.name;
       this.tagCategory = data.category.name;
       this.tagParentSet = data.parent_set;
       this.tagContent = data.content;
     },
     async getCategoryList () {
-      const data = await this.api({ method: 'get', url: `tagcategories/` });
+      const data = await this.api({ method: 'get', url: `trees/${this.activeTreeId}/tag_category_list/` });
 	  this.categoryList = data.map(x => x.name);
     },
     async getTagList () {
-      const data = await this.api({ method: 'get', url: `tags/` });
+      const data = await this.api({ method: 'get', url: `trees/${this.activeTreeId}/tag_list/` });
 	  this.tagList = data;
     },
     resize() {
@@ -116,7 +120,7 @@ export default {
         this.tagParentSet.push(tag);
       }
     }
-    this.update = typeof this.id !== 'undefined';
+    this.update = typeof this.tagid !== 'undefined';
     if( this.update ) {
       this.getTag();
     }

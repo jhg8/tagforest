@@ -1,12 +1,25 @@
 <template>
   <nav><div class="container">
-    <router-link to="/"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
-    <router-link v-if="loggedIn" to="/category"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
+    <router-link to="/trees/graph"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
+    <router-link v-if="loggedIn" :to="'/trees/' + activeTreeId + '/category'"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
     <router-link v-if="!loggedIn" to="/auth">Login or register</router-link>
     <router-link v-else to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
+    <span v-if="loggedIn && treeMenu" class="dropdown" >
+      <button @click.prevent="toggleDropdown = !toggleDropdown" ><font-awesome-icon icon="fa-solid fa-caret-down" /> {{ activeTreeName }}</button>
+      <div v-if="toggleDropdown" class="dropdown-content" >
+        <router-link v-for="tree in treeList" :to="'/trees/' + tree.id + '/graph'" @click="toggleDropdown = !toggleDropdown" >{{ tree.name }}</router-link>
+        <button @click.prevent="showAddTreePopup = true" ><font-awesome-icon icon='fa-solid fa-plus' /> Add Tree</button>
+      </div>
+    </span>
   </div></nav>
   <div id="content" >
-  <router-view/>
+
+  <router-view @tree-upsert="getTrees(activeTreeId)"/>
+
+  <section v-if="showAddTreePopup" class="popup"><div class="container" >
+    <tree-upsert :cancel="true" @tree-upsert="showAddTreePopup = false; toggleDropdown = false; $router.go()" @cancel="showAddTreePopup = false; toggleDropdown = false;" />
+  </div></section>
+
   </div>
   <footer><div class="container">
     <span>Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)</span> -
@@ -73,7 +86,7 @@ nav, footer {
   .container {
 	padding-top: 0.2em;
 	padding-bottom: 0.2em;
-    a {
+    a, button {
       color: $white;
       padding: 1em;
       display: inline-block;
@@ -81,6 +94,32 @@ nav, footer {
       text-decoration: none;
       &.router-link-exact-active {
         color: $yellow;
+      }
+    }
+    button {
+      background-color: $purple;
+      cursor: pointer;
+      font: 1em;
+      border: none;
+      font-size: 1em;
+      width: 8em;
+      text-align: left;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      z-index: 1;
+      position: absolute;
+      display: block;
+      width: 8em;
+      a, button {
+        display: block;
+        background-color: $purple;
+        &:hover {
+	  -webkit-filter: brightness(85%);
+        }
       }
     }
   }
@@ -163,6 +202,7 @@ section {
       list-style: none;
       padding-left: 0;
       button {
+        cursor: pointer;
         width: 25em;
         margin-bottom: 0.3em;
         border: 0;
@@ -183,6 +223,35 @@ section {
         &:hover {
           color: $yellow;
           background-color: $lightpurple;
+        }
+      }
+    }
+  }
+  &.tree-list {
+    ul {
+      list-style: none;
+      padding-left: 0;
+      button {
+        cursor: pointer;
+        width: 25em;
+        margin-bottom: 0.3em;
+        border: 0;
+        font-weight: bold;
+        background-color: $white;
+        border: 1px solid $lightergrey;
+        border-radius: 0.2em;
+        padding: 2em;
+        padding-top: 0.5em;
+        padding-left: 0.8em;
+        text-decoration: none;
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 0.5em;
+        margin-bottom: 0.5em;
+        font-size: 1em;
+        text-align: left;
+        &:hover {
+	  -webkit-filter: brightness(96%);
         }
       }
     }
@@ -250,14 +319,16 @@ section {
   }
 }
 
-button, input[type="submit"] {
-  background-color: white;
-  border: 1px solid $lightgrey;
-  border-radius: 0.2em;
-  padding: 0.5em;
-  margin-right: 1em;
-  cursor: pointer;
-  color: $darkgrey;
+form {
+  button, input[type="submit"] {
+    background-color: white;
+    border: 1px solid $lightgrey;
+    border-radius: 0.2em;
+    padding: 0.5em;
+    margin-right: 1em;
+    cursor: pointer;
+    color: $darkgrey;
+  }
 }
 
 form.textForm {
@@ -395,26 +466,26 @@ pre {
 }
 
 label.edit-checkbox {
-	.label {
-		display: inline-block;
-		border-radius: 0.4em;
-		padding: 0.4em;
-		cursor: pointer;
+  .label {
+    display: inline-block;
+    border-radius: 0.4em;
+    padding: 0.4em;
+    cursor: pointer;
     background-color: $white;
     border: 1px solid $lightergrey;
-	}
-	input {
-		opacity: 0;
-		width: 0;
-		height: 0;
+  }
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
     margin: 0;
-	}
-	input:checked + .label {
-		background-color: $lighterergrey;
-	}
-	input:focus + .label {
-		outline: 2px solid black;
-	}
+  }
+  input:checked + .label {
+    background-color: $lighterergrey;
+  }
+  input:focus + .label {
+    outline: 2px solid black;
+  }
 }
 
 .control-buttons {
@@ -533,21 +604,37 @@ a {
   }
 }
 
-
 </style>
 
 <script>
+
+import TreeUpsert from '@/components/TreeUpsert.vue'
 
 export default {
   name: 'App',
   data () {
     return {
       loggedUser: 'Anonymous',
+      treeList: [],
+      toggleDropdown: false,
+      showAddTreePopup: false,
     }
+  },
+  components: {
+    TreeUpsert
   },
   computed: {
     loggedIn () {
       return this.$store.state.loggedIn;
+    },
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    },
+    activeTreeName () {
+      return this.$store.state.activeTreeName;
+    },
+    treeMenu () {
+      return this.$store.state.treeMenu;
     }
   },
   methods: {
@@ -560,6 +647,9 @@ export default {
           this.$store.commit('logout');
         }
       }
+    },
+    async getTrees (treeId) {
+      this.treeList = await this.api({ method: 'get', url: 'trees/' });
     }
   },
   beforeCreate() {
@@ -568,10 +658,14 @@ export default {
   watch: {
     loggedIn (newLoggedIn, oldLoggedIn) {
       this.updateUser();
+    },
+    activeTreeId (newTreeId, oldTreeId) {
+      this.getTrees(newTreeId);
     }
   },
   mounted () {
     this.updateUser();
+    this.getTrees(this.activeTreeId);
   }
 }
 </script>

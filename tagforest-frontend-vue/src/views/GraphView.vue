@@ -1,6 +1,6 @@
 <template>
   <span v-if="loggedIn" >
-    <graph ref="graph" />
+    <graph/>
   </span>
   <span v-else>
     <section ><div class="container" >
@@ -18,19 +18,17 @@ export default {
   components: {
     Graph
   },
-  beforeRouteUpdate(to, from, next) {
-    this.reload(to.hash);
-    next();
-  },
   methods: {
-    reload (q) {
-      this.$refs.graph.reload(q);
-    },
     async demoLogin () {
       const data = await this.api({ method: 'post', url: `dj-rest-auth/login/`,
                                     data: { username: 'demo',
                                             password: 'p1dm4V7P'}});
       this.$store.commit('login', data.key);
+    }
+  },
+  mounted () {
+    if(this.$route.path == '/') {
+      this.$router.push({path: '/trees/graph'});
     }
   }
 }

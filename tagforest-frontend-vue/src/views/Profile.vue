@@ -5,31 +5,28 @@
 
   <section class="control-buttons" ><div class="container" >
 
-    <button @click="showExportPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-download" /> Export
-    </button>
-
-    <button @click="showImportPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-upload" /> Import
+    <button @click="showAddTreePopup = true" >
+    <font-awesome-icon icon="fa-solid fa-plus" /> New Tree
     </button>
 
   </div></section>
 
-  <section v-if="showExportPopup" class="popupExport"><div class="container" >
-    <form class="textForm">
-      <span class="textarea" ><textarea type="multiarea" v-model="exportValue" placeholder="Export" >
-      </textarea></span>
-      <button @click="showExportPopup = false" >Exit</button>
-    </form>
+  <section class="tree-list" ><div class="container" >
+    <ul>
+      <li v-for="tree in treeList" v-bind:key="tree.name" >
+          <button @click="activeTreeId = tree.id.toString(); showTreePopup = true" >
+          {{ tree.name}}
+        </button>
+      </li>
+    </ul>
   </div></section>
 
-  <section v-if="showImportPopup" class="popupExport"><div class="container" >
-    <form class="textForm" @submit.prevent="importData(); $emit('submit')" action="#" >
-      <span class="textarea" ><textarea type="multiarea" v-model="importValue" placeholder="Import" >
-      </textarea></span>
-      <input type="submit" />
-      <button @click="showImportPopup = false" >Cancel</button>
-    </form>
+  <section v-if="showTreePopup" class="popup"><div class="container" >
+  <tree-upsert :cancel="true" :id="activeTreeId" @tree-upsert="showTreePopup = false; reload(); $emit('treeUpsert')" @cancel="showTreePopup = false" />
+  </div></section>
+
+  <section v-if="showAddTreePopup" class="popup"><div class="container" >
+  <tree-upsert :cancel="true" @tree-upsert="showAddTreePopup = false; reload(); $emit('treeUpsert')" @cancel="showAddTreePopup = false" />
   </div></section>
 
   <section class="profile" ><div class="container" >
@@ -42,20 +39,24 @@
 <script>
 
 import Logout from '@/components/Logout.vue'
+import TreeUpsert from '@/components/TreeUpsert.vue'
 
 export default {
   name: 'Profile',
-  emits: ['import', 'cancel', 'submit'],
   components: {
-    Logout
+    Logout,
+    TreeUpsert
   },
+  emits: ['treeUpsert'],
   data () {
     return {
       loggedUser: 'Anonymous',
-      importValue: '',
-      exportValue: '',
-      showExportPopup: false,
-      showImportPopup: false
+      // Data from backend
+      treeList: null,
+      // Select menus
+      showTreePopup: false,
+      showAddTreePopup: false,
+      activeTreeId: null
     }
   },
   methods: {
@@ -63,22 +64,22 @@ export default {
       const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
       this.loggedUser = data.username;
     },
-    async importData () {
-      const data = {
-        import_value: this.importValue
-      };
-      await this.api({ method: 'post', url: `import/`, data: data});
-      this.$emit('import');
-      this.$router.push({ path: '/'});
-    },
-    async getExportValue () {
-      const data = await this.api({ method: 'get', url: `export/` });
-      this.exportValue = JSON.stringify(data.export_value);
+    async reload () {
+      // Get data from Backend
+      const data = await this.api({ method: 'get', url: `trees/` });
+
+      this.treeList = data;
     }
   },
   mounted () {
     this.getUser();
-    this.getExportValue();
+    this.$store.commit('disableTreeMenu');
+    this.reload();
+  },
+  computed: {
+    loggedIn () {
+      return this.$store.state.loggedIn;
+    },
   },
 }
 </script>

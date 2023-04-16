@@ -10,18 +10,18 @@
   </div></section>
 
   <section v-if="!editMode" class="category"><div class="container" >
-    <router-link :to="'/#' + tag.category.name + ';'" >{{ tag.category.name }}</router-link>
+    <router-link :to="'/trees/' + activeTreeId + '/graph#' + tag.category.name + ';'" >{{ tag.category.name }}</router-link>
   </div></section>
   <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ tag.name }}</h2>
     <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
-      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="'/#' + tag.name" >{{ tag.name }}</router-link></span>
+      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/trees/' + activeTreeId + '/graph#' + tag.name" >{{ tag.name }}</router-link></span>
+      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="'/trees/' + activeTreeId + '/graph/#' + tag.name" >{{ tag.name }}</router-link></span>
     </p>
     <p><pre>{{ tag.content }}</pre></p>
   </div></section>
   <section v-if="editMode" class="tag"><div class="container" >
-    <tag-upsert :id="this.id" @tag-upsert="getTag(); editMode = false" />
+    <tag-upsert :tagid="this.tagid" @tag-upsert="getTag(); editMode = false" />
   </div></section>
 </template>
 
@@ -31,10 +31,15 @@ import TagUpsert from '@/components/TagUpsert.vue'
 export default {
   name: 'TagDetail',
   props: {
-    id: String
+    tagid: String
   },
   components: {
     TagUpsert
+  },
+  computed: {
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    }
   },
   data () {
     return {
@@ -44,11 +49,11 @@ export default {
   },
   methods: {
     async getTag () {
-      const data = await this.api({ method: 'get', url: `extendedtags/${this.id}/` });
+      const data = await this.api({ method: 'get', url: `extendedtags/${this.tagid}/` });
       this.tag = data;
     },
     async deleteTag () {
-      await this.api({ method: 'delete',  url: `tags/${this.id}/`});
+      await this.api({ method: 'delete',  url: `tags/${this.tagid}/`});
       this.$router.push({path: '/'});
     }
   },

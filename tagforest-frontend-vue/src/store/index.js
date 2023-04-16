@@ -4,7 +4,10 @@ export default createStore({
   state () {
     return {
       loggedIn: false,
-      token: null
+      token: null,
+      activeTreeId: 0,
+      activeTreeName: '',
+      treeMenu: false
     }
   },
   mutations: {
@@ -13,6 +16,18 @@ export default createStore({
       state.token = token;
       localStorage.setItem('loggedIn', true);
       localStorage.setItem('token', token);
+    },
+    setActiveTreeId(state, treeId) {
+      state.activeTreeId = treeId;
+    },
+    setActiveTreeName(state, treeName) {
+      state.activeTreeName = treeName;
+    },
+    enableTreeMenu(state) {
+      state.treeMenu = true;
+    },
+    disableTreeMenu(state) {
+      state.treeMenu = false;
     },
     logout(state) {
       state.loggedIn = false;

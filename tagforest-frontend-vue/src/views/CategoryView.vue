@@ -1,6 +1,6 @@
 <template>
   <span v-if="loggedIn" >
-    <category ref="category" />
+    <category/>
   </span>
   <span v-else>
     <section ><div class="container" >
@@ -17,15 +17,6 @@ export default {
   name: 'CategoryView',
   components: {
     Category
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.reload();
-    next();
-  },
-  methods: {
-    reload () {
-      this.$refs.category.reload();
-    },
   }
 }
 </script>
