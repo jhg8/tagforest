@@ -16,6 +16,7 @@
 
 <script>
 import utils from '@/utils.js'
+import constants from '@/constants.js'
 
 export default {
   name: 'CategoryUpsert',
@@ -32,7 +33,6 @@ export default {
   },
   methods: {
     async upsertCategory () {
-      console.log("upsert");
       const data = {
         name: this.categoryName,
         color: this.categoryColor,
@@ -51,6 +51,24 @@ export default {
       this.categoryName = data.name;
       this.categoryColor = data.color;
     },
+    async setDefaultColor () {
+      const categoryList = await this.api({ method: 'get', url: 'tagcategories/' });
+      const usedColorList = categoryList.map(x => { return x.color });
+      const colorCountMap = {}
+      let colorCountList = []
+      for(const color of constants.DEFAULT_CATEGORY_COLOR_SET)
+        colorCountMap[color] = 0;
+      for(const color of usedColorList) {
+        if(color in colorCountMap)
+          colorCountMap[color] += 1;
+        else
+          colorCountMap[color] = 1;
+      }
+      for(const color in colorCountMap)
+        colorCountList.push([colorCountMap[color], color]);
+      colorCountList = colorCountList.sort();
+      this.categoryColor = colorCountList.at(0).at(1);
+    }
   },
   computed: {
     update() {
@@ -58,8 +76,10 @@ export default {
     }
   },
   mounted () {
-    if( this.update ) {
+    if(this.update) {
       this.getCategory();
+    } else {
+      this.setDefaultColor();
     }
     this.$refs.title.focus();
   }

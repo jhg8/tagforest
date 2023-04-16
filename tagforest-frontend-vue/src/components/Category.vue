@@ -22,7 +22,7 @@
   </div></section>
 
   <section v-if="showAddCategoryPopup" class="popup"><div class="container" >
-  <category-upsert cancel="true" @category-upsert="showAddCategoryPopup = false; reload()" @cancel="showAddCategoryPopup = false" />
+  <category-upsert :cancel="true" @category-upsert="showAddCategoryPopup = false; reload()" @cancel="showAddCategoryPopup = false" />
   </div></section>
 
 </template>
