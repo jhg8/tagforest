@@ -92,21 +92,21 @@ class Graph():
     def descendantSet(self, tag_set):
         return self._BFS(tag_set, self.graph_rev)
 
-    def relatedTagSet(self, tag_set):
-        related_tag_set = self.ascendantSet(tag_set)
+    def extendedAscendantSet(self, tag_set):
+        extended_ascendant_set = self.ascendantSet(tag_set)
         descendant_set = self.descendantSet(tag_set)
         for tag in descendant_set:
-            related_tag_set.add(tag)
+            extended_ascendant_set.add(tag)
             for parent in self.graph.get(tag, []):
-                related_tag_set.add(parent)
-        return related_tag_set
+                extended_ascendant_set.add(parent)
+        return extended_ascendant_set
 
-    def filterTagSet(self, tag_set):
-        filter_tag_set = self.ascendantSet(tag_set).union(self.descendantSet(tag_set))
+    def extendedDescendantSet(self, tag_set):
+        extended_descendant_set = self.ascendantSet(tag_set).union(self.descendantSet(tag_set))
         child_set = set()
         for tag in tag_set:
             for child in self.graph_rev.get(tag, []):
                 child_set.add(child)
         for tag in self.ascendantSet(child_set):
-            filter_tag_set.add(tag)
-        return filter_tag_set
+            extended_descendant_set.add(tag)
+        return extended_descendant_set
