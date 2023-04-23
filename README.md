@@ -48,14 +48,11 @@ NPM modules used: vue, vue-router, vuex, axios
 
 ### Important
 
-- Generate better example tree
 - Improve editor
+- Add visibility options on tags and their descendents (public, invite-only, private)
 
 ### Less important
 
-- Add backend and frontend tests
-- Add search option to find tags in graph view
-- Handle and display errors (such as backend HTTP error codes) in frontend
-- Use graph algorithms instead of query unions and intersections (networkx library ?)
-- Add visibility options on tags and their descendents (public, invite-only, private)
 - Turn backend and frontend into reusable apps
+- Add backend and frontend tests
+- Handle and display errors (such as backend HTTP error codes) in frontend
