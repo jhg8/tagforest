@@ -134,5 +134,6 @@ class ExtendedTagSerializer(TagSerializer):
 
     def get_extended_parent_set(self, obj):
         graph = Graph(obj.user, obj.tree)
-        return SimpleTagSerializer(Tag.objects.filter(user=obj.user, name__in=graph.extendedAscendantSet(set([obj.name]))), many=True, context=self.context).data
-
+        extended_ascendant_set = graph.extendedAscendantSet(set([obj.name]))
+        parent_set = graph.graph[obj.name]
+        return SimpleTagSerializer(Tag.objects.filter(user=obj.user, tree=obj.tree, name__in=extended_ascendant_set.difference(parent_set)), many=True, context=self.context).data
