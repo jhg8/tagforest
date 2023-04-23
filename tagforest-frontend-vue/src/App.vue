@@ -44,6 +44,8 @@ html, body {
   padding: 0;
   height: 100%;
   min-width: 100vw;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 @media all and (max-width: 800px) {
   html {
@@ -55,9 +57,19 @@ html, body {
     font-size: 12px;
   }
 }
+@media all and (max-width: 500px) {
+  html {
+    font-size: 11px;
+  }
+}
 @media all and (max-width: 400px) {
   html {
     font-size: 10px;
+  }
+}
+@media all and (max-width: 300px) {
+  html {
+    font-size: 9px;
   }
 }
 
@@ -68,11 +80,11 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   color: $grey;
 
-	position: relative; /* needed for footer positioning*/
-	margin: 0 auto; /* center, not in IE5 */
-	height: auto !important; /* real browsers */
-	height: 100%; /* IE6: treaded as min-height*/
-	min-height: 100%; /* real browsers */
+  position: relative; /* needed for footer positioning*/
+  margin: 0 auto; /* center, not in IE5 */
+  height: auto !important; /* real browsers */
+  height: 100%; /* IE6: treaded as min-height*/
+  min-height: 100%; /* real browsers */
 }
 
 #content {
@@ -101,7 +113,7 @@ nav, footer {
       cursor: pointer;
       font: 1em;
       border: none;
-      font-size: 1em;
+      font-size: 1rem;
       width: 8em;
       text-align: left;
     }
@@ -143,6 +155,7 @@ footer {
 
 .container {
   max-width: 70rem;
+  max-width: 95vw;
   margin: auto;
 }
 
@@ -218,7 +231,7 @@ section {
         display: inline-block;
         margin-right: 0.5em;
         margin-bottom: 0.5em;
-        font-size: 1em;
+        font-size: 1rem;
         text-align: left;
         &:hover {
           color: $yellow;
@@ -248,7 +261,7 @@ section {
         display: inline-block;
         margin-right: 0.5em;
         margin-bottom: 0.5em;
-        font-size: 1em;
+        font-size: 1rem;
         text-align: left;
         &:hover {
 	  -webkit-filter: brightness(96%);
@@ -321,6 +334,7 @@ section {
 
 form {
   button, input[type="submit"] {
+    font-size: 1rem;
     background-color: white;
     border: 1px solid $lightgrey;
     border-radius: 0.2em;
@@ -335,7 +349,8 @@ form.textForm {
   margin-bottom: 1em;
   margin-top: 1em;
   .multiselect__tags {
-    width: 32em;
+    width: 32rem;
+    max-width: 80vw;
   }
   input[type="text"], input[type="password"] {
     width: 100%;
@@ -346,7 +361,7 @@ form.textForm {
       border: none;
       outline: 0;
       border-bottom: 1px solid $lightgrey;
-      font-size: 0.9em;
+      font-size: 0.9rem;
       box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
     }
   }
@@ -355,7 +370,8 @@ form.textForm {
     overflow: hidden;
     padding-right: 10px;
     height: 3em;
-    width: 32em;
+    width: 32rem;
+    max-width: 80vw;
   }
   span.textarea {
     display: block;
@@ -405,7 +421,7 @@ form.textForm {
     border: none;
     outline: 0;
     border-bottom: 1px solid $lightgrey;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
   }
   input[type="submit"], button {
@@ -601,6 +617,16 @@ a {
   &.active {
     font-weight: bold;
     color: #ef674b;
+  }
+
+}
+
+section {
+  .multiselect__tags {
+    font-size: 1rem;
+  }
+  input.multiselect__input {
+    font-size: 1rem;
   }
 }
 
