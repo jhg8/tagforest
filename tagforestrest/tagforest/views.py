@@ -206,6 +206,7 @@ def graph_view(request, tree_pk):
     data['category_list']    = TagCategorySerializer(category_list, many=True, context = { 'request': request }).data
     data['control_tag_list'] = TagSerializer(control_tag_list,      many=True, context = { 'request': request }).data
     data['tag_list']         = TagSerializer(tag_list,              many=True, context = { 'request': request }).data
+    data['full_tag_list']    = TagSerializer(tag_queryset,          many=True, context = { 'request': request }).data
     data['query']            = query_json
 
     return Response(data)
