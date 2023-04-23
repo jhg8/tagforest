@@ -43,7 +43,7 @@
       v-model="activeControlTagSet"
       track-by="name"
       label="name"
-      :options="controlTagList"
+      :options="fullTagList"
       :max-height="450"
       :multiple="true"
       @select="multiSelectInput"
@@ -89,7 +89,7 @@
             v-model="multiTagAddSet"
             track-by="name"
             label="name"
-            :options="tagList"
+            :options="fullTagList"
             :max-height="450"
             :multiple="true"
           >
@@ -137,6 +137,7 @@ export default {
       categoryList: null,
       controlTagList: [],
       tagList: null,
+      fullTagList: [],
       // Select menus
       selectMode: false,
       selectTagIdMap: {},
@@ -282,6 +283,7 @@ export default {
       this.categoryList = data.category_list;
       this.controlTagList = data.control_tag_list;
       this.tagList = data.tag_list;
+      this.fullTagList = data.full_tag_list;
     },
     async deleteSelected () {
       for(const id in this.selectTagIdMap)
