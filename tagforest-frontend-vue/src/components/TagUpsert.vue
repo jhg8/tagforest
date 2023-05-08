@@ -8,6 +8,7 @@
 		<span class="select" >
 		<VueMultiselect
 		  v-model="tagCategory"
+                  placeholder="Select Category"
 		  :options="categoryList"
 		  :max-height="450"
 		  :multiple="false"
@@ -18,9 +19,10 @@
 		<label>Tags</label>
 		<span class="select" >
 		<VueMultiselect
+                  placeholder="Select Tags"
 		  v-model="tagParentSet"
-          track-by="name"
-          label="name"
+                  track-by="name"
+                  label="name"
 		  :options="tagList"
 		  :max-height="450"
 		  :multiple="true"
@@ -29,10 +31,8 @@
 		</VueMultiselect>
 		</span>
 
-		<span v-show="update" ><label>Content</label></span>
-		<span v-show="update" >
-		  <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="tagContent" ref="textarea" @focus="resize()" placeholder="Tag content, plain text" ></textarea></span>
-		</span>
+		<span ><label>Content</label></span>
+		  <span class="textarea" ref="spantextarea" ><textarea type="multiarea" v-model="tagContent" ref="textarea" @focus="resize()" placeholder="Tag content" ></textarea></span>
     </div>
 
     <input type="submit" />

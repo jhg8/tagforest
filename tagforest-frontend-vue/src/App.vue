@@ -329,8 +329,7 @@ form.textForm {
   margin-bottom: 1em;
   margin-top: 1em;
   .multiselect__tags {
-    width: 32rem;
-    max-width: 80vw;
+    width: 100%;
   }
   input[type="text"], input[type="password"] {
     width: 100%;
@@ -350,10 +349,11 @@ form.textForm {
     overflow: hidden;
     padding-right: 10px;
     height: 3em;
-    width: 32rem;
-    max-width: 80vw;
+    width: 100%;
   }
   span.textarea {
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
     display: block;
     overflow: hidden;
     padding-right: 10px;
@@ -388,7 +388,7 @@ form.textForm {
   }
   .formGrid {
     display: grid;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: max-content auto;
     grid-gap: 1em;
   }
   input[type="text"] {
@@ -421,16 +421,28 @@ form.textForm {
     background-color: $white;
     border-radius: 1em;
     padding: 1em;
-    margin: 30vh auto;
+    margin: 20vh auto;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
-    max-width: 40em;
+    max-width: 800px;
     span.textarea {
       display: block;
       padding-right: 10px;
       margin-bottom: 2em;
     }
     textarea {
-      overflow: scroll;
+      overflow-y: scroll;
+    }
+    input[type="submit"], button {
+      margin-top: 3em;
+    }
+    span.textarea {
+      padding-right: 10px;
+      min-height: 30vh;
+      margin-bottom: 0;
+    }
+    textarea {
+      min-height: 30vh;
+      margin-bottom: 0;
     }
   }
 }
@@ -449,6 +461,24 @@ form.textForm {
     textarea {
       height: 50vh;
       margin-bottom: 0;
+    }
+  }
+}
+
+@media all and (max-width: 800px) {
+  .popup, .popupExport {
+    .container {
+      margin: 4vh auto;
+    }
+  }
+  form.textForm {
+    label {
+      display: none;
+    }
+    .formGrid {
+      display: grid;
+      grid-template-columns: auto;
+      grid-gap: 1em;
     }
   }
 }
