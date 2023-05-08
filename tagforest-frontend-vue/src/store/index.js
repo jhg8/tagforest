@@ -6,8 +6,7 @@ export default createStore({
       loggedIn: false,
       token: null,
       activeTreeId: 0,
-      activeTreeName: '',
-      treeMenu: false
+      activeTreeName: ''
     }
   },
   mutations: {
@@ -22,12 +21,6 @@ export default createStore({
     },
     setActiveTreeName(state, treeName) {
       state.activeTreeName = treeName;
-    },
-    enableTreeMenu(state) {
-      state.treeMenu = true;
-    },
-    disableTreeMenu(state) {
-      state.treeMenu = false;
     },
     logout(state) {
       state.loggedIn = false;

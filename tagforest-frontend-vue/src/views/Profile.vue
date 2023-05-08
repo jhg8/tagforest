@@ -1,4 +1,6 @@
 <template>
+  <nav-bar></nav-bar>
+  <div id="content" >
   <section class="profile" ><div class="container" >
     <h1>{{ loggedUser }}</h1>
   </div></section>
@@ -34,18 +36,21 @@
       <logout/>
     </p>
   </div></section>
+  </div>
 </template>
 
 <script>
 
 import Logout from '@/components/Logout.vue'
 import TreeUpsert from '@/components/TreeUpsert.vue'
+import NavBar from '@/components/NavBar.vue'
 
 export default {
   name: 'Profile',
   components: {
     Logout,
-    TreeUpsert
+    TreeUpsert,
+    NavBar
   },
   emits: ['treeUpsert'],
   data () {
@@ -73,7 +78,6 @@ export default {
   },
   mounted () {
     this.getUser();
-    this.$store.commit('disableTreeMenu');
     this.reload();
   },
   computed: {

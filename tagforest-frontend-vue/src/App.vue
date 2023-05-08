@@ -1,26 +1,6 @@
 <template>
-  <nav><div class="container">
-    <router-link to="/trees/graph"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
-    <router-link v-if="loggedIn" :to="'/trees/' + activeTreeId + '/category'"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
-    <router-link v-if="!loggedIn" to="/auth">Login or register</router-link>
-    <router-link v-else to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
-    <span v-if="loggedIn && treeMenu" class="dropdown" >
-      <button @click.prevent="toggleDropdown = !toggleDropdown" ><font-awesome-icon icon="fa-solid fa-caret-down" /> {{ activeTreeName }}</button>
-      <div v-if="toggleDropdown" class="dropdown-content" >
-        <router-link v-for="tree in treeList" :to="'/trees/' + tree.id + '/graph'" @click="toggleDropdown = !toggleDropdown" >{{ tree.name }}</router-link>
-        <button @click.prevent="showAddTreePopup = true" ><font-awesome-icon icon='fa-solid fa-plus' /> Add Tree</button>
-      </div>
-    </span>
-  </div></nav>
-  <div id="content" >
+  <router-view/>
 
-  <router-view @tree-upsert="getTrees(activeTreeId)"/>
-
-  <section v-if="showAddTreePopup" class="popup"><div class="container" >
-    <tree-upsert :cancel="true" @tree-upsert="showAddTreePopup = false; toggleDropdown = false; $router.go()" @cancel="showAddTreePopup = false; toggleDropdown = false;" />
-  </div></section>
-
-  </div>
   <footer><div class="container">
     <span>Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)</span> -
     <router-link to="/about">About</router-link>
@@ -634,64 +614,10 @@ section {
 
 <script>
 
-import TreeUpsert from '@/components/TreeUpsert.vue'
-
 export default {
   name: 'App',
-  data () {
-    return {
-      loggedUser: 'Anonymous',
-      treeList: [],
-      toggleDropdown: false,
-      showAddTreePopup: false,
-    }
-  },
-  components: {
-    TreeUpsert
-  },
-  computed: {
-    loggedIn () {
-      return this.$store.state.loggedIn;
-    },
-    activeTreeId () {
-      return this.$store.state.activeTreeId;
-    },
-    activeTreeName () {
-      return this.$store.state.activeTreeName;
-    },
-    treeMenu () {
-      return this.$store.state.treeMenu;
-    }
-  },
-  methods: {
-    async updateUser () {
-      if(this.loggedIn) {
-        try {
-          const data = await this.api({ method: 'get', url: `dj-rest-auth/user/` });
-          this.loggedUser = data.username;
-        } catch(e) {
-          this.$store.commit('logout');
-        }
-      }
-    },
-    async getTrees (treeId) {
-      this.treeList = await this.api({ method: 'get', url: 'trees/' });
-    }
-  },
   beforeCreate() {
     this.$store.commit('initStore');
-  },
-  watch: {
-    loggedIn (newLoggedIn, oldLoggedIn) {
-      this.updateUser();
-    },
-    activeTreeId (newTreeId, oldTreeId) {
-      this.getTrees(newTreeId);
-    }
-  },
-  mounted () {
-    this.updateUser();
-    this.getTrees(this.activeTreeId);
   }
 }
 </script>

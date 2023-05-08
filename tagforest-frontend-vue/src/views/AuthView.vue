@@ -1,4 +1,6 @@
 <template>
+  <nav-bar></nav-bar>
+  <div id="content" >
   <section ><div class="container" >
     <h1>Login</h1>
 
@@ -9,18 +11,21 @@
     <register/>
 
   </div></section>
+  </div>
 </template>
 
 <script>
 
 import Login from '@/components/Login.vue'
 import Register from '@/components/Register.vue'
+import NavBar from '@/components/NavBar.vue'
 
 export default {
   name: 'AuthView',
   components: {
     Login,
-    Register
+    Register,
+    NavBar
   }
 }
 </script>
