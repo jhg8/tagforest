@@ -316,7 +316,8 @@ export default {
             }
           }
           const tagSet = [];
-          for(const parentTag of tag.parent_set) {
+          const tagData = await this.api({ method: 'get', url: `tags/${id}/` });
+          for(const parentTag of tagData.parent_set) {
             let addTag = true;
             for(const multiTagAddTag of this.multiTagAddSet) {
               if(multiTagAddTag.name == parentTag.name) {
