@@ -437,11 +437,11 @@ form.textForm {
     }
     span.textarea {
       padding-right: 10px;
-      min-height: 30vh;
+      min-height: 15vh;
       margin-bottom: 0;
     }
     textarea {
-      min-height: 30vh;
+      min-height: 15vh;
       margin-bottom: 0;
     }
   }
@@ -468,7 +468,7 @@ form.textForm {
 @media all and (max-width: 800px) {
   .popup, .popupExport {
     .container {
-      margin: 4vh auto;
+      margin: 0vh auto;
     }
   }
   form.textForm {
