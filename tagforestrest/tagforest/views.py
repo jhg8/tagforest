@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from .models import Tree, Tag, TagCategory, Graph
-from .serializers import TreeSerializer, TagSerializer, TagCategorySerializer, ExtendedTagSerializer
+from .serializers import TreeSerializer, TagSerializer, SimpleTagSerializer, TagCategorySerializer, ExtendedTagSerializer
 from rest_framework import permissions
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, action, permission_classes
@@ -204,9 +204,9 @@ def graph_view(request, tree_pk):
     control_tag_list = [tag_queryset.filter(name=t).first() for t in control_tag_list]
 
     data['category_list']    = TagCategorySerializer(category_list, many=True, context = { 'request': request }).data
-    data['control_tag_list'] = TagSerializer(control_tag_list,      many=True, context = { 'request': request }).data
-    data['tag_list']         = TagSerializer(tag_list,              many=True, context = { 'request': request }).data
-    data['full_tag_list']    = TagSerializer(tag_queryset,          many=True, context = { 'request': request }).data
+    data['control_tag_list'] = SimpleTagSerializer(control_tag_list,      many=True, context = { 'request': request }).data
+    data['tag_list']         = SimpleTagSerializer(tag_list,              many=True, context = { 'request': request }).data
+    data['full_tag_list']    = SimpleTagSerializer(tag_queryset,          many=True, context = { 'request': request }).data
     data['query']            = query_json
 
     return Response(data)
