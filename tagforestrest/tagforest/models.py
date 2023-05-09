@@ -12,6 +12,7 @@ class GroupProfile(models.Model):
 class Tree(models.Model):
     name = models.CharField(max_length=255, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
+    default_category = models.ForeignKey('TagCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
 
     class Meta:
         unique_together = ('name', 'user')
@@ -24,6 +25,8 @@ class TagCategory(models.Model):
     color = models.CharField(max_length=255, blank=False, default="ffffff")
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     tree = models.ForeignKey(Tree, on_delete=models.CASCADE, blank=False)
+    use_as_filter = models.BooleanField(default=True)
+    show_in_results = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('name', 'user', 'tree')

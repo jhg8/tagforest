@@ -189,25 +189,45 @@ def graph_view(request, tree_pk):
         tag_set = graph.all
         query_tag_set = Tag.objects.none()
 
-    category_list = tag_category_queryset
     tag_list = tag_queryset.filter(name__in=tag_set)
+
+    category_set = set()
+    hidden_category_set = set()
+    for category in tag_category_queryset.all():
+        (category_set if category.show_in_results else hidden_category_set).add(category.name)
     if category_query:
-        tag_list = tag_list.filter(category__name=category_query)
-        tag_set = set([tag.name for tag in tag_list])
+        result_category_set = set([category_query])
+    else:
+        result_category_set = category_set
+
+    tag_list = tag_list.filter(category__name__in=result_category_set)
+    tag_set = set([tag.name for tag in tag_list])
+    category_list        = tag_category_queryset.filter(name__in=category_set)
+    hidden_category_list = tag_category_queryset.filter(name__in=hidden_category_set )
 
     control_tag_set = graph.extendedAscendantSet(tag_set)
 
-    control_tag_list = [(len(graph.extendedDescendantSet(set([t]))), t) for t in control_tag_set]
-    control_tag_list = list(filter(lambda x: x[0] > 1, control_tag_list))
-    control_tag_list = sorted(control_tag_list, reverse=True)
-    control_tag_list = list(map(lambda x: x[1], control_tag_list))
-    control_tag_list = [tag_queryset.filter(name=t).first() for t in control_tag_list]
+    control_category_set = set()
+    for category in tag_category_queryset.all():
+        if category.use_as_filter:
+            control_category_set.add(category.name)
 
-    data['category_list']    = TagCategorySerializer(category_list, many=True, context = { 'request': request }).data
-    data['control_tag_list'] = SimpleTagSerializer(control_tag_list,      many=True, context = { 'request': request }).data
-    data['tag_list']         = SimpleTagSerializer(tag_list,              many=True, context = { 'request': request }).data
-    data['full_tag_list']    = SimpleTagSerializer(tag_queryset,          many=True, context = { 'request': request }).data
-    data['query']            = query_json
+    _control_tag_list = [(len(graph.extendedDescendantSet(set([t]))), t) for t in control_tag_set]
+    _control_tag_list = list(filter(lambda x: x[0] > 1, _control_tag_list))
+    _control_tag_list = sorted(_control_tag_list, reverse=True)
+    _control_tag_list = list(map(lambda x: x[1], _control_tag_list))
+    control_tag_list = []
+    for t in _control_tag_list:
+        q = tag_queryset.filter(name=t, category__name__in=control_category_set)
+        if q:
+            control_tag_list.append(q.first())
+
+    data['hidden_category_list'] = TagCategorySerializer(hidden_category_list, many=True, context = { 'request': request }).data
+    data['category_list']        = TagCategorySerializer(category_list,        many=True, context = { 'request': request }).data
+    data['control_tag_list']     = SimpleTagSerializer(control_tag_list,       many=True, context = { 'request': request }).data
+    data['tag_list']             = SimpleTagSerializer(tag_list,               many=True, context = { 'request': request }).data
+    data['full_tag_list']        = SimpleTagSerializer(tag_queryset,           many=True, context = { 'request': request }).data
+    data['query']                = query_json
 
     return Response(data)
 

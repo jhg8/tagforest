@@ -34,7 +34,7 @@ class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = TagCategory
-        fields = ['id', 'url', 'name', 'color', 'tree']
+        fields = ['id', 'url', 'name', 'color', 'tree', 'use_as_filter', 'show_in_results']
         extra_kwargs = {
             'name': {
                 'validators': [],
@@ -49,6 +49,8 @@ class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
                 color=validated_data.pop('color'), 
                 user=user_data,
                 tree=tree,
+                use_as_filter=validated_data.pop('use_as_filter'),
+                show_in_results=validated_data.pop('show_in_results'),
         )
         tag_category.save()
         tag_category.clean()
@@ -57,6 +59,8 @@ class TagCategorySerializer(serializers.HyperlinkedModelSerializer):
     def update(self, tag_category, validated_data):
         tag_category.name = validated_data.pop('name')
         tag_category.color = validated_data.pop('color')
+        tag_category.use_as_filter = validated_data.pop('use_as_filter')
+        tag_category.show_in_results = validated_data.pop('show_in_results')
         tag_category.save()
         tag_category.clean()
         return tag_category
