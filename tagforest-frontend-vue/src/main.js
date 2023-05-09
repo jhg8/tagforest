@@ -7,9 +7,9 @@ import constants from '@/constants.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faPenToSquare, faPlus, faCheck, faTrash, faXmark, faDownload, faUpload, faRightFromBracket, faHouse, faUser, faBox, faTag, faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faPlus, faCheck, faTrash, faXmark, faDownload, faUpload, faRightFromBracket, faHouse, faUser, faBox, faTag, faCaretDown, faMagnifyingGlass, faFilter } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPenToSquare, faPlus, faCheck, faTrash, faXmark, faDownload, faUpload, faRightFromBracket, faHouse, faUser, faBox, faTag, faCaretDown)
+library.add(faPenToSquare, faPlus, faCheck, faTrash, faXmark, faDownload, faUpload, faRightFromBracket, faHouse, faUser, faBox, faTag, faCaretDown, faMagnifyingGlass, faFilter)
 
 const app = createApp(App)
 

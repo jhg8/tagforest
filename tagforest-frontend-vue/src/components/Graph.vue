@@ -33,6 +33,11 @@
         {{ category.name }}
       </router-link>
     </span>
+    <span v-for="category in hiddenCategoryList" v-bind:key="category.name" >
+      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
+        {{ category.name }}
+      </router-link>
+    </span>
   </div></section>
 
 
@@ -135,6 +140,7 @@ export default {
     return {
       // Data from backend
       categoryList: null,
+      hiddenCategoryList: null,
       controlTagList: [],
       tagList: null,
       fullTagList: [],
@@ -281,6 +287,7 @@ export default {
 
       // Refresh tag list
       this.categoryList = data.category_list;
+      this.hiddenCategoryList = data.hidden_category_list;
       this.controlTagList = data.control_tag_list;
       this.tagList = data.tag_list;
       this.fullTagList = data.full_tag_list;

@@ -10,8 +10,14 @@
   <section class="category-list" ><div class="container" >
     <ul>
       <li v-for="category in categoryList" v-bind:key="category.name" >
-          <button :style="{ backgroundColor: '#' + category.color }" @click="activeCategoryId = category.id.toString(); showCategoryPopup = true" >
-          {{ category.name}}
+        <button :style="{ backgroundColor: '#' + category.color }" @click="activeCategoryId = category.id.toString(); showCategoryPopup = true" >
+            <div class="category-view-name" >{{ category.name }}</div>
+            <div class="category-view-option" >
+              <font-awesome-icon v-if="category.use_as_filter" icon="fa-solid fa-filter" />
+            </div>
+            <div class="category-view-option" >
+              <font-awesome-icon v-if="category.show_in_results" icon="fa-solid fa-magnifying-glass" />
+            </div>
         </button>
       </li>
     </ul>

@@ -203,9 +203,6 @@ section {
         font-weight: bold;
         background-color: $purple;
         border-radius: 0.2em;
-        padding: 2em;
-        padding-top: 0.5em;
-        padding-left: 0.8em;
         text-decoration: none;
         vertical-align: middle;
         display: inline-block;
@@ -213,9 +210,25 @@ section {
         margin-bottom: 0.5em;
         font-size: 1rem;
         text-align: left;
+        height: 3rem;
         &:hover {
           color: $yellow;
           background-color: $lightpurple;
+        }
+        display: flex;
+        .category-view-name {
+          width: 15rem;
+        }
+        .category-view-name, .category-view-option {
+          display: flex;
+          padding-left: 1rem;
+          padding-right: 1rem;
+          height: 100%;
+          justify-content: center;
+          align-items: center;
+        }
+        .category-view-option {
+          width: 2rem;
         }
       }
     }
