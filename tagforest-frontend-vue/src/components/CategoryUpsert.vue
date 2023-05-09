@@ -8,10 +8,17 @@
       <span class="text" ><input type="text" v-model="categoryColor" placeholder="Color" /></span>
 
       <label>Show in results</label>
-      <span class="text" ><input type="checkbox" v-model="categoryResults" /></span>
+      <span class="text" >
+        <label class="checkbox-label" >Show in results</label>
+        <input type="checkbox" v-model="categoryResults" />
+      </span>
 
       <label>Use as filter</label>
-      <span class="text" ><input type="checkbox" v-model="categoryFilter" /></span>
+      <span class="text" >
+        <label class="checkbox-label" >Use as filter</label>
+        <input type="checkbox" v-model="categoryFilter" />
+      </span>
+
     </div>
 
     <input type="submit" />

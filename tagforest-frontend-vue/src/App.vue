@@ -380,6 +380,9 @@ form.textForm {
     float: bottom;
     text-align: right;
   }
+  label.checkbox-label {
+    display: none;
+  }
   textarea {
     height: 20em;
     width: 100%;
@@ -482,6 +485,11 @@ form.textForm {
   form.textForm {
     label {
       display: none;
+    }
+    label.checkbox-label {
+      width: 10rem;
+      display: inline-block;
+      text-align: left;
     }
     .formGrid {
       display: grid;
