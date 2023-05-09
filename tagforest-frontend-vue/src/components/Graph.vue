@@ -190,6 +190,13 @@ export default {
     },
     '$route.hash' (newHash, oldHash) {
       this.reload(newHash, this.activeTreeId);
+    },
+    selectMode(newSelectMode, oldSelectMode) {
+      if(!newSelectMode) {
+        for(const id in this.selectTagIdMap) {
+          this.selectTagIdMap[id] = false;
+        }
+      }
     }
   },
   methods: {
