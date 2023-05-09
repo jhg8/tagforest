@@ -168,6 +168,7 @@ section {
   }
   &.control-category {
     a {
+      box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.15);
       opacity: 0.8;
       padding: 1em;
       padding-bottom: 0.4em;
@@ -190,7 +191,7 @@ section {
       }
     }
   }
-  &.category-list {
+  &.category-list, &.tree-list {
     ul {
       list-style: none;
       padding-left: 0;
@@ -202,6 +203,8 @@ section {
         color: $white;
         font-weight: bold;
         background-color: $purple;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
         border-radius: 0.2em;
         text-decoration: none;
         vertical-align: middle;
@@ -212,14 +215,14 @@ section {
         text-align: left;
         height: 3rem;
         &:hover {
-          color: $yellow;
-          background-color: $lightpurple;
+          box-shadow: inset 0 0 10rem rgba(255, 255, 255, 0.4);
+          border: 1px solid rgba(0, 0, 0, 0.01);
         }
         display: flex;
-        .category-view-name {
+        .category-view-name, .tree-view-name {
           width: 15rem;
         }
-        .category-view-name, .category-view-option {
+        .category-view-name, .category-view-option, .tree-view-name, .tree-view-option {
           display: flex;
           padding-left: 1rem;
           padding-right: 1rem;
@@ -227,7 +230,7 @@ section {
           justify-content: center;
           align-items: center;
         }
-        .category-view-option {
+        .category-view-option, .tree-view-option {
           width: 2rem;
         }
       }
@@ -235,29 +238,21 @@ section {
   }
   &.tree-list {
     ul {
-      list-style: none;
-      padding-left: 0;
       button {
-        cursor: pointer;
-        width: 25em;
-        margin-bottom: 0.3em;
-        border: 0;
-        font-weight: bold;
-        background-color: $white;
-        border: 1px solid $lightergrey;
-        border-radius: 0.2em;
-        padding: 2em;
-        padding-top: 0.5em;
-        padding-left: 0.8em;
-        text-decoration: none;
-        vertical-align: middle;
-        display: inline-block;
-        margin-right: 0.5em;
-        margin-bottom: 0.5em;
-        font-size: 1rem;
-        text-align: left;
-        &:hover {
-	  -webkit-filter: brightness(96%);
+        display: flex;
+        .tree-view-name {
+          width: 15rem;
+        }
+        .tree-view-name, .tree-view-option {
+          display: flex;
+          padding-left: 1rem;
+          padding-right: 1rem;
+          height: 100%;
+          justify-content: left;
+          align-items: center;
+        }
+        .tree-view-option {
+          width: 2rem;
         }
       }
     }

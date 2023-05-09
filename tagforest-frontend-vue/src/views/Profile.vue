@@ -17,7 +17,7 @@
     <ul>
       <li v-for="tree in treeList" v-bind:key="tree.name" >
           <button @click="activeTreeId = tree.id.toString(); showTreePopup = true" >
-          {{ tree.name}}
+            <div class="tree-view-name" >{{ tree.name }}</div>
         </button>
       </li>
     </ul>
