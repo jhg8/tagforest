@@ -27,32 +27,21 @@ html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
-@media all and (max-width: 800px) {
+@media all and (max-width: 991px) {
   html {
     font-size: 14px;
   }
 }
-@media all and (max-width: 600px) {
+@media all and (max-width: 767px) {
   html {
-    font-size: 12px;
+    font-size: 13.5px;
   }
 }
-@media all and (max-width: 500px) {
+@media all and (max-width: 479px) {
   html {
-    font-size: 11px;
+    font-size: 13px;
   }
 }
-@media all and (max-width: 400px) {
-  html {
-    font-size: 10px;
-  }
-}
-@media all and (max-width: 300px) {
-  html {
-    font-size: 9px;
-  }
-}
-
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -137,11 +126,24 @@ footer {
   max-width: 70rem;
   max-width: 95vw;
   margin: auto;
+  .multiselect {
+    font-size: 1rem;
+  }
+  .multiselect__option {
+    line-height: 1em;
+    min-height: 1em;
+  }
+  .multiselect__option:after {
+    line-height: 1em;
+    min-height: 1em;
+    padding-top: 1em;
+  }
+
 }
 
 section {
   .container {
-    padding-top: 1em;
+    padding-top: 0.8em;
   }
   &.entry, &.tag, &.category, &.profile, &.control-category {
     h2 {
@@ -152,15 +154,15 @@ section {
       font-weight: bold;
       background-color: $purple;
       border-radius: 0.2em;
-      padding-bottom: 1em;
-      padding-top: 0.5em;
+      padding-bottom: 0.8em;
+      padding-top: 0.7em;
       padding-right: 2em;
       padding-left: 0.6em;
       text-decoration: none;
       vertical-align: middle;
       display: inline-block;
-      margin-right: 0.5em;
-      margin-bottom: 0.5em;
+      margin-right: 0.3em;
+      margin-bottom: 0.3em;
       &:hover {
         color: $yellow;
       }
@@ -168,17 +170,16 @@ section {
   }
   &.control-category {
     a {
-      box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.15);
       opacity: 0.8;
-      padding: 1em;
-      padding-bottom: 0.4em;
-      padding-top: 0.4em;
-      padding-left: 0.6em;
+      padding-bottom: 0.6em;
+      padding-top: 0.6em;
+      padding-left: 0.9em;
+      padding-right: 1.3em;
       text-decoration: none;
       vertical-align: middle;
       display: inline-block;
-      margin-right: 0.5em;
-      margin-bottom: 0.5em;
+      margin-right: 0.1em;
+      margin-bottom: 0;
       &:hover {
         color: $yellow;
         background-color: $lightpurple;
@@ -295,16 +296,16 @@ section {
       background-color: $white;
       font-weight: bold;
       color: $white;
-      border-radius: 0.8em;
-      padding-top: 0.6em;
-      padding-bottom: 0.4em;
-      padding-right: 0.6em;
-      padding-left: 0.7em;
+      border-radius: 0.6em;
+      padding-top: 0.8em;
+      padding-bottom: 0.6em;
+      padding-right: 0.8em;
+      padding-left: 0.9em;
       text-decoration: none;
       vertical-align: middle;
       display: inline-block;
-      margin-right: 0.5em;
-      margin-bottom: 0.5em;
+      margin-right: 0.2em;
+      margin-bottom: 0.2em;
       &:hover {
 	-webkit-filter: brightness(85%);
       }
@@ -511,7 +512,7 @@ label.edit-checkbox {
   .label {
     display: inline-block;
     border-radius: 0.4em;
-    padding: 0.4em;
+    padding: 0.6em;
     cursor: pointer;
     background-color: $white;
     border: 1px solid $lightergrey;
@@ -538,11 +539,11 @@ label.edit-checkbox {
     padding: 0;
     font: inherit;
     cursor: pointer;
-		border-radius: 0.4em;
-		padding: 0.4em;
+    border-radius: 0.4em;
+    padding: 0.6em;
   }
   label, button {
-    margin-right: 1em;
+    margin-right: 0.2em;
   }
 }
 

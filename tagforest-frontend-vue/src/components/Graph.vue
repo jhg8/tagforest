@@ -49,7 +49,7 @@
       track-by="name"
       label="name"
       :options="fullTagList"
-      :max-height="450"
+      :max-height="300"
       :multiple="true"
       @select="multiSelectInput"
       @remove="multiSelectInput"
