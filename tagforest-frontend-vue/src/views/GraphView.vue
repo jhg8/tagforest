@@ -1,6 +1,6 @@
 <template>
   <span v-if="loggedIn" >
-    <graph/>
+    <graph :id="activeTreeId" :read-only="false" />
   </span>
   <span v-else>
     <section ><div class="container" >
@@ -17,6 +17,11 @@ export default {
   name: 'GraphView',
   components: {
     Graph
+  },
+  computed: {
+    activeTreeId () {
+      return this.$store.state.activeTreeId;
+    }
   },
   methods: {
     async demoLogin () {

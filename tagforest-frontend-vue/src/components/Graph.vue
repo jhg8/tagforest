@@ -1,10 +1,10 @@
 <template>
-  <section class="control-buttons" ><div class="container" >
+  <section v-if="!readOnly" class="control-buttons" ><div class="container" >
     <button @click="showNewTagPopup = true" >
     <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
     </button>
 
-    <button @click="showExportPopup = true; getExportValue(activeTreeId)" >
+    <button @click="showExportPopup = true; getExportValue()" >
     <font-awesome-icon icon="fa-solid fa-download" /> Export
     </button>
 
@@ -76,13 +76,13 @@
         </label></div>
       </span>
       <span v-else >
-        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="'tag/' + tag.id" >{{ tag.name }}</router-link>
+        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
       </span>
     </span>
   </div></section>
 
   <section v-if="showNewTagPopup" class="popup"><div class="container" >
-    <tag-upsert :category="activeCategory" :parent-set="activeControlTagSet" @tag-upsert="showNewTagPopup = false; reload(hash, activeTreeId)" @cancel="showNewTagPopup = false" />
+    <tag-upsert :category="activeCategory" :parent-set="activeControlTagSet" @tag-upsert="showNewTagPopup = false; reload(hash)" @cancel="showNewTagPopup = false" />
   </div></section>
 
   <section v-if="showAddMultiTagPopup" class="popup"><div class="container" >
@@ -144,6 +144,7 @@ export default {
       controlTagList: [],
       tagList: null,
       fullTagList: [],
+      treeName: null,
       // Select menus
       selectMode: false,
       selectTagIdMap: {},
@@ -164,6 +165,10 @@ export default {
       showImportPopup: false,
     }
   },
+  props: {
+    id: String,
+    readOnly: Boolean,
+  },
   emits: ['import', 'cancel', 'submit'],
   components: {
     TagUpsert,
@@ -174,22 +179,15 @@ export default {
     loggedIn () {
       return this.$store.state.loggedIn;
     },
-    activeTreeId () {
-      return this.$store.state.activeTreeId;
-    },
-    activeTreeName () {
-      return this.$store.state.activeTreeName;
-    }
   },
   watch: {
-    activeTreeId(newTreeId, oldTreeId) {
-      this.reload(this.$route.hash, newTreeId);
-    },
-    activeTreeName(newTreeName, oldTreeName) {
-      this.treeNameInput = newTreeName;
-    },
     '$route.hash' (newHash, oldHash) {
-      this.reload(newHash, this.activeTreeId);
+      this.reload(newHash);
+    },
+    id(newId, oldId) {
+      if(newId != '-1') {
+        this.reload(this.hash);
+      }
     },
     selectMode(newSelectMode, oldSelectMode) {
       if(!newSelectMode) {
@@ -255,7 +253,7 @@ export default {
       }
 
       if(tagQuery)
-        this.activeControlTagSet = tagQuery.split('^').map(x => { return {name: x, category: { name: 'Default', tree: { name: this.activeTreeName} }, tree: { name: this.activeTreeName }}});
+        this.activeControlTagSet = tagQuery.split('^').map(x => { return {name: x, category: { name: 'Default', tree: { name: this.treeName} }, tree: { name: this.treeName }}});
 
       for(const w of this.activeControlTagSet) {
         if(w.name.match(/[()|]/)) {
@@ -264,14 +262,16 @@ export default {
         }
       }
     },
-    async reload (hash, treeId) {
-      this.baseURL = `trees/${treeId}/graph`;
+    async reload(hash) {
+      this.baseURL = `trees/${this.id}/graph`;
       this.hash = hash;
       const controlQueryValue  = hash ? hash.slice(1)      : '';
       let url = hash ? `${this.baseURL}/?q=${controlQueryValue}` : this.baseURL;
 
       // Get data from Backend
       const data = await this.api({ method: 'get', url: url });
+
+      this.treeName = data.tree_name;
 
       // Refresh select Tag ID Map
       let newTagIdList = {};
@@ -305,7 +305,7 @@ export default {
           await this.api({ method: 'delete', url: `tags/${id}/` });
           delete this.selectTagIdMap[id];
         }
-      this.reload(this.hash, this.activeTreeId);
+      this.reload(this.hash);
     },
     async deleteSelectedCategory () {
       for(const id in this.selectCategoryIdMap)
@@ -313,7 +313,7 @@ export default {
           await this.api({ method: 'delete', url: `tagcategories/${id}/` });
           delete this.selectCategoryIdMap[id];
         }
-      this.reload(this.hash, this.activeTreeId);
+      this.reload(this.hash);
     },
     multiSelectInput() {
       let url = this.buildURL(this.activeControlTagSet.map(x => x.name), this.activeCategory);
@@ -346,33 +346,33 @@ export default {
             tagSet.push(multiTagAddTag);
           const data = {
             name: tag.name,
-            category: { name: tag.category.name, tree: { name: this.activeTreeName } },
+            category: { name: tag.category.name, tree: { name: this.treeName } },
             parent_set: tagSet,
-            tree: { name: this.activeTreeName },
+            tree: { name: this.treeName },
           };
           await this.api({ method: 'put',  url: `tags/${id}/`, data: data});
         }
       }
       this.showAddMultiTagPopup = false;
-      this.reload(this.hash, this.activeTreeId);
+      this.reload(this.hash);
     },
     async importData () {
       const data = {
         import_value: this.importValue
       };
-      await this.api({ method: 'post', url: `trees/${this.activeTreeId}/import/`, data: data});
+      await this.api({ method: 'post', url: `trees/${this.id}/import/`, data: data});
       this.$emit('import');
       this.showImportPopup = false;
-      this.reload(this.$route.hash, this.activeTreeId);
+      this.reload(this.$route.hash);
     },
-    async getExportValue (treeId) {
-      const data = await this.api({ method: 'get', url: `trees/${treeId}/export/` });
+    async getExportValue () {
+      const data = await this.api({ method: 'get', url: `trees/${this.id}/export/` });
       this.exportValue = JSON.stringify(data.export_value);
     },
   },
   mounted () {
-    if(this.activeTreeId != 0) {
-      this.reload(this.$route.hash, this.activeTreeId);
+    if(this.id != '-1') {
+      this.reload(this.$route.hash);
     }
   }
 }

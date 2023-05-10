@@ -1,5 +1,5 @@
 <template>
-  <section class="control-buttons" ><div class="container" >
+  <section v-if="!readOnly" class="control-buttons" ><div class="container" >
     <label class="edit-checkbox" >
       <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
       <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Edit</span>
@@ -10,13 +10,13 @@
   </div></section>
 
   <section v-if="!editMode" class="category"><div class="container" >
-    <router-link :to="'/trees/' + activeTreeId + '/graph#' + tag.category.name + ';'" >{{ tag.category.name }}</router-link>
+    <router-link :to="getUrl('#' + tag.category.name + ';')" >{{ tag.category.name }}</router-link>
   </div></section>
   <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ tag.name }}</h2>
     <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="'/trees/' + activeTreeId + '/graph#' + tag.name" >{{ tag.name }}</router-link></span>
-      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="'/trees/' + activeTreeId + '/graph/#' + tag.name" >{{ tag.name }}</router-link></span>
+      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
+      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
     </p>
     <p><pre>{{ tag.content }}</pre></p>
   </div></section>
@@ -31,7 +31,9 @@ import TagUpsert from '@/components/TagUpsert.vue'
 export default {
   name: 'TagDetail',
   props: {
-    tagid: String
+    tagid: String,
+    readOnly: Boolean,
+    treeId: String
   },
   components: {
     TagUpsert
@@ -55,6 +57,10 @@ export default {
     async deleteTag () {
       await this.api({ method: 'delete',  url: `tags/${this.tagid}/`});
       this.$router.push({path: '/'});
+    },
+    getUrl(suffix) {
+      let id = this.readOnly ? this.treeId : this.activeTreeId;
+      return (this.readOnly ? '/public/tree/' : '/trees/') + id + (this.readOnly ? '' : '/graph') + suffix;
     }
   },
   mounted () {

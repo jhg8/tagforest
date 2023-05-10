@@ -78,7 +78,7 @@ export default {
           this.setDefaultTree(route);
         }
       } else {
-        if(this.activeTreeId == 0)
+        if(this.activeTreeId == '-1')
           this.setDefaultTree(route);
         else
           this.$router.push({ name: route.name, params: {...route.params, id: this.activeTreeId} });

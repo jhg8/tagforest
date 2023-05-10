@@ -3,6 +3,12 @@
     <div class="formGrid" >
       <label>Name</label>
       <span class="text" ><input type="text" v-model="treeName" ref="title" placeholder="Title" /></span>
+
+    <label>Public</label>
+    <span class="text" >
+      <label class="checkbox-label" >Public</label>
+      <input type="checkbox" v-model="treePublic" />
+    </span>
     </div>
 
     <input type="submit" />
@@ -25,12 +31,14 @@ export default {
   data () {
     return {
       treeName: '',
+      treePublic: false,
     }
   },
   methods: {
     async upsertTree () {
       const data = {
         name: this.treeName,
+        public: this.treePublic,
       };
       await this.api(this.update ?
                      { method: 'put',  url: `trees/${this.id}/`, data: data} :
@@ -44,6 +52,7 @@ export default {
     async getTree () {
       const data = await this.api({ method: 'get', url: `trees/${this.id}/` });
       this.treeName = data.name;
+      this.treePublic = data.public;
     },
   },
   computed: {

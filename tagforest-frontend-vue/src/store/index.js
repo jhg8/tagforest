@@ -5,7 +5,7 @@ export default createStore({
     return {
       loggedIn: false,
       token: null,
-      activeTreeId: 0,
+      activeTreeId: '-1',
       activeTreeName: ''
     }
   },
@@ -13,6 +13,7 @@ export default createStore({
     login(state, token) {
       state.loggedIn = true;
       state.token = token;
+      state.activeTreeId = '-1';
       localStorage.setItem('loggedIn', true);
       localStorage.setItem('token', token);
     },
@@ -25,6 +26,7 @@ export default createStore({
     logout(state) {
       state.loggedIn = false;
       state.token = null;
+      state.activeTreeId = '-1';
       localStorage.setItem('loggedIn', false);
       localStorage.setItem('token', null);
     },

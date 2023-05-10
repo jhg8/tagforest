@@ -16,7 +16,7 @@ const routes = [
       {
         path: 'category',
         name: 'category',
-        component: () => import(/* webpackChunkName: "tag" */ '../views/CategoryView.vue')
+        component: () => import(/* webpackChunkName: "category" */ '../views/CategoryView.vue')
       },
       {
         path: 'tag/:tagid',
@@ -30,6 +30,16 @@ const routes = [
     path: '/auth',
     name: 'auth',
     component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue')
+  },
+  {
+    path: '/public/tree/:id',
+    name: 'publictree',
+    component: () => import(/* webpackChunkName: "publictree" */ '../views/PublicGraph.vue')
+  },
+  {
+    path: '/public/tree/:treeId/tag/:id',
+    name: 'publictag',
+    component: () => import(/* webpackChunkName: "publictag" */ '../views/PublicTag.vue')
   },
   {
     path: '/about',

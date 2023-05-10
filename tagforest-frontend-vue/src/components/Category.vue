@@ -73,7 +73,7 @@ export default {
     }
   },
   mounted () {
-    if(this.activeTreeId != 0) {
+    if(this.activeTreeId != '-1') {
       this.reload(this.activeTreeId);
     }
   }
