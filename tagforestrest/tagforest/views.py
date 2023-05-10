@@ -1,9 +1,11 @@
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from .models import Tree, Tag, TagCategory, Graph
 from .serializers import TreeSerializer, TagSerializer, SimpleTagSerializer, TagCategorySerializer, ExtendedTagSerializer
-from rest_framework import permissions
-from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, BasePermission
+from rest_framework import viewsets, mixins
 from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -11,9 +13,34 @@ import json
 
 from urllib.parse import parse_qs
 
+class TreeReadPermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if (not obj.public) and (request.user != obj.user):
+          raise PermissionDenied({"message": "You are not allowed to see this tree, sorry"})
+        return True
+
+class TreeWritePermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user != obj.user:
+          raise PermissionDenied({"message": "You are not allowed to see this tree"})
+        return True
+
 class TreeViewSet(viewsets.ModelViewSet):
     serializer_class = TreeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.action == 'list':
+            return Tree.objects.filter(user=self.request.user).all()
+        return Tree.objects.all()
+
+    def get_permissions(self):
+        if self.action in ['retrieve', 'tag_list', 'tag_category_list']:
+            permission_classes = [TreeReadPermission]
+        elif self.action in ['update', 'destroy']:
+            permission_classes = [TreeWritePermission]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
         kwargs = {
@@ -21,24 +48,48 @@ class TreeViewSet(viewsets.ModelViewSet):
         }
         serializer.save(**kwargs)
 
-    def get_queryset(self):
-        return Tree.objects.filter(user=self.request.user)
-
     @action(detail=True)
     def tag_list(self, request, pk=None):
       tree = self.get_object()
-      tag_list = Tag.objects.filter(user=self.request.user, tree=tree)
+      tag_list = Tag.objects.filter(user=tree.user, tree=tree)
       return Response(TagSerializer(tag_list, many = True, context = { 'request': request }).data)
 
     @action(detail=True)
     def tag_category_list(self, request, pk=None):
       tree = self.get_object()
-      tag_category_list = TagCategory.objects.filter(user=self.request.user, tree=tree)
+      tag_category_list = TagCategory.objects.filter(user=tree.user, tree=tree)
       return Response(TagCategorySerializer(tag_category_list, many = True, context = { 'request': request }).data)
 
-class TagViewSet(viewsets.ModelViewSet):
+class TreeChildReadPermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if (not obj.tree.public) and (request.user != obj.tree.user):
+          raise PermissionDenied({"message": "You are not allowed to see this tree"})
+        return True
+
+class TreeChildWritePermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user != obj.tree.user:
+          raise PermissionDenied({"message": "You are not allowed to see this tree"})
+        return True
+
+class TreeChildBaseViewSet(mixins.CreateModelMixin,
+                      mixins.RetrieveModelMixin,
+                      mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin,
+                      viewsets.GenericViewSet):
+
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            permission_classes = [TreeChildReadPermission]
+        elif self.action in ['update', 'destroy']:
+            permission_classes = [TreeChildWritePermission]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+class TagViewSet(TreeChildBaseViewSet):
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = Tag.objects.all()
 
     def perform_create(self, serializer):
         kwargs = {
@@ -46,12 +97,9 @@ class TagViewSet(viewsets.ModelViewSet):
         }
         serializer.save(**kwargs)
 
-    def get_queryset(self):
-        return Tag.objects.filter(user=self.request.user)
-
-class ExtendedTagViewSet(viewsets.ModelViewSet):
+class ExtendedTagViewSet(TreeChildBaseViewSet):
     serializer_class = ExtendedTagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = Tag.objects.all()
 
     def perform_create(self, serializer):
         kwargs = {
@@ -59,21 +107,15 @@ class ExtendedTagViewSet(viewsets.ModelViewSet):
         }
         serializer.save(**kwargs)
 
-    def get_queryset(self):
-        return Tag.objects.filter(user=self.request.user)
-
-class TagCategoryViewSet(viewsets.ModelViewSet):
+class TagCategoryViewSet(TreeChildBaseViewSet):
     serializer_class = TagCategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = TagCategory.objects.all()
 
     def perform_create(self, serializer):
         kwargs = {
             'user': self.request.user
         }
         serializer.save(**kwargs)
-
-    def get_queryset(self):
-        return TagCategory.objects.filter(user=self.request.user)
 
 @api_view(['GET'])
 def root_view(request):
@@ -95,7 +137,6 @@ def root_view(request):
 #   - control_tag_list: Tags whose child set intersects tag_list
 #   - query:            JSON representation of the query
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
 def graph_view(request, tree_pk):
 
     # Shunting-Yard algorithm (Operator precedence parser)
@@ -167,11 +208,15 @@ def graph_view(request, tree_pk):
         return query[0], tag_set[0], tag_queryset.filter(name__in=query_tag_set)
 
     data = {}
-    tree = Tree.objects.get(pk=tree_pk)
-    graph = Graph(request.user, tree=tree)
+
+    tree = get_object_or_404(Tree, pk=tree_pk)
+    if (not tree.public) and (request.user != tree.user):
+        raise PermissionDenied({"message": "You are not allowed to see this tree"})
+
+    graph = Graph(tree.user, tree=tree)
     tag_query, category_query = '', ''
-    tag_queryset = Tag.objects.filter(user=request.user, tree__pk=tree_pk)
-    tag_category_queryset = TagCategory.objects.filter(user=request.user, tree__pk=tree_pk)
+    tag_queryset = Tag.objects.filter(user=tree.user, tree__pk=tree_pk)
+    tag_category_queryset = TagCategory.objects.filter(user=tree.user, tree__pk=tree_pk)
 
     if 'q' in request.query_params:
         q = request.query_params['q'].strip()
@@ -222,6 +267,7 @@ def graph_view(request, tree_pk):
         if q:
             control_tag_list.append(q.first())
 
+    data['tree_name'] = tree.name
     data['hidden_category_list'] = TagCategorySerializer(hidden_category_list, many=True, context = { 'request': request }).data
     data['category_list']        = TagCategorySerializer(category_list,        many=True, context = { 'request': request }).data
     data['control_tag_list']     = SimpleTagSerializer(control_tag_list,       many=True, context = { 'request': request }).data
@@ -232,7 +278,7 @@ def graph_view(request, tree_pk):
     return Response(data)
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def export_data(request, tree_pk):
 
     data = {}
@@ -245,7 +291,7 @@ def export_data(request, tree_pk):
     return Response(data)
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def import_data(request, tree_pk):
 
     try:

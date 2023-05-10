@@ -13,6 +13,7 @@ class Tree(models.Model):
     name = models.CharField(max_length=255, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False)
     default_category = models.ForeignKey('TagCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    public = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('name', 'user')

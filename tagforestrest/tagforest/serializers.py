@@ -8,7 +8,7 @@ class TreeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tree
-        fields = ['id', 'url', 'name']
+        fields = ['id', 'url', 'name', 'public']
         extra_kwargs = {
             'name': {
                 'validators': [],
@@ -17,13 +17,14 @@ class TreeSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        tree = Tree.objects.create(name=validated_data.pop('name'), user=user_data)
+        tree = Tree.objects.create(name=validated_data.pop('name'), public=validated_data.pop('public'), user=user_data)
         tree.save()
         tree.clean()
         return tree
 
     def update(self, tree, validated_data):
         tree.name = validated_data.pop('name')
+        tree.public = validated_data.pop('public')
         tree.save()
         tree.clean()
         return tree
