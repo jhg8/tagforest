@@ -1,23 +1,33 @@
 <template>
   <section v-if="!readOnly" class="control-buttons" ><div class="container" >
-    <label class="edit-checkbox" >
-      <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
-      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Edit</span>
-    </label>
-    <button @click.prevent="deleteTag()" >
-    <font-awesome-icon icon="fa-solid fa-trash" /> Remove
-    </button>
+    <ul class="inline-list control-buttons" >
+      <li>
+        <label class="edit-checkbox" >
+          <input type="checkbox" v-model="editMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
+          <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Edit</span>
+        </label>
+      </li>
+      <li>
+        <button @click.prevent="deleteTag()" >
+        <font-awesome-icon icon="fa-solid fa-trash" /> Remove
+        </button>
+      </li>
+    </ul>
   </div></section>
 
-  <section v-if="!editMode" class="category"><div class="container" >
-    <router-link :to="getUrl('#' + tag.category.name + ';')" >{{ tag.category.name }}</router-link>
+  <section v-if="!editMode" ><div class="container" >
+    <ul class="inline-list category" >
+      <li><router-link :to="getUrl('#' + tag.category.name + ';')" >
+          {{ tag.category.name }}
+      </router-link></li>
+    </ul>
   </div></section>
   <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ tag.name }}</h2>
-    <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
-      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
-    </p>
+    <ul class="inline-list tag-parents" >
+      <li v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></li>
+      <li v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></li>
+    </ul>
     <p><pre>{{ tag.content }}</pre></p>
   </div></section>
   <section v-if="editMode" class="tag"><div class="container" >

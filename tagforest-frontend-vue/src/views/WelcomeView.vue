@@ -17,11 +17,13 @@
 <script>
 
 import Login from '@/components/Login.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 export default {
   name: 'WelcomeView',
   components: {
-    Login
+    Login,
+    FooterComponent
   },
   mounted () {
     if(this.loggedIn) {

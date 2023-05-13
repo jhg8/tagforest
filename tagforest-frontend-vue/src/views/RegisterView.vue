@@ -13,11 +13,13 @@
 <script>
 
 import Register from '@/components/Register.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 export default {
   name: 'RegisterView',
   components: {
-    Register
+    Register,
+    FooterComponent
   },
   mounted () {
     if(this.loggedIn) {

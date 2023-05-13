@@ -1,8 +1,8 @@
 <template>
 
-  <a href="#" @click.prevent="logout" >
+  <button @click.prevent="logout" >
     <font-awesome-icon icon="fa-solid fa-right-from-bracket" /> Logout
-  </a>
+  </button>
 
 </template>
 

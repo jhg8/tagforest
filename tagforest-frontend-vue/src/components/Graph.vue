@@ -1,62 +1,69 @@
 <template>
-  <section v-if="showTreeName" class="tree-name" ><div class="container" >
-    <h1>{{ treeName }}</h1>
-  </div></section>
-  <section v-if="!readOnly" class="control-buttons" ><div class="container" >
-    <button @click="showNewTagPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
-    </button>
+  <section><div class="container" >
 
-    <button @click="showExportPopup = true; getExportValue()" >
-    <font-awesome-icon icon="fa-solid fa-download" /> Export
-    </button>
+    <h1 v-if="showTreeName" class="tree-name" >
+      {{ treeName }}
+    </h1>
 
-    <button @click="showImportPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-upload" /> Import
-    </button>
+    <ul v-if="!readOnly" class="inline-list control-buttons" >
+      <li>
+        <button @click="showNewTagPopup = true" >
+        <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
+        </button>
+      </li>
+      <li>
+        <button @click="showExportPopup = true; getExportValue()" >
+          <font-awesome-icon icon="fa-solid fa-download" /> <span class="control-text" >Export</span>
+        </button>
+      </li>
+      <li>
+        <button @click="showImportPopup = true" >
+          <font-awesome-icon icon="fa-solid fa-upload" /> <span class="control-text" >Import</span>
+        </button>
+      </li>
+      <li>
+        <button @click="toggleSharePopup()" >
+          <font-awesome-icon icon="fa-solid fa-share-nodes" /> <span class="control-text" >Share</span>
+        </button>
+        <span v-if="showSharePopup" class="soft-popup">
+          <input v-on:focus="$event.target.select()" ref="shareinput" readonly :value="shareLink" />
+          <button @click="copy" ><font-awesome-icon icon="fa-solid fa-clipboard" /></button>
+          <button @click.prevent="showSharePopup = false" ><font-awesome-icon icon="fa-solid fa-right-to-bracket" /></button>
 
-    <button @click="toggleSharePopup()" >
-    <font-awesome-icon icon="fa-solid fa-share-nodes" /> Share
-    </button>
-    <section v-if="showSharePopup" class="soft-popup"><div class="container" >
-      <input v-on:focus="$event.target.select()" ref="shareinput" readonly :value="shareLink" />
-      <button @click="copy" ><font-awesome-icon icon="fa-solid fa-clipboard" /></button>
-      <button @click.prevent="showSharePopup = false" ><font-awesome-icon icon="fa-solid fa-right-to-bracket" /></button>
-    </div></section>
+        </span>
+      </li>
+      <li>
+        <label class="edit-checkbox" >
+          <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
+          <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> <span class="control-text" >Select</span></span>
+        </label>
+      </li>
+      <li v-if="selectMode" >
+        <button @click="deleteSelected" >
+          <font-awesome-icon icon="fa-solid fa-trash" /> <span class="control-text" >Remove</span>
+        </button>
+      </li>
+      <li v-if="selectMode" >
+        <button @click="showAddMultiTagPopup = true" >
+          <font-awesome-icon icon="fa-solid fa-tag" /> <span class="control-text" >Tag</span>
+        </button>
+      </li>
+    </ul>
 
+    <ul class="inline-list control-categories" >
+      <li v-for="category in categoryList" v-bind:key="category.name" >
+        <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
+          {{ category.name }}
+        </router-link>
+      </li>
+      <li v-for="category in hiddenCategoryList" v-bind:key="category.name" >
+        <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
+          {{ category.name }}
+        </router-link>
+      </li>
+    </ul>
 
-    <label class="edit-checkbox" >
-      <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
-      <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Select</span>
-    </label>
-
-    <span v-if="selectMode" ><button @click="deleteSelected" >
-    <font-awesome-icon icon="fa-solid fa-trash" /> Remove
-    </button></span>
-
-    <span v-if="selectMode" ><button @click="showAddMultiTagPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-tag" /> Tag
-    </button></span>
-
-  </div></section>
-
-  <section class="control-category" ><div class="container" >
-    <span v-for="category in categoryList" v-bind:key="category.name" >
-      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
-        {{ category.name }}
-      </router-link>
-    </span>
-    <span v-for="category in hiddenCategoryList" v-bind:key="category.name" >
-      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
-        {{ category.name }}
-      </router-link>
-    </span>
-  </div></section>
-
-
-  <section class="control-tag" ><div class="container" >
-
-    <span class="select" >
+    <div class="multi-select" >
     <VueMultiselect
       v-model="activeControlTagSet"
       track-by="name"
@@ -69,29 +76,30 @@
     >
     <template slot="singleLabel" slot-scope="{ tag }">{{ tag }}</template>
     </VueMultiselect>
-    </span>
-  </div></section>
-  <section class="control-tag" ><div class="container" >
+    </div>
 
-    <span v-for="tag in controlTagList.slice(0, 50)" v-bind:key="tag.name" >
-      <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getControlURL(tag.name, '')" :class="{ active: isControlTagActive(tag) }" >
-        {{ tag.name }}
-      </router-link>
-    </span>
-  </div></section>
+    <ul class="inline-list control-tags" >
+      <li v-for="tag in controlTagList.slice(0, 50)" v-bind:key="tag.name" >
+        <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getControlURL(tag.name, '')" :class="{ active: isControlTagActive(tag) }" >
+          {{ tag.name }}
+        </router-link>
+      </li>
+    </ul>
 
-  <section class="entry" ><div class="container" >
-    <span v-for="tag in tagList" v-bind:key="tag.id" >
-      <span v-if="selectMode" >
-        <div class="entry-checkbox" ><label :style="{ backgroundColor: '#' + tag.category.color }" >
-          <span class="label" >{{ tag.name }}</span>
-          <input type="checkbox" v-model="selectTagIdMap[tag.id]" :class="{ active: selectTagIdMap[tag.id] }" />
-        </label></div>
-      </span>
-      <span v-else >
-        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
-      </span>
-    </span>
+    <ul class="inline-list entries" >
+      <li v-for="tag in tagList" v-bind:key="tag.id" >
+        <span v-if="selectMode" >
+          <div class="entry-checkbox" ><label :style="{ backgroundColor: '#' + tag.category.color }" >
+            <span class="label" >{{ tag.name }}</span>
+            <input type="checkbox" v-model="selectTagIdMap[tag.id]" :class="{ active: selectTagIdMap[tag.id] }" />
+          </label></div>
+        </span>
+        <span v-else >
+          <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
+        </span>
+      </li>
+    </ul>
+
   </div></section>
 
   <section v-if="showNewTagPopup" class="popup"><div class="container" >
@@ -137,8 +145,6 @@
       <button @click="showImportPopup = false" >Cancel</button>
     </form>
   </div></section>
-
-
 
 </template>
 

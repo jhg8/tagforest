@@ -1,19 +1,23 @@
 <template>
   <nav-bar></nav-bar>
   <div id="content" >
-  <section class="profile" ><div class="container" >
+  <section class="profile tree-section" ><div class="container" >
     <h1>{{ loggedUser }}</h1>
   </div></section>
 
-  <section class="control-buttons" ><div class="container" >
+  <section class="control-buttons tree-section" ><div class="container" >
 
-    <button @click="showAddTreePopup = true" >
-    <font-awesome-icon icon="fa-solid fa-plus" /> New Tree
-    </button>
+    <ul class="inline-list control-buttons" >
+      <li>
+        <button @click="showAddTreePopup = true" >
+        <font-awesome-icon icon="fa-solid fa-plus" /> New Tree
+        </button>
+      </li>
+    </ul>
 
   </div></section>
 
-  <section class="tree-list" ><div class="container" >
+  <section class="tree-list tree-section" ><div class="container" >
     <ul>
       <li v-for="tree in treeList" v-bind:key="tree.name" >
           <button @click="activeTreeId = tree.id.toString(); showTreePopup = true" >
@@ -31,10 +35,12 @@
   <tree-upsert :cancel="true" @tree-upsert="showAddTreePopup = false; reload(); $emit('treeUpsert')" @cancel="showAddTreePopup = false" />
   </div></section>
 
-  <section class="profile" ><div class="container" >
-    <p>
-      <logout/>
-    </p>
+  <section class="profile tree-section" ><div class="container" >
+    <ul class="inline-list control-buttons" >
+      <li>
+        <logout/>
+      </li>
+    </ul>
   </div></section>
   </div>
   <footer-component></footer-component>
@@ -45,13 +51,15 @@
 import Logout from '@/components/Logout.vue'
 import TreeUpsert from '@/components/TreeUpsert.vue'
 import NavBar from '@/components/NavBar.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 export default {
   name: 'Profile',
   components: {
     Logout,
     TreeUpsert,
-    NavBar
+    NavBar,
+    FooterComponent
   },
   emits: ['treeUpsert'],
   data () {

@@ -1,13 +1,17 @@
 <template>
-  <section class="control-buttons" ><div class="container" >
+  <section class="control-buttons category-section" ><div class="container" >
 
-    <button @click="showAddCategoryPopup = true" >
-    <font-awesome-icon icon="fa-solid fa-plus" /> New Category
-    </button>
+    <ul class="inline-list control-buttons" >
+      <li>
+        <button @click="showAddCategoryPopup = true" >
+        <font-awesome-icon icon="fa-solid fa-plus" /> New Category
+        </button>
+      </li>
+    </ul>
 
   </div></section>
 
-  <section class="category-list" ><div class="container" >
+  <section class="category-list category-section" ><div class="container" >
     <ul>
       <li v-for="category in categoryList" v-bind:key="category.name" >
         <button :style="{ backgroundColor: '#' + category.color }" @click="activeCategoryId = category.id.toString(); showCategoryPopup = true" >
