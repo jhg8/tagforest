@@ -40,21 +40,23 @@
 
   </div></section>
 
-  <section class="control-category" ><div class="container" >
-    <span v-for="category in categoryList" v-bind:key="category.name" >
+  <section><div class="container" >
+    <ul class="control-categories" >
+    <li v-for="category in categoryList" v-bind:key="category.name" >
       <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
         {{ category.name }}
       </router-link>
-    </span>
-    <span v-for="category in hiddenCategoryList" v-bind:key="category.name" >
+    </li>
+    <li v-for="category in hiddenCategoryList" v-bind:key="category.name" >
       <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
         {{ category.name }}
       </router-link>
-    </span>
+    </li>
+    </ul>
   </div></section>
 
 
-  <section class="control-tag" ><div class="container" >
+  <section class="control-tags" ><div class="container" >
 
     <span class="select" >
     <VueMultiselect
@@ -71,7 +73,7 @@
     </VueMultiselect>
     </span>
   </div></section>
-  <section class="control-tag" ><div class="container" >
+  <section class="control-tags" ><div class="container" >
 
     <span v-for="tag in controlTagList.slice(0, 50)" v-bind:key="tag.name" >
       <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getControlURL(tag.name, '')" :class="{ active: isControlTagActive(tag) }" >
@@ -80,8 +82,9 @@
     </span>
   </div></section>
 
-  <section class="entry" ><div class="container" >
-    <span v-for="tag in tagList" v-bind:key="tag.id" >
+  <section><div class="container" >
+    <ul class="entries" >
+    <li v-for="tag in tagList" v-bind:key="tag.id" >
       <span v-if="selectMode" >
         <div class="entry-checkbox" ><label :style="{ backgroundColor: '#' + tag.category.color }" >
           <span class="label" >{{ tag.name }}</span>
@@ -91,7 +94,8 @@
       <span v-else >
         <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
       </span>
-    </span>
+    </li>
+    </ul>
   </div></section>
 
   <section v-if="showNewTagPopup" class="popup"><div class="container" >

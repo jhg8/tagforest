@@ -10,14 +10,18 @@
   </div></section>
 
   <section v-if="!editMode" class="category"><div class="container" >
-    <router-link :to="getUrl('#' + tag.category.name + ';')" >{{ tag.category.name }}</router-link>
+    <ul class="category" >
+      <li><router-link :to="getUrl('#' + tag.category.name + ';')" >
+          {{ tag.category.name }}
+      </router-link></li>
+    </ul>
   </div></section>
   <section v-if="!editMode" class="tag"><div class="container" >
     <h2>{{ tag.name }}</h2>
-    <p>
-      <span v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
-      <span v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></span>
-    </p>
+    <ul class="tag-parents" >
+      <li v-for="tag in tag.parent_set" :key="tag.id"><router-link :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></li>
+      <li v-for="tag in tag.extended_parent_set" :key="tag.id"><router-link class="extended-tag" :to="getUrl('#' + tag.name)" >{{ tag.name }}</router-link></li>
+    </ul>
     <p><pre>{{ tag.content }}</pre></p>
   </div></section>
   <section v-if="editMode" class="tag"><div class="container" >
