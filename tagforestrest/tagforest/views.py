@@ -305,12 +305,20 @@ def import_data(request, tree_pk):
         tag_category_queryset.delete()
 
         for category in data['category_list']:
-            TagCategory.objects.create(name=category['name'], color=category['color'], tree=tree, user=request.user)
+            TagCategory.objects.create(
+                name=category['name'],
+                color=category['color'],
+                use_as_filter=category['use_as_filter'],
+                show_in_results=category['show_in_results'],
+                tree=tree, user=request.user
+            )
 
         for tag in data['tag_list']:
             Tag.objects.create(
                     name=tag['name'], 
-                    category=TagCategory.objects.get(name=tag['category']['name'], tree=tree, user=request.user),
+                    category=TagCategory.objects.get(
+                      name = tag['category']['name'],
+                      tree=tree, user=request.user),
                     user=request.user,
                     tree=tree,
             )
