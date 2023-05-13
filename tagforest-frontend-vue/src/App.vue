@@ -107,6 +107,16 @@ nav, footer {
   }
 }
 
+@media all and (max-width: 479px) {
+  nav, footer {
+    .container a {
+      .text {
+        display: none;
+      }
+    }
+  }
+}
+
 footer {
   margin: 0;
   text-align: center;
@@ -316,6 +326,7 @@ section {
     }
   }
   &.control-category {
+    margin-top: -0.4em;
     a {
       border-radius: 0.2em;
     }
@@ -644,6 +655,7 @@ label.edit-checkbox {
     cursor: pointer;
     border-radius: 0.4em;
     padding: 0.6em;
+    margin-bottom: 0.4em;
   }
   label, button {
     margin-right: 0.2em;

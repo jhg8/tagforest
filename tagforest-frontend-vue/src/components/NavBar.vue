@@ -1,8 +1,17 @@
 <template>
   <nav><div class="container">
-    <router-link to="/trees/graph"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
-    <router-link v-if="loggedIn" :to="'/trees/' + activeTreeId + '/category'"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
-    <router-link v-if="loggedIn" to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
+    <router-link to="/trees/graph">
+      <font-awesome-icon icon="fa-solid fa-house" />
+      <span class="text" > Home</span>
+    </router-link>
+    <router-link v-if="loggedIn" :to="'/trees/' + activeTreeId + '/category'">
+      <font-awesome-icon icon="fa-solid fa-box" />
+      <span class="text" > Categories</span>
+    </router-link>
+    <router-link v-if="loggedIn" to="/profile">
+      <font-awesome-icon icon="fa-solid fa-user" />
+      {{ loggedUser }}
+    </router-link>
     <slot></slot>
   </div></nav>
 
