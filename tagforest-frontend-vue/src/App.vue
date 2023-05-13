@@ -500,7 +500,7 @@ form.textForm {
     top: 0.4em;
     position: relative;
     background-color: $white;
-    border-radius: 0.2em;
+    border-radius: 0.7em;
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1em;
     box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
@@ -517,6 +517,9 @@ form.textForm {
       border-bottom: 1px solid $lightgrey;
       font-size: 0.9rem;
       box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    }
+    button {
+      width: 3em;
     }
   }
 }

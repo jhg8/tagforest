@@ -17,8 +17,8 @@
     </button>
     <section v-if="showSharePopup" class="soft-popup"><div class="container" >
       <input v-on:focus="$event.target.select()" ref="shareinput" readonly :value="shareLink" />
-      <button @click="copy" >Copy</button>
-      <button @click.prevent="showSharePopup = false" >Cancel</button>
+      <button @click="copy" ><font-awesome-icon icon="fa-solid fa-clipboard" /></button>
+      <button @click.prevent="showSharePopup = false" ><font-awesome-icon icon="fa-solid fa-right-to-bracket" /></button>
     </div></section>
 
 
