@@ -180,7 +180,7 @@ section {
       vertical-align: middle;
       display: inline-block;
       margin-right: 0.1em;
-      margin-bottom: 0;
+      margin-bottom: 0.3em;
       &:hover {
         color: $yellow;
         background-color: $lightpurple;
