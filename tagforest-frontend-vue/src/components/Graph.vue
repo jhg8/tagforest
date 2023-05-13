@@ -12,6 +12,16 @@
     <font-awesome-icon icon="fa-solid fa-upload" /> Import
     </button>
 
+    <button @click="toggleSharePopup()" >
+    <font-awesome-icon icon="fa-solid fa-share-nodes" /> Share
+    </button>
+    <section v-if="showSharePopup" class="soft-popup"><div class="container" >
+      <input v-on:focus="$event.target.select()" ref="shareinput" readonly :value="shareLink" />
+      <button @click="copy" >Copy</button>
+      <button @click.prevent="showSharePopup = false" >Cancel</button>
+    </div></section>
+
+
     <label class="edit-checkbox" >
       <input type="checkbox" v-model="selectMode" ref="editinputcheckbox" @click="$refs.editinputcheckbox.blur()" >
       <span class="label" ><font-awesome-icon icon="fa-solid fa-pen-to-square" /> Select</span>
@@ -163,6 +173,9 @@ export default {
       exportValue: '',
       showExportPopup: false,
       showImportPopup: false,
+      // Share
+      showSharePopup: false,
+      shareLink: '',
     }
   },
   props: {
@@ -198,6 +211,18 @@ export default {
     }
   },
   methods: {
+    toggleSharePopup() {
+      if(this.showSharePopup) {
+        this.showSharePopup = false;
+      } else {
+        this.showSharePopup = true;
+        this.shareLink = `${window.location.origin}/public/tree/${this.id}${window.location.hash}`;
+      }
+    },
+    copy() {
+      this.$refs.shareinput.focus();
+      document.execCommand('copy');
+    },
     isControlTagActive(tag) {
       for(const t of this.activeControlTagSet)
         if(t.name == tag.name)

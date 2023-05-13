@@ -421,6 +421,34 @@ form.textForm {
   }
 }
 
+.soft-popup {
+  position: absolute;
+  z-index: 2;
+  .container {
+    top: 0.4em;
+    position: relative;
+    background-color: $white;
+    border-radius: 0.2em;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1em;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    input {
+      width: 20em;
+      border: none;
+      border-bottom: 1px solid $lightgrey;
+      padding: 0.3em;
+      margin-right: 1em;
+    }
+    input:focus {
+      border: none;
+      outline: 0;
+      border-bottom: 1px solid $lightgrey;
+      font-size: 0.9rem;
+      box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
 .popup, .popupExport {
   position: fixed;
   z-index: 1;
