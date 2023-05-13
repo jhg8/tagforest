@@ -40,9 +40,8 @@ export default {
       const data = await this.api({ method: 'post', url: `dj-rest-auth/registration/`,                                         data: { username: this.username,
                                             password1: this.password1,
                                             password2: this.password2 }});
-      console.log("Token: " + data.key);
-      //this.$store.commit('login', data.key);
-      this.$router.push('/');
+      this.$store.commit('login', data.key);
+      this.$router.push('/trees');
     }
   }
 }
