@@ -1,4 +1,7 @@
 <template>
+  <section v-if="showTreeName" class="tree-name" ><div class="container" >
+    <h1>{{ treeName }}</h1>
+  </div></section>
   <section v-if="!readOnly" class="control-buttons" ><div class="container" >
     <button @click="showNewTagPopup = true" >
     <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
@@ -181,6 +184,7 @@ export default {
   props: {
     id: String,
     readOnly: Boolean,
+    showTreeName: Boolean,
   },
   emits: ['import', 'cancel', 'submit'],
   components: {

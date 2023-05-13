@@ -1,5 +1,4 @@
 <template>
-  <nav-bar></nav-bar>
   <div id="content" >
     <tag-detail :tagid="$route.params.id" :read-only="true" :tree-id="$route.params.treeId" />
   </div>

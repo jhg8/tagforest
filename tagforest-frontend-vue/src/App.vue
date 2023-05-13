@@ -1,11 +1,5 @@
 <template>
   <router-view/>
-
-  <footer><div class="container">
-    <span>Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)</span> -
-    <router-link to="https://api.tagforest.fr">REST API</router-link> -
-    <router-link to="https://github.com/jhg8/tagforest">Github</router-link>
-  </div></footer>
 </template>
 
 <style lang="scss">
@@ -153,6 +147,24 @@ footer {
 }
 
 section {
+  h1 {
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    flex-basis: auto;
+    img {
+      flex-basis: auto;
+      width: 2em;
+      height: 2em;
+    }
+    a {
+      margin-left: auto;
+    }
+  }
   .container {
     padding-top: 0.8em;
   }

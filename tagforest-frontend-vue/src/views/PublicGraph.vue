@@ -1,7 +1,6 @@
 <template>
-  <nav-bar></nav-bar>
   <div id="content" >
-    <graph :id="$route.params.id" :read-only="true" />
+    <graph :id="$route.params.id" :read-only="true" :show-tree-name="true" />
   </div>
 </template>
 

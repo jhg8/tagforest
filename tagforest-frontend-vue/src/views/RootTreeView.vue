@@ -16,12 +16,14 @@
   <div id="content" >
   <router-view @tree-upsert="getTrees(activeTreeId)"/>
   </div>
+  <footer-component></footer-component>
 </template>
 
 <script>
 
 import TreeUpsert from '@/components/TreeUpsert.vue'
 import NavBar from '@/components/NavBar.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 export default {
   name: 'RootTreeView',
@@ -35,7 +37,8 @@ export default {
   },
   components: {
     TreeUpsert,
-    NavBar
+    NavBar,
+    FooterComponent
   },
   beforeRouteUpdate(to, from) {
     if(to.params.id != from.params.id) {

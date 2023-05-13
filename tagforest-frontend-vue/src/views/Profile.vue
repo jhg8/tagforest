@@ -37,6 +37,7 @@
     </p>
   </div></section>
   </div>
+  <footer-component></footer-component>
 </template>
 
 <script>
