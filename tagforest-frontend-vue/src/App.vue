@@ -164,52 +164,63 @@ section {
       min-height: 1em;
       padding-top: 1em;
     }
+    div.multi-select {
+      margin-bottom: 0.9em;
+      .multiselect__tag {
+        background: $purple;
+      }
+    }
   }
-  ul.entries, ul.tag-parents, ul.category, ul.profile, ul.control-categories {
+  ul.entries, ul.tag-parents, ul.category, ul.control-categories, ul.control-tags, ul.control-buttons {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    margin-bottom: 0.6em;
     li {
       display: inline;
     }
-    h2 {
-        margin-top: 0;
-    }
-    a {
-      color: $white;
-      font-weight: bold;
-      background-color: $purple;
-      border-radius: 0.2em;
+    a, button, input[type="submit"], label.edit-checkbox {
+      display: inline-block;
+      margin-right: 0.3em;
+      margin-bottom: 0.3em;
       padding-bottom: 0.8em;
       padding-top: 0.7em;
       padding-right: 2em;
       padding-left: 0.6em;
       text-decoration: none;
       vertical-align: middle;
-      display: inline-block;
-      margin-right: 0.3em;
-      margin-bottom: 0.3em;
+      color: $white;
+      font-weight: bold;
+      border-radius: 0.2em;
       &:hover {
         color: $yellow;
       }
     }
   }
+  ul.control-buttons {
+    button, label.edit-checkbox {
+      padding: 0.6em;
+      color: $grey;
+      background-color: $white;
+      border: 1px solid $lightergrey;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 0.4em;
+    }
+    label, button {
+      margin-right: 0.2em;
+    }
+  }
   ul.control-categories {
-    margin-top: -0.4em;
     a {
-      display: inline-block;
       margin-right: 0.1em;
-      margin-bottom: 0.3em;
       padding-bottom: 0.6em;
       padding-top: 0.6em;
       padding-left: 0.9em;
       padding-right: 1.3em;
-      vertical-align: middle;
-      text-decoration: none;
       border-radius: 0.2em;
       opacity: 0.8;
       &:hover {
-        color: $yellow;
         background-color: $lightpurple;
 	-webkit-filter: brightness(85%);
       }
@@ -220,17 +231,17 @@ section {
       }
     }
   }
-  &.tag, &.category, &.profile {
+  ul.tag-parents, ul.category, &.profile {
     a {
+      padding-right: 1em;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 0.6em;
       color: $grey;
       font-weight: normal;
       background-color: $white;
       border: 1px solid $grey;
       border-radius: 0.8em;
-      padding-right: 1em;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-      padding-left: 0.6em;
       &:hover {
         color: $grey;
         background-color: $lightergrey;
@@ -243,31 +254,25 @@ section {
       }
     }
   }
-  &.category, &.profile {
+  ul.category, &.profile {
     a {
       border-radius: 0.2em;
     }
   }
-  &.control-tags {
-    .multiselect__tag {
-      background: $purple;
-    }
+  ul.control-tags {
     a {
+      margin-right: 0.2em;
+      padding-top: 0.8em;
+      padding-bottom: 0.6em;
+      padding-right: 0.8em;
+      padding-left: 0.9em;
+      vertical-align: middle;
       opacity: 0.8;
       border: none;
       background-color: $white;
       font-weight: bold;
       color: $white;
       border-radius: 0.6em;
-      padding-top: 0.8em;
-      padding-bottom: 0.6em;
-      padding-right: 0.8em;
-      padding-left: 0.9em;
-      text-decoration: none;
-      vertical-align: middle;
-      display: inline-block;
-      margin-right: 0.2em;
-      margin-bottom: 0.2em;
       &:hover {
 	-webkit-filter: brightness(85%);
       }
@@ -552,7 +557,6 @@ form.textForm {
     }
   }
 }
-
 .popup, .popupExport {
   position: fixed;
   z-index: 1;
@@ -642,12 +646,12 @@ pre {
 
 label.edit-checkbox {
   .label {
+    height: 1rem;
     display: inline-block;
     border-radius: 0.4em;
-    padding: 0.6em;
     cursor: pointer;
     background-color: $white;
-    border: 1px solid $lightergrey;
+    border: none;
   }
   input {
     opacity: 0;
@@ -660,23 +664,6 @@ label.edit-checkbox {
   }
   input:focus + .label {
     outline: 2px solid black;
-  }
-}
-
-.control-buttons {
-  button {
-    color: $grey;
-    background-color: $white;
-    border: 1px solid $lightergrey;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    border-radius: 0.4em;
-    padding: 0.6em;
-    margin-bottom: 0.4em;
-  }
-  label, button {
-    margin-right: 0.2em;
   }
 }
 

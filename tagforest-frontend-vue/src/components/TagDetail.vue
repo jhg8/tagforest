@@ -9,7 +9,7 @@
     </button>
   </div></section>
 
-  <section v-if="!editMode" class="category"><div class="container" >
+  <section v-if="!editMode" ><div class="container" >
     <ul class="category" >
       <li><router-link :to="getUrl('#' + tag.category.name + ';')" >
           {{ tag.category.name }}
