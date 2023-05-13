@@ -89,6 +89,9 @@ export default {
     }
   },
   mounted () {
+    if(!this.loggedIn) {
+      this.$router.push({path: '/'});
+    }
     this.updateActiveTreeId(this.$route);
     this.getTrees(this.activeTreeId);
   }

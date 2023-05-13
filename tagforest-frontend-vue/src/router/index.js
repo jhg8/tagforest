@@ -24,12 +24,16 @@ const routes = [
         component: () => import(/* webpackChunkName: "tag" */ '../views/TagDetailView.vue')
       },
     ],
-    alias: '/'
   },
   {
-    path: '/auth',
-    name: 'auth',
-    component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue')
+    path: '/',
+    name: 'welcome',
+    component: () => import(/* webpackChunkName: "welcome" */ '../views/WelcomeView.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
   },
   {
     path: '/public/tree/:id',
@@ -40,11 +44,6 @@ const routes = [
     path: '/public/tree/:treeId/tag/:id',
     name: 'publictag',
     component: () => import(/* webpackChunkName: "publictag" */ '../views/PublicTag.vue')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
     path: '/profile',

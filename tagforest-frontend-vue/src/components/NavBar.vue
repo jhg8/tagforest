@@ -2,8 +2,7 @@
   <nav><div class="container">
     <router-link to="/trees/graph"><font-awesome-icon icon="fa-solid fa-house" /> Home</router-link>
     <router-link v-if="loggedIn" :to="'/trees/' + activeTreeId + '/category'"><font-awesome-icon icon="fa-solid fa-box" /> Categories</router-link>
-    <router-link v-if="!loggedIn" to="/auth">Login or register</router-link>
-    <router-link v-else to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
+    <router-link v-if="loggedIn" to="/profile"><font-awesome-icon icon="fa-solid fa-user" /> {{ loggedUser }}</router-link>
     <slot></slot>
   </div></nav>
 

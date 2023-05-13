@@ -3,7 +3,8 @@
 
   <footer><div class="container">
     <span>Version <!--CURRENT_VERSION--> (<!--CURRENT_VERSION_DATE-->)</span> -
-    <router-link to="/about">About</router-link>
+    <router-link to="https://api.tagforest.fr">REST API</router-link> -
+    <router-link to="https://github.com/jhg8/tagforest">Github</router-link>
   </div></footer>
 </template>
 
@@ -317,6 +318,77 @@ section {
   &.control-category {
     a {
       border-radius: 0.2em;
+    }
+  }
+  &.welcome, &.register {
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      h1 {
+        font-size: 4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        margin-top: 1rem;
+        margin-bottom: 4rem;
+        flex-basis: auto;
+        img {
+          flex-basis: auto;
+          width: 2em;
+          height: 2em;
+        }
+        a {
+          margin-left: auto;
+        }
+      }
+      form {
+        margin: auto;
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 0.8em;
+        label {
+          display: none;
+        }
+        input[type="text"], input[type="password"], button, a, div.separator {
+          width: 100%;
+          margin: 0;
+          border: none;
+          padding: 0.4em;
+          display: block;
+          border-radius: 0.3em;
+          border: none;
+          padding: 0.7em;
+          margin: 0;
+          width: auto;
+        }
+        input[type="text"], input[type="password"] {
+          background-color: rgba(0, 0, 0, 0.06);
+        }
+        button, a, {
+          background-color: $purple;
+          color: $white;
+          text-align: center;
+          padding-top:    0.5em;
+          padding-bottom: 0.5em;
+        }
+        div.separator {
+          text-align: center;
+          padding-top:    0;
+          padding-bottom: 0;
+          display: flex;
+          align-items: center;
+          .text {
+            flex: 1;
+          }
+          .line {
+            flex: 2;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 0;
+          }
+        }
+        width: 20em;
+      }
     }
   }
 }

@@ -76,14 +76,17 @@ export default {
       this.treeList = data;
     }
   },
-  mounted () {
-    this.getUser();
-    this.reload();
-  },
   computed: {
     loggedIn () {
       return this.$store.state.loggedIn;
     },
   },
+  mounted () {
+    if(!this.loggedIn) {
+      this.$router.push({path: '/'});
+    }
+    this.getUser();
+    this.reload();
+  }
 }
 </script>
