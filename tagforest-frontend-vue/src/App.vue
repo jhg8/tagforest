@@ -164,8 +164,7 @@ section {
       min-height: 1em;
       padding-top: 1em;
     }
-    div.multi-select {
-      margin-bottom: 0.9em;
+    span.multi-select {
       .multiselect__tag {
         background: $purple;
       }
@@ -175,14 +174,13 @@ section {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    margin-bottom: 0.6em;
     li {
       display: inline;
     }
-    a, button, input[type="submit"], label.edit-checkbox {
+    a {
       display: inline-block;
       margin-right: 0.3em;
-      margin-bottom: 0.3em;
+      margin-bottom: 2.0em;
       padding-bottom: 0.8em;
       padding-top: 0.7em;
       padding-right: 2em;
@@ -198,7 +196,7 @@ section {
     }
   }
   ul.control-buttons {
-    button, label.edit-checkbox {
+    button {
       padding: 0.6em;
       color: $grey;
       background-color: $white;
@@ -646,12 +644,12 @@ pre {
 
 label.edit-checkbox {
   .label {
-    height: 1rem;
     display: inline-block;
     border-radius: 0.4em;
+    padding: 0.6em;
     cursor: pointer;
     background-color: $white;
-    border: none;
+    border: 1px solid $lightergrey;
   }
   input {
     opacity: 0;
