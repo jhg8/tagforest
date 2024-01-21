@@ -5,7 +5,7 @@
       {{ treeName }}
     </h1>
 
-    <ul v-if="!readOnly" class="control-buttons" >
+    <ul v-if="!readOnly" class="inline-list control-buttons" >
       <li>
         <button @click="showNewTagPopup = true" >
         <font-awesome-icon icon="fa-solid fa-plus" /> New Tag
@@ -50,17 +50,17 @@
       </li>
     </ul>
 
-    <ul class="control-categories" >
-    <li v-for="category in categoryList" v-bind:key="category.name" >
-      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
-        {{ category.name }}
-      </router-link>
-    </li>
-    <li v-for="category in hiddenCategoryList" v-bind:key="category.name" >
-      <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
-        {{ category.name }}
-      </router-link>
-    </li>
+    <ul class="inline-list control-categories" >
+      <li v-for="category in categoryList" v-bind:key="category.name" >
+        <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
+          {{ category.name }}
+        </router-link>
+      </li>
+      <li v-for="category in hiddenCategoryList" v-bind:key="category.name" >
+        <router-link :style="{ backgroundColor: '#' + category.color }"  :to="getControlURL('', category.name)" :class="{ active: category.name == activeCategory }" >
+          {{ category.name }}
+        </router-link>
+      </li>
     </ul>
 
     <div class="multi-select" >
@@ -78,26 +78,26 @@
     </VueMultiselect>
     </div>
 
-    <ul class="control-tags" >
-    <li v-for="tag in controlTagList.slice(0, 50)" v-bind:key="tag.name" >
-      <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getControlURL(tag.name, '')" :class="{ active: isControlTagActive(tag) }" >
-        {{ tag.name }}
-      </router-link>
-    </li>
+    <ul class="inline-list control-tags" >
+      <li v-for="tag in controlTagList.slice(0, 50)" v-bind:key="tag.name" >
+        <router-link :style="{ backgroundColor: '#' + tag.category.color }" :to="getControlURL(tag.name, '')" :class="{ active: isControlTagActive(tag) }" >
+          {{ tag.name }}
+        </router-link>
+      </li>
     </ul>
 
-    <ul class="entries" >
-    <li v-for="tag in tagList" v-bind:key="tag.id" >
-      <span v-if="selectMode" >
-        <div class="entry-checkbox" ><label :style="{ backgroundColor: '#' + tag.category.color }" >
-          <span class="label" >{{ tag.name }}</span>
-          <input type="checkbox" v-model="selectTagIdMap[tag.id]" :class="{ active: selectTagIdMap[tag.id] }" />
-        </label></div>
-      </span>
-      <span v-else >
-        <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
-      </span>
-    </li>
+    <ul class="inline-list entries" >
+      <li v-for="tag in tagList" v-bind:key="tag.id" >
+        <span v-if="selectMode" >
+          <div class="entry-checkbox" ><label :style="{ backgroundColor: '#' + tag.category.color }" >
+            <span class="label" >{{ tag.name }}</span>
+            <input type="checkbox" v-model="selectTagIdMap[tag.id]" :class="{ active: selectTagIdMap[tag.id] }" />
+          </label></div>
+        </span>
+        <span v-else >
+          <router-link :style="{ backgroundColor: '#' + tag.category.color }"  :to="(readOnly ? ('/public/tree/' + id + '/') : '') + 'tag/' + tag.id" >{{ tag.name }}</router-link>
+        </span>
+      </li>
     </ul>
 
   </div></section>

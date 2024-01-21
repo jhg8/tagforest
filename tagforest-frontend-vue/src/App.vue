@@ -66,11 +66,11 @@ nav, footer {
   color: $white;
   text-align: center;
   .container {
-	padding-top: 0.2em;
-	padding-bottom: 0.2em;
+	padding-top: 0.2rem;
+	padding-bottom: 0.2rem;
     a, button {
       color: $white;
-      padding: 1em;
+      padding: 1rem;
       display: inline-block;
       font-weight: bold;
       text-decoration: none;
@@ -84,7 +84,7 @@ nav, footer {
       font: 1em;
       border: none;
       font-size: 1rem;
-      width: 8em;
+      width: 8rem;
       text-align: left;
     }
     .dropdown {
@@ -95,7 +95,7 @@ nav, footer {
       z-index: 1;
       position: absolute;
       display: block;
-      width: 8em;
+      width: 8rem;
       a, button {
         display: block;
         background-color: $purple;
@@ -126,97 +126,111 @@ footer {
   .container {
     a, span {
       color: $white;
-      padding: 0.5em;
+      padding: 0.5rem;
     }
   }
 }
 
-section {
-  .container {
-    padding-top: 0.8em;
-    h1 {
-      font-size: 3em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+section .container {
+  padding-top: 0.8rem;
+  h1 {
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    flex-basis: auto;
+    img {
       flex-basis: auto;
-      img {
-        flex-basis: auto;
-        width: 2em;
-        height: 2em;
-      }
-      a {
-        margin-left: auto;
-      }
+      width: 2rem;
+      height: 2rem;
     }
-    .multiselect {
-      font-size: 1rem;
-    }
-    .multiselect__option {
-      line-height: 1em;
-      min-height: 1em;
-    }
-    .multiselect__option:after {
-      line-height: 1em;
-      min-height: 1em;
-      padding-top: 1em;
-    }
-    span.multi-select {
-      .multiselect__tag {
-        background: $purple;
-      }
+    a {
+      margin-left: auto;
     }
   }
-  ul.entries, ul.tag-parents, ul.category, ul.control-categories, ul.control-tags, ul.control-buttons {
+  .multiselect {
+    font-size: 1rem;
+  }
+  .multiselect__option {
+    line-height: 1rem;
+    min-height: 1rem;
+  }
+  .multiselect__option:after {
+    line-height: 1rem;
+    min-height: 1rem;
+    padding-top: 1rem;
+  }
+  span.multi-select {
+    .multiselect__tag {
+      background: $purple;
+    }
+  }
+  ul.inline-list {
     list-style-type: none;
     margin: 0;
     padding: 0;
     li {
       display: inline;
     }
-    a {
+    a, label, button {
       display: inline-block;
-      margin-right: 0.3em;
-      margin-bottom: 2.0em;
-      padding-bottom: 0.8em;
-      padding-top: 0.7em;
-      padding-right: 2em;
-      padding-left: 0.6em;
+      margin-right: 0.0rem;
+      padding-bottom: 0.8rem;
+      padding-top: 0.7rem;
+      padding-right: 2rem;
+      padding-left: 0.6rem;
       text-decoration: none;
       vertical-align: middle;
       color: $white;
       font-weight: bold;
-      border-radius: 0.2em;
+      border-radius: 0.2rem;
       &:hover {
         color: $yellow;
       }
     }
+    .entry-checkbox, .tag-checkbox {
+      label {
+        display: grid;
+      }
+    }
+    label.edit-checkbox {
+      padding: 0;
+    }
+  }
+  ul.entries {
+    .entry-checkbox, .tag-checkbox {
+      label {
+        padding-right: 0.5rem;
+        padding-bottom: 0.85rem;
+        padding-top: 0.8rem;
+        padding-left: 0.6rem;
+      }
+    }
+  }
+  ul.inline-list + * {
+    margin-top: 1rem;
   }
   ul.control-buttons {
     button {
-      padding: 0.6em;
+      padding: 0.6rem;
       color: $grey;
       background-color: $white;
       border: 1px solid $lightergrey;
       font: inherit;
       cursor: pointer;
-      border-radius: 0.4em;
-    }
-    label, button {
-      margin-right: 0.2em;
+      border-radius: 0.4rem;
     }
   }
   ul.control-categories {
     a {
-      margin-right: 0.1em;
-      padding-bottom: 0.6em;
-      padding-top: 0.6em;
-      padding-left: 0.9em;
-      padding-right: 1.3em;
-      border-radius: 0.2em;
+      padding-bottom: 0.6rem;
+      padding-top: 0.6rem;
+      padding-left: 0.9rem;
+      padding-right: 1.3rem;
+      border-radius: 0.2rem;
       opacity: 0.8;
       &:hover {
         background-color: $lightpurple;
@@ -231,15 +245,15 @@ section {
   }
   ul.tag-parents, ul.category, &.profile {
     a {
-      padding-right: 1em;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-      padding-left: 0.6em;
+      padding-right: 1rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      padding-left: 0.6rem;
       color: $grey;
       font-weight: normal;
       background-color: $white;
       border: 1px solid $grey;
-      border-radius: 0.8em;
+      border-radius: 0.8rem;
       &:hover {
         color: $grey;
         background-color: $lightergrey;
@@ -254,23 +268,21 @@ section {
   }
   ul.category, &.profile {
     a {
-      border-radius: 0.2em;
+      border-radius: 0.2rem;
     }
   }
   ul.control-tags {
     a {
-      margin-right: 0.2em;
-      padding-top: 0.8em;
-      padding-bottom: 0.6em;
-      padding-right: 0.8em;
-      padding-left: 0.9em;
-      vertical-align: middle;
+      padding-top: 0.8rem;
+      padding-bottom: 0.6rem;
+      padding-right: 0.8rem;
+      padding-left: 0.9rem;
       opacity: 0.8;
       border: none;
       background-color: $white;
       font-weight: bold;
       color: $white;
-      border-radius: 0.6em;
+      border-radius: 0.6rem;
       &:hover {
 	-webkit-filter: brightness(85%);
       }
@@ -279,6 +291,113 @@ section {
       }
     }
   }
+  // @link https://moderncss.dev/pure-css-custom-checkbox-style/
+  .entry-checkbox, .tag-checkbox {
+    display:inline-block;
+    label {
+      line-height: 1.1;
+      display: grid;
+      grid-template-columns: auto 1rem;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: $white;
+      font-weight: bold;
+      background-color: $purple;
+      border-radius: 0.2rem;
+      height: 1rem;
+      text-decoration: none;
+      vertical-align: middle;
+      &:hover {
+        color: $yellow;
+      }
+    }
+    input[type="checkbox"] {
+      /* Add if not using autoprefixer */
+      -webkit-appearance: none;
+      /* Remove most all native input styles */
+      appearance: none;
+      /* For iOS < 15 */
+      background-color: var(--form-background);
+      /* Not removed via appearance */
+      margin: 0;
+
+      font: inherit;
+      color: currentColor;
+      width: 0.8rem;
+      height: 0.8rem;
+      border: 0.1rem solid currentColor;
+      border-radius: 0.15rem;
+      transform: translateY(-0.075rem);
+
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+    }
+    input[type="checkbox"]::before {
+      content: "";
+      width: 0.65rem;
+      height: 0.65rem;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      transform: scale(0);
+
+      box-shadow: inset 1rem 1rem var(--form-control-color);
+      background-color: $yellow;
+    }
+    input[type="checkbox"]:checked::before {
+      transform: scale(1);
+    }
+    input[type="checkbox"]:checked + .label {
+      color: $yellow;
+    }
+  }
+  .tag-checkbox {
+    label {
+      color: $grey;
+      font-weight: normal;
+      background-color: $white;
+      border: 1px solid $grey;
+      padding-right: 1rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      padding-left: 0.6rem;
+      &:hover {
+        color: $grey;
+        background-color: $lightergrey;
+      }
+    }
+    input[type="checkbox"]::before {
+      background-color: $grey;
+    }
+    input[type="checkbox"]:checked + .label {
+      color: $darkgrey;
+    }
+  }
+  label.edit-checkbox {
+    .label {
+      color: $grey;
+      display: inline-block;
+      border-radius: 0.4rem;
+      padding: 0.6rem;
+      cursor: pointer;
+      background-color: $white;
+      border: 1px solid $lightergrey;
+    }
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      margin: 0;
+    }
+    input:checked + .label {
+      background-color: $lighterergrey;
+    }
+    input:focus + .label {
+      outline: 2px solid black;
+    }
+  }
+}
+
+section {
   &.welcome, &.register {
     .container {
       max-width: 1000px;
@@ -294,8 +413,8 @@ section {
         flex-basis: auto;
         img {
           flex-basis: auto;
-          width: 2em;
-          height: 2em;
+          width: 2rem;
+          height: 2rem;
         }
         a {
           margin-left: auto;
@@ -305,7 +424,7 @@ section {
         margin: auto;
         display: grid;
         grid-template-columns: auto;
-        grid-gap: 0.8em;
+        grid-gap: 0.8rem;
         label {
           display: none;
         }
@@ -313,11 +432,11 @@ section {
           width: 100%;
           margin: 0;
           border: none;
-          padding: 0.4em;
+          padding: 0.4rem;
           display: block;
-          border-radius: 0.3em;
+          border-radius: 0.3rem;
           border: none;
-          padding: 0.7em;
+          padding: 0.7rem;
           margin: 0;
           width: auto;
         }
@@ -328,8 +447,8 @@ section {
           background-color: $purple;
           color: $white;
           text-align: center;
-          padding-top:    0.5em;
-          padding-bottom: 0.5em;
+          padding-top:    0.5rem;
+          padding-bottom: 0.5rem;
         }
         div.separator {
           text-align: center;
@@ -346,7 +465,7 @@ section {
             border-radius: 0;
           }
         }
-        width: 20em;
+        width: 20rem;
       }
     }
   }
@@ -355,7 +474,7 @@ section {
 section.category-section, section.tree-section {
   .container {
     margin: auto;
-    max-width: 30em;
+    max-width: 30rem;
   }
   &.category-list, &.tree-list {
     ul {
@@ -363,20 +482,20 @@ section.category-section, section.tree-section {
       padding-left: 0;
       button {
         cursor: pointer;
-        width: 25em;
-        margin-bottom: 0.3em;
+        width: 25rem;
+        margin-bottom: 0.3rem;
         border: 0;
         color: $white;
         font-weight: bold;
         background-color: $purple;
         border: 1px solid rgba(0, 0, 0, 0.1);
         box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
-        border-radius: 0.2em;
+        border-radius: 0.2rem;
         text-decoration: none;
         vertical-align: middle;
         display: inline-block;
-        margin-right: 0.5em;
-        margin-bottom: 0.5em;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
         font-size: 1rem;
         text-align: left;
         height: 3rem;
@@ -430,17 +549,17 @@ form {
     font-size: 1rem;
     background-color: white;
     border: 1px solid $lightgrey;
-    border-radius: 0.2em;
-    padding: 0.5em;
-    margin-right: 1em;
+    border-radius: 0.2rem;
+    padding: 0.5rem;
+    margin-right: 1rem;
     cursor: pointer;
     color: $darkgrey;
   }
 }
 
 form.textForm {
-  margin-bottom: 1em;
-  margin-top: 1em;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
   .multiselect__tags {
     width: 100%;
   }
@@ -448,20 +567,20 @@ form.textForm {
     width: 100%;
     border: none;
     border-bottom: 1px solid $lightgrey;
-    padding: 0.3em;
+    padding: 0.3rem;
     &:focus {
       border: none;
       outline: 0;
       border-bottom: 1px solid $lightgrey;
       font-size: 0.9rem;
-      box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
     }
   }
   span.text {
     display: block;
     overflow: hidden;
     padding-right: 10px;
-    height: 3em;
+    height: 3rem;
     width: 100%;
   }
   span.textarea {
@@ -470,8 +589,8 @@ form.textForm {
     display: block;
     overflow: hidden;
     padding-right: 10px;
-    height: 20em;
-    margin-bottom: 2em;
+    height: 20rem;
+    margin-bottom: 2rem;
   }
   span.select {
     display: block;
@@ -480,8 +599,8 @@ form.textForm {
   }
   label {
     display: block;
-    padding-top: 0.2em;
-    padding-right: 1em;
+    padding-top: 0.2rem;
+    padding-right: 1rem;
     float: bottom;
     text-align: right;
   }
@@ -489,39 +608,39 @@ form.textForm {
     display: none;
   }
   textarea {
-    height: 20em;
+    height: 20rem;
     width: 100%;
     border: none;
     border-bottom: 1px solid $lightgrey;
-    padding: 0.3em;
+    padding: 0.3rem;
     overflow: none;
   }
   textarea:focus {
     border: none;
     outline: 0;
     border-bottom: 1px solid $lightgrey;
-    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   }
   .formGrid {
     display: grid;
     grid-template-columns: max-content auto;
-    grid-gap: 0.2em;
+    grid-gap: 0.2rem;
   }
   input[type="text"] {
     width: 100%;
     border: none;
     border-bottom: 1px solid $lightgrey;
-    padding: 0.3em;
+    padding: 0.3rem;
   }
   input[type="text"]:focus {
     border: none;
     outline: 0;
     border-bottom: 1px solid $lightgrey;
     font-size: 0.9rem;
-    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   }
   input[type="submit"], button {
-    margin-top: 1em;
+    margin-top: 1rem;
   }
 }
 
@@ -529,29 +648,29 @@ form.textForm {
   position: absolute;
   z-index: 2;
   .container {
-    top: 0.4em;
+    top: 0.4rem;
     position: relative;
     background-color: $white;
-    border-radius: 0.7em;
+    border-radius: 0.7rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 1em;
-    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
     input {
-      width: 20em;
+      width: 20rem;
       border: none;
       border-bottom: 1px solid $lightgrey;
-      padding: 0.3em;
-      margin-right: 1em;
+      padding: 0.3rem;
+      margin-right: 1rem;
     }
     input:focus {
       border: none;
       outline: 0;
       border-bottom: 1px solid $lightgrey;
       font-size: 0.9rem;
-      box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
     }
     button {
-      width: 3em;
+      width: 3rem;
     }
   }
 }
@@ -565,23 +684,23 @@ form.textForm {
   background-color: rgba(0, 0, 0, 0.5);
   .container {
     background-color: $white;
-    border-radius: 1em;
-    padding-left: 2em;
-    padding-right: 2em;
-    padding-bottom: 1em;
+    border-radius: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 1rem;
     margin: 20vh auto;
-    box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
     max-width: 800px;
     span.textarea {
       display: block;
       padding-right: 10px;
-      margin-bottom: 2em;
+      margin-bottom: 2rem;
     }
     textarea {
       overflow-y: scroll;
     }
     input[type="submit"], button {
-      margin-top: 1em;
+      margin-top: 1rem;
     }
     span.textarea {
       padding-right: 10px;
@@ -597,10 +716,10 @@ form.textForm {
 
 .popupExport {
   .container {
-    padding: 1em;
+    padding: 1rem;
     margin: 10vh auto;
-    box-shadow: 0 0 1em rgba(0, 0, 0, 0.4);
-    max-width: 60em;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+    max-width: 60rem;
     span.textarea {
       padding-right: 10px;
       height: 50vh;
@@ -642,117 +761,8 @@ pre {
   word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-label.edit-checkbox {
-  .label {
-    display: inline-block;
-    border-radius: 0.4em;
-    padding: 0.6em;
-    cursor: pointer;
-    background-color: $white;
-    border: 1px solid $lightergrey;
-  }
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-    margin: 0;
-  }
-  input:checked + .label {
-    background-color: $lighterergrey;
-  }
-  input:focus + .label {
-    outline: 2px solid black;
-  }
-}
 
-// @link https://moderncss.dev/pure-css-custom-checkbox-style/
-.entry-checkbox, .tag-checkbox {
-  display:inline-block;
-  label {
-    line-height: 1.1;
-    display: grid;
-    grid-template-columns: auto 1em;
-    gap: 0.5em;
-    cursor: pointer;
-    color: $white;
-    font-weight: bold;
-    background-color: $purple;
-    border-radius: 0.2em;
-    padding-right: 0.5em;
-    padding-bottom: 1em;
-    padding-top: 0.5em;
-    padding-left: 0.6em;
-    height: 1em;
-    text-decoration: none;
-    vertical-align: middle;
-    margin-right: 0.5em;
-    margin-bottom: 0.5em;
-    &:hover {
-      color: $yellow;
-    }
-  }
-  input[type="checkbox"] {
-    /* Add if not using autoprefixer */
-    -webkit-appearance: none;
-    /* Remove most all native input styles */
-    appearance: none;
-    /* For iOS < 15 */
-    background-color: var(--form-background);
-    /* Not removed via appearance */
-    margin: 0;
 
-    font: inherit;
-    color: currentColor;
-    width: 0.8em;
-    height: 0.8em;
-    border: 0.1em solid currentColor;
-    border-radius: 0.15em;
-    transform: translateY(-0.075em);
-
-    display: grid;
-    place-content: center;
-    cursor: pointer;
-  }
-  input[type="checkbox"]::before {
-    content: "";
-    width: 0.65em;
-    height: 0.65em;
-    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-    transform: scale(0);
-
-    box-shadow: inset 1em 1em var(--form-control-color);
-    background-color: $yellow;
-  }
-  input[type="checkbox"]:checked::before {
-    transform: scale(1);
-  }
-  input[type="checkbox"]:checked + .label {
-    color: $yellow;
-  }
-}
-
-.tag-checkbox {
-  label {
-    color: $grey;
-    font-weight: normal;
-    background-color: $white;
-    border: 1px solid $grey;
-    padding-right: 1em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-left: 0.6em;
-    &:hover {
-      color: $grey;
-      background-color: $lightergrey;
-    }
-  }
-  input[type="checkbox"]::before {
-    background-color: $grey;
-  }
-  input[type="checkbox"]:checked + .label {
-    color: $darkgrey;
-  }
-}
 
 a {
   color: $grey;
