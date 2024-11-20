@@ -5,8 +5,8 @@
 <style lang="scss">
 
 $yellow: #ffe167;
-$lightpurple: #747ce4;
-$purple: #9698f5;
+$lightpurple: #ffbe85;
+$purple: #A7CAB1;
 $white: #ffffff;
 $lighterergrey: #efe8ff;
 $lightergrey: #dcd6eb;
