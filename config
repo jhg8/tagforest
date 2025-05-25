@@ -3,9 +3,10 @@
 set -e
 
 DIR=$(dirname $(realpath $0))
-
 BACKEND="$DIR/tagforestrest"
+FRONTEND="$DIR/tagforest-frontend-vue"
 ENVDIR="$BACKEND/env"
+
 echo "Configuring $ENVIDR";
 if [ ! -d $ENVDIR ]; then
   python -m venv $ENVDIR;
@@ -13,6 +14,11 @@ fi
 source $ENVDIR/bin/activate;
 pip install django djangorestframework 'dj-rest-auth[with_social]' django-cors-headers;
 deactivate;
+
+echo "Configuring npm in $FRONTEND";
+sudo apt install npm
+cd $FRONTEND
+npm install
 
 read -p "Configure for deployment ? [yY]" -n 1 -r
 echo
